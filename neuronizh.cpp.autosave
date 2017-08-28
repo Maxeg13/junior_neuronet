@@ -30,7 +30,9 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _exitory)
 
 neuronIzh::CalculateStep()
 {
-
+    for(int i=0;i<netIzh->size;i++)
+        input_sum+=netIzh->neuron->output[]
+    
     float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + input_sum;
     float dU_e = a*(b*E_m - U_e);
     E_m += net->step * dE_m;

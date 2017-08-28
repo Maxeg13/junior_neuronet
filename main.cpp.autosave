@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     //qDebug()<<d[0]<<d[1]<<d[2]<<d.size();
     //cout<<"hello";
      copy( d.begin(), d.end(), ostream_iterator<int>(cout," ") );
+    
 
 //    return a.exec();
 }
