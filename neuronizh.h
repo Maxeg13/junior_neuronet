@@ -2,14 +2,22 @@
 #define NEURONIZH_H
 #include <stdio.h>
 #include <deque>
+//#include "net.h"
 using namespace std;
 enum neuronType {RS, TC};
+class CNet;
+//class neuronIzh;
 
 class neuronIzh
 {
 public:
+    CNet* net;
+    float psc_excxpire_time;
+    float step;
     neuronIzh();
     neuronIzh(int, neuronType, bool);
+    neuronIzh* neighbour_neuron;
+//    net* netIzh;
     int ID;
     neuronType type;
     bool is_exitory;

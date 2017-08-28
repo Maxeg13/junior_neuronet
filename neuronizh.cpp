@@ -1,13 +1,17 @@
 #include "neuronizh.h"
+#include "net.h"
+#include <math.h>
 
 neuronIzh::neuronIzh()
 {
 
 }
 
-neuronIzh::neuronIzh(int _ID, neuronType _type, bool _exitory)
+neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory)
 {
-    is_exitory=_exitory;
+    step=0.5;
+    psc_excxpire_time=1;
+    is_exitory=_is_exitory;
     ID=_ID;
     type=_type;
     switch(_type)
@@ -28,9 +32,13 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _exitory)
     output.size();
 }
 
-neuronIzh::CalculateStep()
+void neuronIzh::CalculateStep()
 {
+    for(int i=0;i<net->size;i++)
+        input_sum+=neighbour_neuron[i].output[ID].back();
 
+    input_sum*=exp(-step/psc_excxpire_time);
+    
     float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + input_sum;
     float dU_e = a*(b*E_m - U_e);
     E_m += net->step * dE_m;
@@ -38,13 +46,13 @@ neuronIzh::CalculateStep()
 
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
-        is_spike = true;
+//        is_spike = true;
         E_m = c;
-        E_m_old = 30; // just to show the peak
+//        E_m_old = 30; // just to show the peak
         U_e = U_e + d;
     }
 
-    for(i=0;i<output.size();i++)
+    for(int i=0;i<output.size();i++)
     {
         output[i].push_front(E_m);
         output[i].pop_back();
