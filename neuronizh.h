@@ -15,7 +15,7 @@ public:
     float psc_excxpire_time;
     float step;
     neuronIzh();
-    neuronIzh(int, neuronType, bool);
+    neuronIzh(int, neuronType, bool, CNet*);
     neuronIzh* neighbour_neuron;
 //    net* netIzh;
     int ID;

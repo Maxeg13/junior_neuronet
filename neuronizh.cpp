@@ -7,10 +7,11 @@ neuronIzh::neuronIzh()
 
 }
 
-neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory)
+neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
+    net=_net;
     step=0.5;
-    psc_excxpire_time=1;
+    psc_excxpire_time=4;
     is_exitory=_is_exitory;
     ID=_ID;
     type=_type;
@@ -35,7 +36,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory)
 void neuronIzh::CalculateStep()
 {
     for(int i=0;i<net->size;i++)
-        input_sum+=neighbour_neuron[i].output[ID].back();
+        input_sum+=net->neuron[i].output[ID].back();
 
     input_sum*=exp(-step/psc_excxpire_time);
     
