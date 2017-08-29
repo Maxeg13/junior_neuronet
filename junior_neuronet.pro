@@ -21,4 +21,4 @@ SOURCES += main.cpp\
 HEADERS  += dialog.h \
     work.h \
     neuronizh.h \
-    net.h
+    cnet.h

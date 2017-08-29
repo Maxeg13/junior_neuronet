@@ -15,6 +15,8 @@ public:
     ~Dialog();
     //    paintEvent(QPaintEvent*);
     void mainCircle();
+    void mouseReleaseEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
 private:
 protected:
      void paintEvent(QPaintEvent *e);

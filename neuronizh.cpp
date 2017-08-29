@@ -1,6 +1,8 @@
 #include "neuronizh.h"
-#include "net.h"
+#include "cnet.h"
 #include <math.h>
+#include <stdlib.h>
+
 
 neuronIzh::neuronIzh()
 {
@@ -9,8 +11,17 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
+    _arrow= new arrow[net->size];
+    int width=225;
+    int height=180;
+    int wh=6;
+    int hh=6;
+    float h1=(rand())%width-width/2;
+    float h2=(rand())%height-height/2;
+    x=h1*h1*((h1>0)?1:(-1))/wh/wh*0.5+width;
+    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.5+height;
     net=_net;
-    step=0.5;
+    step=net->step;
     psc_excxpire_time=4;
     is_exitory=_is_exitory;
     ID=_ID;
@@ -30,13 +41,24 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         d=0.05;
         break;
     }
-    output.size();
+
+
+    output.resize(net->size);
+    weight=new float[net->size];
+    for(int i=0;i<net->size;i++)
+        if(i!=ID)weight[i]=rand()%10/10.;
+    weight[ID]=0;
+}
+
+void neuronIzh::test()
+{
+    vis*=exp(-0.0006);
 }
 
 void neuronIzh::CalculateStep()
 {
     for(int i=0;i<net->size;i++)
-        input_sum+=net->neuron[i].output[ID].back();
+        input_sum+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
 
     input_sum*=exp(-step/psc_excxpire_time);
     

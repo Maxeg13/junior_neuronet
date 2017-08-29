@@ -14,6 +14,8 @@ public:
     int size;
     neuronIzh *neuron;
     float step;
+    void setLinks();
+    void test();
 };
 
 #endif // NET_H
