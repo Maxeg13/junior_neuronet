@@ -10,13 +10,14 @@
 
 #include <QMouseEvent>
 //#include "vars.h"
+QPointF MouseP;
 int mouse_ind;
 bool mouse_drop;
 float my_scale=1.5;
 int rad=5;
 float f;
 QTimer *timer;
-CNet net(6,RS);
+CNet net(35,RS);
 //work* WK;
 
 
@@ -44,10 +45,22 @@ void Dialog::drawing()
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
 {
     mouse_drop=0;
+    QPointF V=MouseP-e->pos()/my_scale;
+    if(QPointF::dotProduct(V,V)>rad*rad)
+    {
+//        qDebug()<<"hello";
+        for(int j=0;j<net.size;j++)
+        {
+        net.setDelay(mouse_ind,j);
+        net.setDelay(j,mouse_ind);
+        }
+    }
+    net.neuron[mouse_ind].external_I=0;
 }
 
 void Dialog::mouseMoveEvent(QMouseEvent *e)
 {
+//    net.neuron[mouse_ind].vis=200;
     if(mouse_drop)
     {
         net.neuron[mouse_ind].x=(e->x()/my_scale);
@@ -58,7 +71,7 @@ void Dialog::mouseMoveEvent(QMouseEvent *e)
 
 void Dialog::mousePressEvent(QMouseEvent *e)
 {
-    QPointF MouseP=(e->pos()/my_scale);//works in origin space
+    MouseP=(e->pos()/my_scale);//works in origin space
     QPointF V;
     for(int i=0;i<net.size;i++)
     {
@@ -67,9 +80,10 @@ void Dialog::mousePressEvent(QMouseEvent *e)
         {
             mouse_ind=i;
             mouse_drop=1;
-            net.neuron[i].vis=200;
+            net.neuron[i].vis=220;
         }
     }
+    net.neuron[mouse_ind].external_I=2000;//40//2000
 
 }
 
@@ -77,6 +91,7 @@ void Dialog::mainCircle()
 {
 
     net.test();
+//    net.
 
 
 }
@@ -103,7 +118,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         if((i!=mouse_ind)){
             for(int j=0;j<net.size;j++)
             {
-                float h=net.neuron[i].weight[j]*250;
+                float h=net.neuron[i].weight_norm[j]*230;
 
                 if(h!=0)
                 {
@@ -121,7 +136,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     painter->setPen(pen);
     for(int j=0;j<net.size;j++)
     {
-        float h=net.neuron[mouse_ind].weight[j]*250;
+        float h=net.neuron[mouse_ind].weight_norm[j]*250;
         if(h!=0)
         {
             if(!mouse_drop)

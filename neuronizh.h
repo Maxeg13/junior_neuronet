@@ -27,11 +27,10 @@ class neuronIzh
 public:
     CNet* net;
     CArrow* arrow;
-    float psc_excxpire_time;
-    float step;
     float x;
     float y;
     float vis;
+
     neuronIzh();
     neuronIzh(int, neuronType, bool, CNet*);
     neuronIzh* neighbour_neuron;
@@ -41,7 +40,14 @@ public:
     bool is_exitory;
     deque<deque<float>> output;
     float input_sum;
+    float external_I;
     float* link_length;
+    float minWeight; // веса, размерность пкА
+    float maxWeight;
+    float psc_excxpire_time;
+    float step;
+    float Cm;
+    float* weight_norm;
     float* weight;
     float E_m;
     float U_e;

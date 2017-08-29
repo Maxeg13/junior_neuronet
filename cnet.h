@@ -17,6 +17,7 @@ public:
     void setLinks();
     void test();
     void setArrows();
+    void setDelay(int i, int j);
 };
 
 #endif // NET_H

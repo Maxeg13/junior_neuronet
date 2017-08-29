@@ -2,6 +2,65 @@
 #include <stdlib.h>
 #include <math.h>
 #include <QDebug>
+
+
+
+CNet::CNet(int _size, neuronType _type)
+{    
+    size=_size;
+    type=_type;
+    step=0.5;
+
+    neuron=new neuronIzh[size]();
+    for(int i=0;i<size;i++)
+        neuron[i]= neuronIzh(i,RS,rand()%2,this);
+
+    for(int i=0;i<size;i++)
+    {
+        for(int j=0;j<size;j++)
+        {
+            if(j>i)
+            {
+                int case_num=rand()%2;
+
+                switch(case_num)
+                {
+                case 0:
+                    neuron[i].weight[j]=0;
+                    neuron[i].weight_norm[j]=0;
+                    break;
+                case 1:
+                    neuron[j].weight[i]=0;
+                    neuron[j].weight_norm[i]=0;
+                }
+            }
+        }
+    }
+    setArrows();
+
+
+    for(int i=0;i<size;i++)
+        for(int j=0;j<size;j++)
+        {
+  setDelay(i,j);
+        }
+}
+
+
+void CNet::setDelay(int i,int j)
+{
+    if(neuron[i].weight[j]!=0)
+    {
+        float ex=neuron[i].x-neuron[j].x;
+        float ey=neuron[i].y-neuron[j].y;
+        float square=ex*ex+ey*ey+0.001;
+
+        //const
+        neuron[i].output[j].resize(1+sqrt(square)/1,0);
+//        qDebug()<< neuron[i].output[j].size();
+    }
+}
+
 void CNet::test()
 {
     for(int i=0;i<size;i++)
@@ -28,37 +87,6 @@ void CNet::setArrows()
                 neuron[i].arrow[j].y[1]=length*(ex*sin(phi)+ey*cos(phi));
             }
         }
-}
-CNet::CNet(int _size, neuronType _type)
-{    
-    size=_size;
-    type=_type;
-    step=0.5;
-
-    neuron=new neuronIzh[size]();
-    for(int i=0;i<size;i++)
-        neuron[i]= neuronIzh(i,RS,rand()%2,this);
-
-    for(int i=0;i<size;i++)
-    {
-        for(int j=0;j<size;j++)
-        {
-            if(j>i)
-            {
-                int case_num=rand()%2;
-
-                switch(case_num)
-                {
-                case 0:
-                    neuron[i].weight[j]=0;
-                    break;
-                case 1:
-                    neuron[j].weight[i]=0;
-                }
-            }
-        }
-    }
-    setArrows();
 }
 
 void CNet::setLinks()

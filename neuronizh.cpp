@@ -2,7 +2,7 @@
 #include "cnet.h"
 #include <math.h>
 #include <stdlib.h>
-
+#include <QDebug>
 
 neuronIzh::neuronIzh()
 {
@@ -14,16 +14,16 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 
 
     int width=400;
-    int height=400;
-//    int wh=6;
-//    int hh=6;
-//    float h1=(rand())%width-width/2;
-//    float h2=(rand())%height-height/2;
-//    x=h1*h1*((h1>0)?1:(-1))/wh/wh*.6+width;
-//    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
-   x=rand()%width;
-   y=rand()%height;
-   float rad=80;
+    int height=350;
+    //    int wh=6;
+    //    int hh=6;
+    //    float h1=(rand())%width-width/2;
+    //    float h2=(rand())%height-height/2;
+    //    x=h1*h1*((h1>0)?1:(-1))/wh/wh*.6+width;
+    //    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
+    x=rand()%width;
+    y=rand()%height;
+    float rad=100;
 
     while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>rad*rad)
     {
@@ -36,6 +36,11 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     step=net->step;
     psc_excxpire_time=4;
     is_exitory=_is_exitory;
+    minWeight=50;
+    maxWeight=100;
+    Cm      = 25;
+    E_m=0;
+    U_e=0;
     ID=_ID;
     type=_type;
     switch(_type)
@@ -54,12 +59,18 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         break;
     }
 
-
+    input_sum=0;
+    external_I=0;
     output.resize(net->size);
     weight=new float[net->size];
+    weight_norm=new float[net->size];
     for(int i=0;i<net->size;i++)
-        if(i!=ID)weight[i]=rand()%10/10.;
+    {
+        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(maxWeight - minWeight)*10))/10.0f) + minWeight;
+        weight_norm[i]/=(maxWeight - minWeight);
+    }
     weight[ID]=0;
+    weight_norm[ID]=0;
 
     arrow= new CArrow[net->size]();
 }
@@ -67,31 +78,43 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 void neuronIzh::test()
 {
     vis*=exp(-0.001);
+    CalculateStep();
 }
 
 void neuronIzh::CalculateStep()
 {
+//    input_sum=0;
+
     for(int i=0;i<net->size;i++)
-        input_sum+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
+        if(net->neuron[i].weight[ID]!=0)
+            input_sum+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
 
     input_sum*=exp(-step/psc_excxpire_time);
     
-    float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + input_sum;
+    float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I)/Cm;
     float dU_e = a*(b*E_m - U_e);
     E_m += net->step * dE_m;
     U_e += net->step * dU_e;
 
+    if(ID==0)
+    qDebug()<<"ID 0   "<<E_m;
+    if(ID==1)
+    qDebug()<<"ID 1   "<<E_m;
+    float to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
-//        is_spike = true;
+        to_output=1;
+        vis=220;
+        //        is_spike = true;
         E_m = c;
-//        E_m_old = 30; // just to show the peak
+        //        E_m_old = 30; // just to show the peak
         U_e = U_e + d;
+
     }
 
     for(int i=0;i<output.size();i++)
     {
-        output[i].push_front(E_m);
+        output[i].push_front(to_output);
         output[i].pop_back();
     }
 }
