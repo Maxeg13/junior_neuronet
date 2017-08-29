@@ -11,27 +11,15 @@
 #include <QMouseEvent>
 //#include "vars.h"
 int mouse_ind;
-bool lets_drop;
+bool mouse_drop;
 float my_scale=1.5;
-int rad=4;
+int rad=5;
 float f;
 QTimer *timer;
-CNet net(50,RS);
+CNet net(40,RS);
 //work* WK;
 
-void getArrows()
-{
-    for(int i=0;i<net.size;i++)
-        for(int j=0;j<net.size;j++)
-        {
-            if(net.neuron[i].weight[j]>0)
-            {
 
-            }
-        }
-
-
-}
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
@@ -55,30 +43,30 @@ void Dialog::drawing()
 
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
 {
-    lets_drop=0;
+    mouse_drop=0;
 }
 
 void Dialog::mouseMoveEvent(QMouseEvent *e)
 {
-    if(lets_drop)
+    if(mouse_drop)
     {
         net.neuron[mouse_ind].x=(e->x()/my_scale);
         net.neuron[mouse_ind].y=(e->y()/my_scale);
     }
+    net.setArrows();
 }
 
 void Dialog::mousePressEvent(QMouseEvent *e)
 {
     QPointF MouseP=(e->pos()/my_scale);//works in origin space
     QPointF V;
-    qDebug()<<MouseP.x();
     for(int i=0;i<net.size;i++)
     {
         V=MouseP-QPointF(net.neuron[i].x,net.neuron[i].y);
-        if(QPointF::dotProduct(V,V)<20)
+        if(QPointF::dotProduct(V,V)<rad*rad)
         {
             mouse_ind=i;
-            lets_drop=1;
+            mouse_drop=1;
             net.neuron[i].vis=200;
         }
     }
@@ -116,14 +104,48 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             float h=net.neuron[i].weight[j]*250;
 
-            if(h>0)
+            if(h!=0)
             {
-                pen.setColor(QColor(h,h,h));
+                if((mouse_drop)&&(i==mouse_ind))
+                {
+                    pen.setColor(QColor(150,0,0));
+
+                }else
+                {
+                    pen.setColor(QColor(h,h,h));
+
+                }
                 painter->setPen(pen);
                 painter->drawLine(net.neuron[i].x,net.neuron[i].y,net.neuron[j].x,net.neuron[j].y);
             }
         }
 
+    //    pen.setColor(QColor(0,0,0));
+    pen=QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+
+    for(int i=0;i<net.size;i++)
+        for(int j=0;j<net.size;j++)
+        {
+            if(net.neuron[i].weight[j]!=0)
+            {
+                if((mouse_drop)&&(i==mouse_ind))
+                {
+                    pen.setColor(QColor(150,0,0));
+
+                }else
+                {
+                    pen.setColor(QColor(0,0,0));
+
+                }
+                    painter->setPen(pen);
+                painter->drawLine(net.neuron[j].x,net.neuron[j].y,
+                                  net.neuron[j].x+net.neuron[i].arrow[j].x[0],
+                        net.neuron[j].y+net.neuron[i].arrow[j].y[0]);
+                painter->drawLine(net.neuron[j].x,net.neuron[j].y,
+                                  net.neuron[j].x+net.neuron[i].arrow[j].x[1],
+                        net.neuron[j].y+net.neuron[i].arrow[j].y[1]);
+            }
+        }
 
     //    pen.setWidth(4);
     //    pen.setColor(QColor(0,0,0));
@@ -135,9 +157,9 @@ void Dialog::paintEvent(QPaintEvent* e)
         QPainterPath path;
         path.addEllipse ( QPointF(net.neuron[i].x,net.neuron[i].y),  rad,  rad );
         QRadialGradient gradient=QRadialGradient(QPointF(net.neuron[i].x,net.neuron[i].y),rad,
-                                                 QPointF(net.neuron[i].x,net.neuron[i].y)+QPointF(rad,rad));
+                                                 QPointF(net.neuron[i].x,net.neuron[i].y)+0.5*QPointF(rad,rad));
         //     gradient(0, 0, 0, 100);
-        gradient.setColorAt(1.0, Qt::black);
+        gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
         gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
         //    painter->fillPath(path,QBrush(QColor(0,0,0)));
         painter->fillPath(path,gradient);

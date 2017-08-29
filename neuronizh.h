@@ -8,17 +8,25 @@ enum neuronType {RS, TC};
 class CNet;
 //class neuronIzh;
 
-class arrow
+class CArrow
 {
 public:
     float x[2],y[2];
+    CArrow()
+    {
+        x[0]=0;
+        x[1]=0;
+        y[0]=0;
+        y[1]=0;
+
+    }
 };
 
 class neuronIzh
 {
 public:
     CNet* net;
-    arrow* _arrow;
+    CArrow* arrow;
     float psc_excxpire_time;
     float step;
     float x;

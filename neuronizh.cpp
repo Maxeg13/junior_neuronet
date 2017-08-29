@@ -11,7 +11,7 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
-    _arrow= new arrow[net->size];
+    vis=0;
     int width=225;
     int height=180;
     int wh=6;
@@ -48,11 +48,13 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     for(int i=0;i<net->size;i++)
         if(i!=ID)weight[i]=rand()%10/10.;
     weight[ID]=0;
+
+    arrow= new CArrow[net->size]();
 }
 
 void neuronIzh::test()
 {
-    vis*=exp(-0.0006);
+    vis*=exp(-0.001);
 }
 
 void neuronIzh::CalculateStep()

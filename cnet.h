@@ -16,6 +16,7 @@ public:
     float step;
     void setLinks();
     void test();
+    void setArrows();
 };
 
 #endif // NET_H
