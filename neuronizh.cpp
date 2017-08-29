@@ -11,15 +11,27 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
+
+
+    int width=400;
+    int height=400;
+//    int wh=6;
+//    int hh=6;
+//    float h1=(rand())%width-width/2;
+//    float h2=(rand())%height-height/2;
+//    x=h1*h1*((h1>0)?1:(-1))/wh/wh*.6+width;
+//    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
+   x=rand()%width;
+   y=rand()%height;
+   float rad=80;
+
+    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>rad*rad)
+    {
+        x=rand()%width;
+        y=rand()%height;
+    }
+
     vis=0;
-    int width=225;
-    int height=180;
-    int wh=6;
-    int hh=6;
-    float h1=(rand())%width-width/2;
-    float h2=(rand())%height-height/2;
-    x=h1*h1*((h1>0)?1:(-1))/wh/wh*0.5+width;
-    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.5+height;
     net=_net;
     step=net->step;
     psc_excxpire_time=4;
