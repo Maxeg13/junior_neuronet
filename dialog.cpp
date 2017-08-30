@@ -25,7 +25,7 @@ float f;
 int slider_circle_val=50;
 float test_val;
 QTimer *timer;
-CNet net(50,RS);//4
+CNet net(30,RS);//4
 
 QGroupBox* horizontalGroupBox;
 QVBoxLayout *mainLayout, *pictureLayout;
@@ -109,12 +109,13 @@ Dialog::Dialog(QWidget *parent) :
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
     slider_show_ext = new myQSlider(this);
-    slider_show_ext->setRange(1, 50);
-    slider_show_ext->setValue(1);
+    slider_show_ext->setRange(10, 50);
+    slider_show_ext->setValue(test_val=10);
+    test_val/=20;
 
     slider_circle = new myQSlider(this);
     slider_circle->setRange(1, 50);
-    slider_circle->setValue(50);
+    slider_circle->setValue(slider_circle_val=50);
 //    QSlider::sliderReleased();
 
     layout->addWidget(button);
