@@ -13,7 +13,7 @@ CNet::CNet(int _size, neuronType _type)
 
     neuron=new neuronIzh[size]();
     for(int i=0;i<size;i++)
-        neuron[i]= neuronIzh(i,RS,rand()%2,this);
+        neuron[i]= neuronIzh(i,_type,rand()%2,this);
 
     for(int i=0;i<size;i++)
     {

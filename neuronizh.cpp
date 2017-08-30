@@ -36,11 +36,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     step=net->step;
     psc_excxpire_time=4;
     is_exitory=_is_exitory;
-    minWeight=50;
-    maxWeight=100;
-    Cm      = 25;
-    E_m=0;
-    U_e=0;
+
     ID=_ID;
     type=_type;
     switch(_type)
@@ -59,6 +55,11 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         break;
     }
 
+    minWeight=50;
+    maxWeight=100;
+    Cm      = 25;
+    E_m=c;
+    U_e=d;
     input_sum=0;
     external_I=0;
     output.resize(net->size);
@@ -96,10 +97,10 @@ void neuronIzh::CalculateStep()
     E_m += net->step * dE_m;
     U_e += net->step * dU_e;
 
-    if(ID==0)
-    qDebug()<<"ID 0   "<<E_m;
-    if(ID==1)
-    qDebug()<<"ID 1   "<<E_m;
+//    if(ID==0)
+//    qDebug()<<"ID 0   "<<E_m;
+//    if(ID==1)
+//    qDebug()<<"ID 1   "<<E_m;
     float to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {

@@ -17,6 +17,8 @@ public:
     void mainCircle();
     void mouseReleaseEvent(QMouseEvent *e);
     void mouseMoveEvent(QMouseEvent *e);
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 private:
 protected:
      void paintEvent(QPaintEvent *e);

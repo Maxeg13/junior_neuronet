@@ -2,12 +2,9 @@
 #include <QPainter>
 #include <QTimer>
 #include <QThread>
-#include<QDebug>
+//#include<QDebug>
 #include "cnet.h"
-//#include "qwt_picker.h"
-//#include "work.h"
-
-
+#include "iostream"
 #include <QMouseEvent>
 //#include "vars.h"
 QPointF MouseP;
@@ -17,7 +14,7 @@ float my_scale=1.5;
 int rad=5;
 float f;
 QTimer *timer;
-CNet net(35,RS);
+CNet net(30,TC);//4
 //work* WK;
 
 
@@ -37,6 +34,36 @@ Dialog::Dialog(QWidget *parent) :
 
 }
 
+void Dialog::keyPressEvent(QKeyEvent *event)
+{
+    if(event->text()==" ")
+    {
+
+        net.neuron[mouse_ind].external_I=2000;//40//2000
+    }
+    else if(event->text()=="h")
+    {
+//        qDebug()<<"hello";
+        QString str;
+        str+="neuron type: Izhikevich's neuron\n";
+        str+="neuron subtype: ";
+        str+=(net.type==RS)?"RS\n":"TC\n";
+        str+="ID: "+QString::number(net.neuron[mouse_ind].ID);
+        str+="\n\n";
+
+        std::cout<<str.toStdString();
+    }
+}
+
+void Dialog::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->text()==" ")
+    {
+        //qDebug()<<"hello";
+        net.neuron[mouse_ind].external_I=0;//40//2000
+    }
+}
+
 void Dialog::drawing()
 {
     this->update();
@@ -48,11 +75,11 @@ void Dialog::mouseReleaseEvent(QMouseEvent *e)
     QPointF V=MouseP-e->pos()/my_scale;
     if(QPointF::dotProduct(V,V)>rad*rad)
     {
-//        qDebug()<<"hello";
+        //        qDebug()<<"hello";
         for(int j=0;j<net.size;j++)
         {
-        net.setDelay(mouse_ind,j);
-        net.setDelay(j,mouse_ind);
+            net.setDelay(mouse_ind,j);
+            net.setDelay(j,mouse_ind);
         }
     }
     net.neuron[mouse_ind].external_I=0;
@@ -60,7 +87,7 @@ void Dialog::mouseReleaseEvent(QMouseEvent *e)
 
 void Dialog::mouseMoveEvent(QMouseEvent *e)
 {
-//    net.neuron[mouse_ind].vis=200;
+    //    net.neuron[mouse_ind].vis=200;
     if(mouse_drop)
     {
         net.neuron[mouse_ind].x=(e->x()/my_scale);
@@ -80,10 +107,10 @@ void Dialog::mousePressEvent(QMouseEvent *e)
         {
             mouse_ind=i;
             mouse_drop=1;
-            net.neuron[i].vis=220;
+            //            net.neuron[i].vis=220;
         }
     }
-    net.neuron[mouse_ind].external_I=2000;//40//2000
+    //
 
 }
 
@@ -91,7 +118,7 @@ void Dialog::mainCircle()
 {
 
     net.test();
-//    net.
+    //    net.
 
 
 }
@@ -155,21 +182,21 @@ void Dialog::paintEvent(QPaintEvent* e)
     painter->setPen(pen);
     for(int i=0;(i<net.size);i++)
         if((i!=mouse_ind))
-        for(int j=0;j<net.size;j++)
-        {
-            if(net.neuron[i].weight[j]!=0)
+            for(int j=0;j<net.size;j++)
             {
+                if(net.neuron[i].weight[j]!=0)
+                {
 
-                painter->drawLine(net.neuron[j].x,net.neuron[j].y,
-                                  net.neuron[j].x+net.neuron[i].arrow[j].x[0],
-                        net.neuron[j].y+net.neuron[i].arrow[j].y[0]);
-                painter->drawLine(net.neuron[j].x,net.neuron[j].y,
-                                  net.neuron[j].x+net.neuron[i].arrow[j].x[1],
-                        net.neuron[j].y+net.neuron[i].arrow[j].y[1]);
+                    painter->drawLine(net.neuron[j].x,net.neuron[j].y,
+                                      net.neuron[j].x+net.neuron[i].arrow[j].x[0],
+                            net.neuron[j].y+net.neuron[i].arrow[j].y[0]);
+                    painter->drawLine(net.neuron[j].x,net.neuron[j].y,
+                                      net.neuron[j].x+net.neuron[i].arrow[j].x[1],
+                            net.neuron[j].y+net.neuron[i].arrow[j].y[1]);
 
 
+                }
             }
-        }
 
     //mouse ,arrows
     if(mouse_drop)
