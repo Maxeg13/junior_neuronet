@@ -12,10 +12,12 @@ public:
     CNet(int , neuronType);
     neuronType type;
     int size;
+    int circle_val;
     neuronIzh *neuron;
     float step;
+    float ext_show;
     void setLinks();
-    void test();
+    void test(float x);
     void setArrows();
     void setDelay(int i, int j);
 };

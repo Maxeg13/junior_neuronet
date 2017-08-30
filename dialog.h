@@ -25,6 +25,8 @@ protected:
 public slots:
      void drawing();
 
+     void trySlider(int x);
+     void trySlider2(int x);
 };
 
 #endif // DIALOG_H

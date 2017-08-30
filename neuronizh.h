@@ -55,7 +55,7 @@ public:
     float b;
     float c;
     float d;
-    void test();
+    void test(float);
     void CalculateStep();
 };
 

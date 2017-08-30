@@ -2,15 +2,19 @@
 #include <QPainter>
 #include <QTimer>
 #include <QThread>
-//#include<QDebug>
+#include<QDebug>
 #include "cnet.h"
 #include "iostream"
 #include <QMouseEvent>
 #include <QVBoxLayout>
-#include <QMenuBar>
+//#include <QMenuBar>
 #include <QPushButton>
 #include <QGroupBox>
-#include <QScrollArea>
+#include <QSlider>
+
+
+
+
 //#include "vars.h"
 QPointF MouseP;
 int mouse_ind;
@@ -18,11 +22,33 @@ bool mouse_drop;
 float my_scale=1.5;
 int rad=5;
 float f;
+int slider_circle_val=50;
+float test_val;
 QTimer *timer;
-CNet net(30,RS);//4
+CNet net(4,TC);//4
 
 QGroupBox* horizontalGroupBox;
 QVBoxLayout *mainLayout, *pictureLayout;
+
+
+class myQSlider:public QSlider
+{
+public:
+    Dialog* d;
+    myQSlider(Dialog* _d):QSlider(Qt::Horizontal, 0)
+    {
+        d=_d;
+    }
+    void keyPressEvent(QKeyEvent *event)
+    {
+        d->keyPressEvent(event);
+    }
+    void keyReleaseEvent(QKeyEvent *event)
+    {
+        d->keyReleaseEvent(event);
+    } //
+};
+
 
 class myQPushButton:public QPushButton
 {
@@ -44,6 +70,7 @@ public:
 };
 
 myQPushButton *button, *button1;
+myQSlider *slider_circle, *slider_show_ext;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -54,31 +81,54 @@ Dialog::Dialog(QWidget *parent) :
 {
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
+
+
     timer->start(40);
 
     button= new myQPushButton(this,"nothing button");
 
     button1= new myQPushButton(this,"nothing button 1");
     mainLayout = new QVBoxLayout();
-//    pictureLayout = new QVBoxLayout();
+    //    pictureLayout = new QVBoxLayout();
 
     QHBoxLayout *layout = new QHBoxLayout;
     horizontalGroupBox = new QGroupBox();
-    QScrollArea *scroll = new QScrollArea;
+//    QScrollArea *scroll = new QScrollArea;
 
     this->setGeometry(QRect(40,40,700,500));
 
     this->setLayout(mainLayout);
-//    horizontalGroupBox->addWidget(button);
+    //    horizontalGroupBox->addWidget(button);
     horizontalGroupBox->setLayout(layout);
 
-        layout->addWidget(button);
-        layout->addWidget(button1);
 
-        horizontalGroupBox->setBaseSize(400,10);
-     mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
-//    mainLayout->addWidget(button,90,Qt::AlignBottom);
-//    mainLayout->addWidget(button1,1,Qt::AlignBottom);
+
+//    horizontalGroupBox->setBaseSize(400,10);
+    mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
+    //    mainLayout->addWidget(button,90,Qt::AlignBottom);
+    //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
+
+    slider_show_ext = new myQSlider(this);
+    slider_show_ext->setRange(1, 50);
+    slider_show_ext->setValue(1);
+
+    slider_circle = new myQSlider(this);
+    slider_circle->setRange(1, 50);
+    slider_circle->setValue(50);
+//    QSlider::sliderReleased();
+
+    layout->addWidget(button);
+    layout->addWidget(button1);
+    layout->addWidget(slider_circle);
+    layout->addWidget(slider_show_ext);
+
+    connect(slider_show_ext, SIGNAL(valueChanged(int)), this,
+            SLOT(trySlider2(int)));
+
+    connect(slider_circle, SIGNAL(valueChanged(int)), this,
+            SLOT(trySlider(int)));
+slider_circle->setToolTip("subcicles, default is 50");
+slider_show_ext->setToolTip("speed of fake blinkings");
 
     this->update();
 
@@ -93,7 +143,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="h")
     {
-//        qDebug()<<"hello";
+        //        qDebug()<<"hello";
         QString str;
         str+="neuron type: Izhikevich's neuron\n";
         str+="neuron subtype: ";
@@ -102,8 +152,21 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\n\n";
         this->setToolTip(str);
 
-            std::cout<<str.toStdString();
+        std::cout<<str.toStdString();
     }
+}
+
+void Dialog::trySlider(int x)
+{
+//    qDebug()<<x;
+    slider_circle_val=x;
+}
+
+void Dialog::trySlider2(int x)
+{
+    test_val=(float)x/20.;
+//    qDebug()<<x;
+//    net.ext_show=x/1000.;
 }
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)
@@ -150,8 +213,8 @@ void Dialog::mouseMoveEvent(QMouseEvent *e)
 void Dialog::mousePressEvent(QMouseEvent *e)
 {
 
-//    this->setToolTipDuration(5000);
-//    this->setToolTipDuration(0);
+    //    this->setToolTipDuration(5000);
+    //    this->setToolTipDuration(0);
 
 
 
@@ -174,7 +237,7 @@ void Dialog::mousePressEvent(QMouseEvent *e)
 void Dialog::mainCircle()
 {
 
-    net.test();
+    net.test(test_val/slider_circle_val);
     //    net.
 
 
@@ -182,10 +245,7 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
-    static float t=1;
-    t+=.06;
-    if(t>50)t=10;
-    for (int i=0;i<50;i++)
+    for (int i=0;i<slider_circle_val;i++)
         mainCircle();
 
     QPainter* painter=new QPainter(this);
@@ -206,10 +266,7 @@ void Dialog::paintEvent(QPaintEvent* e)
 
                 if(h!=0)
                 {
-
-
                     pen.setColor(QColor(h,h,h));
-
                     painter->setPen(pen);
                     painter->drawLine(net.neuron[i].x,net.neuron[i].y,net.neuron[j].x,net.neuron[j].y);
                 }

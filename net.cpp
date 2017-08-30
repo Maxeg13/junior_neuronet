@@ -7,10 +7,11 @@
 
 CNet::CNet(int _size, neuronType _type)
 {    
+    circle_val=50;
     size=_size;
     type=_type;
     step=0.5;
-
+    ext_show=0.001;
     neuron=new neuronIzh[size]();
     for(int i=0;i<size;i++)
         neuron[i]= neuronIzh(i,_type,rand()%2,this);
@@ -61,10 +62,10 @@ void CNet::setDelay(int i,int j)
     }
 }
 
-void CNet::test()
+void CNet::test(float x)
 {
     for(int i=0;i<size;i++)
-        neuron[i].test();
+        neuron[i].test(x);
 }
 void CNet::setArrows()
 {

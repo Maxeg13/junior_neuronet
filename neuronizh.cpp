@@ -74,9 +74,9 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     arrow= new CArrow[net->size]();
 }
 
-void neuronIzh::test()
+void neuronIzh::test(float x)
 {
-    vis*=exp(-0.001);
+    vis*=exp(-net->ext_show*x*40);//
     CalculateStep();
 }
 
