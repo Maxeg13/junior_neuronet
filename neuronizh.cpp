@@ -11,8 +11,6 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
-
-
     int width=400;
     int height=350;
     //    int wh=6;

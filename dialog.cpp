@@ -6,6 +6,11 @@
 #include "cnet.h"
 #include "iostream"
 #include <QMouseEvent>
+#include <QVBoxLayout>
+#include <QMenuBar>
+#include <QPushButton>
+#include <QGroupBox>
+#include <QScrollArea>
 //#include "vars.h"
 QPointF MouseP;
 int mouse_ind;
@@ -14,7 +19,32 @@ float my_scale=1.5;
 int rad=5;
 float f;
 QTimer *timer;
-CNet net(30,TC);//4
+CNet net(30,RS);//4
+
+QGroupBox* horizontalGroupBox;
+QVBoxLayout *mainLayout, *pictureLayout;
+
+class myQPushButton:public QPushButton
+{
+public:
+    Dialog* d;
+    myQPushButton(Dialog* _d, QString s):QPushButton(s)
+    {
+
+        d=_d;
+    }
+    void keyPressEvent(QKeyEvent *event)
+    {
+        d->keyPressEvent(event);
+    }
+    void keyReleaseEvent(QKeyEvent *event)
+    {
+        d->keyReleaseEvent(event);
+    } //
+};
+
+myQPushButton *button, *button1;
+//QMenuBar* menuBar;
 //work* WK;
 
 
@@ -25,12 +55,32 @@ Dialog::Dialog(QWidget *parent) :
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
     timer->start(40);
+
+    button= new myQPushButton(this,"nothing button");
+
+    button1= new myQPushButton(this,"nothing button 1");
+    mainLayout = new QVBoxLayout();
+//    pictureLayout = new QVBoxLayout();
+
+    QHBoxLayout *layout = new QHBoxLayout;
+    horizontalGroupBox = new QGroupBox();
+    QScrollArea *scroll = new QScrollArea;
+
+    this->setGeometry(QRect(40,40,700,500));
+
+    this->setLayout(mainLayout);
+//    horizontalGroupBox->addWidget(button);
+    horizontalGroupBox->setLayout(layout);
+
+        layout->addWidget(button);
+        layout->addWidget(button1);
+
+        horizontalGroupBox->setBaseSize(400,10);
+     mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
+//    mainLayout->addWidget(button,90,Qt::AlignBottom);
+//    mainLayout->addWidget(button1,1,Qt::AlignBottom);
+
     this->update();
-    //    QThread* thread = new QThread( );
-    //    WK=new work();
-    //    WK->moveToThread(thread);
-    //    connect(thread,SIGNAL(started()),WK,SLOT(doWork()));
-    //    thread->start();
 
 }
 
@@ -226,9 +276,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         }
     }
 
-    //    pen.setWidth(4);
-    //    pen.setColor(QColor(0,0,0));
-    //    painter->setPen(pen);
+
 
 
     for(int i=0;i<net.size;i++)
@@ -252,3 +300,9 @@ Dialog::~Dialog()
 {
 
 }
+
+
+class myQHBoxLayout: public QHBoxLayout
+{
+
+};

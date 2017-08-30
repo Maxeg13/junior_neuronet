@@ -1,6 +1,6 @@
 #include "dialog.h"
 #include <QApplication>
-#include <QDebug>
+//#include <QDebug>
 #include "neuronizh.h"
 //#include <iostream>
 
