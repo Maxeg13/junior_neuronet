@@ -29,6 +29,13 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         y=rand()%height;
     }
 
+//    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>rad*rad)&&
+//          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>rad*rad))
+//    {
+//        x=rand()%width;
+//        y=rand()%height;
+//    }
+
     vis=0;
     net=_net;
     step=net->step;
@@ -53,8 +60,10 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         break;
     }
 
-    minWeight=50;
-    maxWeight=100;
+//    minWeight=50;
+//    maxWeight=100;
+    minWeight=20;
+    maxWeight=70;
     Cm      = 25;
     E_m=c;
     U_e=d;

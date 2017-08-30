@@ -25,7 +25,7 @@ float f;
 int slider_circle_val=50;
 float test_val;
 QTimer *timer;
-CNet net(30,RS);//4
+CNet net(20,TC);//4
 
 QGroupBox* horizontalGroupBox;
 QVBoxLayout *mainLayout, *pictureLayout;
@@ -69,7 +69,7 @@ public:
     } //
 };
 
-myQPushButton *button, *button1;
+myQPushButton *button1, *button_stop;
 myQSlider *slider_circle, *slider_show_ext;
 //QMenuBar* menuBar;
 //work* WK;
@@ -85,7 +85,7 @@ Dialog::Dialog(QWidget *parent) :
 
     timer->start(40);
 
-    button= new myQPushButton(this,"nothing button");
+    button_stop= new myQPushButton(this,"stop spiking!");
 
     button1= new myQPushButton(this,"nothing button 1");
     mainLayout = new QVBoxLayout();
@@ -109,7 +109,7 @@ Dialog::Dialog(QWidget *parent) :
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
     slider_show_ext = new myQSlider(this);
-    slider_show_ext->setRange(10, 50);
+    slider_show_ext->setRange(10, 90);
     slider_show_ext->setValue(test_val=10);
     test_val/=20;
 
@@ -118,10 +118,12 @@ Dialog::Dialog(QWidget *parent) :
     slider_circle->setValue(slider_circle_val=50);
 //    QSlider::sliderReleased();
 
-    layout->addWidget(button);
+    layout->addWidget(button_stop);
     layout->addWidget(button1);
     layout->addWidget(slider_circle);
     layout->addWidget(slider_show_ext);
+
+    connect(button_stop,SIGNAL(clicked()),this,SLOT(spikesStop()));
 
     connect(slider_show_ext, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider2(int)));
@@ -168,6 +170,11 @@ void Dialog::trySlider2(int x)
     test_val=(float)x/20.;
 //    qDebug()<<x;
 //    net.ext_show=x/1000.;
+}
+
+void Dialog::spikesStop()
+{
+    net.spikesStop();
 }
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)

@@ -27,6 +27,7 @@ public slots:
 
      void trySlider(int x);
      void trySlider2(int x);
+     void spikesStop();
 };
 
 #endif // DIALOG_H

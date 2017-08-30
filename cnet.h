@@ -20,6 +20,7 @@ public:
     void test(float x);
     void setArrows();
     void setDelay(int i, int j);
+    void spikesStop();
 };
 
 #endif // NET_H

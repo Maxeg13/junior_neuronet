@@ -3,7 +3,14 @@
 #include <math.h>
 #include <QDebug>
 
-
+void CNet::spikesStop()
+{
+    for(int i=0;i<size;i++)
+    {
+        neuron[i].E_m=neuron[i].c;
+        neuron[i].U_e=0;
+    }
+}
 
 CNet::CNet(int _size, neuronType _type)
 {    
@@ -43,7 +50,7 @@ CNet::CNet(int _size, neuronType _type)
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)
         {
-  setDelay(i,j);
+            setDelay(i,j);
         }
 }
 
@@ -58,7 +65,7 @@ void CNet::setDelay(int i,int j)
 
         //const
         neuron[i].output[j].resize(1+sqrt(square)/1,0);
-//        qDebug()<< neuron[i].output[j].size();
+        //        qDebug()<< neuron[i].output[j].size();
     }
 }
 
@@ -82,7 +89,7 @@ void CNet::setArrows()
                 float phi=0.1;
                 int length=8;
                 neuron[i].arrow[j].x[0]=length*(ex*cos(phi)+ey*sin(phi));
-//               qDebug()<<neuron[i].arrow[j].x[0];
+                //               qDebug()<<neuron[i].arrow[j].x[0];
                 neuron[i].arrow[j].y[0]=length*(-ex*sin(phi)+ey*cos(phi));
                 neuron[i].arrow[j].x[1]=length*(ex*cos(phi)-ey*sin(phi));
                 neuron[i].arrow[j].y[1]=length*(ex*sin(phi)+ey*cos(phi));
