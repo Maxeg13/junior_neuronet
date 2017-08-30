@@ -25,7 +25,7 @@ float f;
 int slider_circle_val=50;
 float test_val;
 QTimer *timer;
-CNet net(4,TC);//4
+CNet net(50,RS);//4
 
 QGroupBox* horizontalGroupBox;
 QVBoxLayout *mainLayout, *pictureLayout;

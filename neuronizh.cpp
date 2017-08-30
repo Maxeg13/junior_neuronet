@@ -21,7 +21,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     //    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
     x=rand()%width;
     y=rand()%height;
-    float rad=100;
+    float rad=width/3;
 
     while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>rad*rad)
     {
