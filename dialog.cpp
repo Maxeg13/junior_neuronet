@@ -50,8 +50,9 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+=(net.type==RS)?"RS\n":"TC\n";
         str+="ID: "+QString::number(net.neuron[mouse_ind].ID);
         str+="\n\n";
+        this->setToolTip(str);
 
-        std::cout<<str.toStdString();
+            std::cout<<str.toStdString();
     }
 }
 
@@ -98,6 +99,12 @@ void Dialog::mouseMoveEvent(QMouseEvent *e)
 
 void Dialog::mousePressEvent(QMouseEvent *e)
 {
+
+//    this->setToolTipDuration(5000);
+//    this->setToolTipDuration(0);
+
+
+
     MouseP=(e->pos()/my_scale);//works in origin space
     QPointF V;
     for(int i=0;i<net.size;i++)
