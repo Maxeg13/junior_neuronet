@@ -11,7 +11,7 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
-float k=0.15;
+    float k=0.15;
     int width=400;
     int height=350;
     //    int wh=6;
@@ -22,13 +22,13 @@ float k=0.15;
     //    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
     x=width*k+(rand()%width)*(1-2*k);
     y=height*k+(rand()%height)*(1-2*k);
-//    float loc_rad=width/3;
+    float loc_rad=width/3;
 
-//    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>loc_rad*loc_rad)
-//    {
-//        x=rand()%width;
-//        y=rand()%height;
-//    }
+    //    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>loc_rad*loc_rad)
+    //    {
+    //        x=rand()%width;
+    //        y=rand()%height;
+    //    }
 
 //    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>loc_rad*loc_rad)&&
 //          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>loc_rad*loc_rad))
@@ -63,8 +63,8 @@ float k=0.15;
 
     minWeight=50;
     maxWeight=100;
-//    minWeight=20;
-//    maxWeight=70;
+    //    minWeight=20;
+    //    maxWeight=70;
     Cm      = 25;
     E_m=c;
     U_e=d;
@@ -84,6 +84,26 @@ float k=0.15;
     arrow= new CArrow[net->size]();
 }
 
+void neuronIzh::weights_with_rad(float x1)
+{
+    float xx=x1*x1;
+    for(int i=0;i<net->size;i++)
+    {
+        if(xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y)))
+        {
+            if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(maxWeight - minWeight)*10))/10.0f) + minWeight;
+            weight_norm[i]/=(maxWeight - minWeight);
+
+
+        }
+        else
+        {
+            weight[i]=0;
+            weight_norm[i]=0;
+        }
+    }
+}
+
 void neuronIzh::test(float x)
 {
     vis*=exp(-net->ext_show*x*40);//
@@ -92,7 +112,7 @@ void neuronIzh::test(float x)
 
 void neuronIzh::CalculateStep()
 {
-//    input_sum=0;
+    //    input_sum=0;
 
     for(int i=0;i<net->size;i++)
         if(net->neuron[i].weight[ID]!=0)
@@ -105,10 +125,10 @@ void neuronIzh::CalculateStep()
     E_m += net->step * dE_m;
     U_e += net->step * dU_e;
 
-//    if(ID==0)
-//    qDebug()<<"ID 0   "<<E_m;
-//    if(ID==1)
-//    qDebug()<<"ID 1   "<<E_m;
+    //    if(ID==0)
+    //    qDebug()<<"ID 0   "<<E_m;
+    //    if(ID==1)
+    //    qDebug()<<"ID 1   "<<E_m;
     float to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {

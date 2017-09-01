@@ -7,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-std::cout<<"fucked up!";
+    std::cout<<"hello!";
     QApplication a(argc, argv);
     Dialog w;
     //    w.setToolTip("hello");

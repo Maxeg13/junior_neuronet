@@ -27,7 +27,7 @@ int slider_circle_val;
 int slider_weight_val;
 float test_val;
 QTimer *timer;
-CNet net(27,RS);//4
+CNet net(80,RS);//4
 
 
 
@@ -140,7 +140,7 @@ Dialog::Dialog(QWidget *parent) :
     connect(slider_circle, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider(int)));
 
-    connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged(int)));
+    connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
 slider_circle->setToolTip("subcicles, default is 50");
 slider_show_ext->setToolTip("speed of fake blinkings");
@@ -413,8 +413,15 @@ Dialog::~Dialog()
 
 }
 
-
-class myQHBoxLayout: public QHBoxLayout
+void Dialog::weightRadChanged()
 {
+//    net= CNet(24,RS);
+    net.weights_with_rad(slider_weight_rad->value());
+//    qDebug()<<slider_weight_rad->value();
+//    qDebug()<<"hello";
+}
 
-};
+//class myQHBoxLayout: public QHBoxLayout
+//{
+
+//};

@@ -25,6 +25,8 @@ public:
     void setDelay(int i, int j);
     void spikesStop();
     std::vector<int> stim_ind;
+    void weights_with_rad(float x1);
+    void afterReWeight();
 };
 
 #endif // NET_H

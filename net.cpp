@@ -12,18 +12,20 @@ void CNet::spikesStop()
     }
 }
 
-CNet::CNet(int _size, neuronType _type)
-{    
-    rad=5;
-    circle_val=50;
-    size=_size;
-    type=_type;
-    step=0.5;
-    ext_show=0.001;
-    neuron=new neuronIzh[size]();
+void CNet::weights_with_rad(float x1)
+{
     for(int i=0;i<size;i++)
-        neuron[i]= neuronIzh(i,_type,rand()%2,this);
+    {
+        neuron[i].weights_with_rad(x1);
+    }
+    for(int i=0;i<size;i++)
+            for(int j=0;j<size;j++)
+    setDelay(i,j);
+    afterReWeight();
+}
 
+void CNet::afterReWeight()
+{
     for(int i=0;i<size;i++)
     {
         for(int j=0;j<size;j++)
@@ -46,6 +48,21 @@ CNet::CNet(int _size, neuronType _type)
         }
     }
     setArrows();
+}
+
+CNet::CNet(int _size, neuronType _type)
+{    
+    rad=2;
+    circle_val=50;
+    size=_size;
+    type=_type;
+    step=0.5;
+    ext_show=0.001;
+    neuron=new neuronIzh[size]();
+    for(int i=0;i<size;i++)
+        neuron[i]= neuronIzh(i,_type,rand()%2,this);
+
+    afterReWeight();
 
 
     for(int i=0;i<size;i++)
@@ -68,6 +85,11 @@ void CNet::setDelay(int i,int j)
         neuron[i].output[j].resize(1+sqrt(square)/1,0);
         //        qDebug()<< neuron[i].output[j].size();
     }
+    else
+    {
+        neuron[i].output[j].resize(1,0);
+    }
+
 }
 
 void CNet::test(float x)

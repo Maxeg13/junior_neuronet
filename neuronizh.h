@@ -57,6 +57,7 @@ public:
     float d;
     void test(float);
     void CalculateStep();
+    void weights_with_rad(float);
 };
 
 #endif // NEURONIZH_H

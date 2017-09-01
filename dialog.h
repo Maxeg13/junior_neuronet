@@ -28,6 +28,7 @@ public slots:
      void trySlider(int x);
      void trySlider2(int x);
      void spikesStop();
+     void weightRadChanged();
 };
 
 #endif // DIALOG_H
