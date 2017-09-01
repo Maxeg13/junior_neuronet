@@ -61,10 +61,9 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         break;
     }
 
-    minWeight=50;
-    maxWeight=100;
-    //    minWeight=20;
-    //    maxWeight=70;
+
+    //    net->minWeight=20;
+    //    net->maxWeight=70;
     Cm      = 25;
     E_m=c;
     U_e=d;
@@ -75,8 +74,8 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     weight_norm=new float[net->size];
     for(int i=0;i<net->size;i++)
     {
-        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(maxWeight - minWeight)*10))/10.0f) + minWeight;
-        weight_norm[i]/=(maxWeight - minWeight);
+        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+        weight_norm[i]/=(net->maxWeight - net->minWeight);
     }
     weight[ID]=0;
     weight_norm[ID]=0;
@@ -91,8 +90,8 @@ void neuronIzh::weights_with_rad(float x1)
     {
         if(xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y)))
         {
-            if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(maxWeight - minWeight)*10))/10.0f) + minWeight;
-            weight_norm[i]/=(maxWeight - minWeight);
+            if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+            weight_norm[i]/=(net->maxWeight - net->minWeight);
 
 
         }

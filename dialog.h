@@ -19,6 +19,7 @@ public:
     void mouseMoveEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+
 private:
 protected:
      void paintEvent(QPaintEvent *e);
@@ -29,6 +30,8 @@ public slots:
      void trySlider2(int x);
      void spikesStop();
      void weightRadChanged();
+     void setMinWeight();
+     void setMaxWeight();
 };
 
 #endif // DIALOG_H

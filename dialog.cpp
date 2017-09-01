@@ -12,7 +12,7 @@
 #include <QGroupBox>
 #include <QSlider>
 #include <vector>
-
+#include <QLineEdit>
 
 
 
@@ -26,8 +26,10 @@ float f;
 int slider_circle_val;
 int slider_weight_val;
 float test_val;
+
+QLineEdit *L_E, *L_E2;
 QTimer *timer;
-CNet net(80,RS);//4
+CNet net(300,RS);//4
 
 
 
@@ -77,10 +79,22 @@ QVBoxLayout *mainLayout, *pictureLayout;
 //work* WK;
 
 
+void Dialog::setMinWeight()
+{
+   net.minWeight=L_E->text().toFloat();
+   qDebug()<<net.minWeight;
+}
+
+void Dialog::setMaxWeight()
+{
+   net.maxWeight=L_E2->text().toFloat();
+   qDebug()<<net.maxWeight;
+}
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
+
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
 
@@ -90,6 +104,11 @@ Dialog::Dialog(QWidget *parent) :
     button_stop= new myQPushButton(this,"stop spiking!");
 
     button1= new myQPushButton(this,"nothing button 1");
+
+    L_E=new QLineEdit;
+
+     L_E2=new QLineEdit;
+
     mainLayout = new QVBoxLayout();
     //    pictureLayout = new QVBoxLayout();
 
@@ -123,7 +142,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_circle->setValue(slider_circle_val=50);
 
     slider_weight_rad = new myQSlider(this);
-    slider_weight_rad->setRange(50, 2000);
+    slider_weight_rad->setRange(8, 300);
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     layout->addWidget(button_stop);
@@ -131,6 +150,8 @@ Dialog::Dialog(QWidget *parent) :
     layout->addWidget(slider_circle);
     layout->addWidget(slider_show_ext);
     layout1->addWidget(slider_weight_rad);
+    layout1->addWidget(L_E);
+        layout1->addWidget(L_E2);
 
     connect(button_stop,SIGNAL(clicked()),this,SLOT(spikesStop()));
 
@@ -142,9 +163,16 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
+    connect(L_E,SIGNAL(editingFinished()),this,SLOT(setMinWeight()));
+
+     connect(L_E2,SIGNAL(editingFinished()),this,SLOT(setMaxWeight()));
+
 slider_circle->setToolTip("subcicles, default is 50");
 slider_show_ext->setToolTip("speed of fake blinkings");
 slider_weight_rad->setToolTip("rad of weights");
+L_E->setToolTip("set min weight");
+L_E2->setToolTip("set max weight");
+weightRadChanged();
 
     this->update();
 
@@ -257,7 +285,7 @@ void Dialog::mousePressEvent(QMouseEvent *e)
     for(int i=0;i<net.size;i++)
     {
         V=MouseP-QPointF(net.neuron[i].x,net.neuron[i].y);
-        if(QPointF::dotProduct(V,V)<net.rad*net.rad)
+        if(QPointF::dotProduct(V,V)<5*5)
         {
             mouse_ind=i;
             mouse_drop=1;
@@ -277,13 +305,15 @@ void Dialog::mainCircle()
 
 }
 
+//rad=L_E_F->text().toFloat();
+
 void Dialog::paintEvent(QPaintEvent* e)
 {
     for (int i=0;i<slider_circle_val;i++)
         mainCircle();
 
     QPainter* painter=new QPainter(this);
-    painter->setRenderHint(QPainter::Antialiasing, 1);
+//    painter->setRenderHint(QPainter::Antialiasing, 1);
     //    QPen pen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     QPen pen(Qt::black);
     painter->setPen(pen);
@@ -334,7 +364,6 @@ void Dialog::paintEvent(QPaintEvent* e)
             {
                 if(net.neuron[i].weight[j]!=0)
                 {
-
                     painter->drawLine(net.neuron[j].x,net.neuron[j].y,
                                       net.neuron[j].x+net.neuron[i].arrow[j].x[0],
                             net.neuron[j].y+net.neuron[i].arrow[j].y[0]);

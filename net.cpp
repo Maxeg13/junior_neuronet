@@ -52,7 +52,9 @@ void CNet::afterReWeight()
 
 CNet::CNet(int _size, neuronType _type)
 {    
-    rad=2;
+    minWeight=50;
+    maxWeight=100;
+    rad=4;
     circle_val=50;
     size=_size;
     type=_type;
@@ -110,7 +112,7 @@ void CNet::setArrows()
                 ex=ex/sqrt(square);
                 ey=ey/sqrt(square);
                 float phi=0.1;
-                int length=8;
+                int length=this->rad+2;
                 neuron[i].arrow[j].x[0]=length*(ex*cos(phi)+ey*sin(phi));
                 //               qDebug()<<neuron[i].arrow[j].x[0];
                 neuron[i].arrow[j].y[0]=length*(-ex*sin(phi)+ey*cos(phi));

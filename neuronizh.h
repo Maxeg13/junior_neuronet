@@ -42,8 +42,7 @@ public:
     float input_sum;
     float external_I;
     float* link_length;
-    float minWeight; // веса, размерность пкА
-    float maxWeight;
+
     float psc_excxpire_time;
     float step;
     float Cm;
