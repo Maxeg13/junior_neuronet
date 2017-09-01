@@ -32,12 +32,12 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     //        y=rand()%height;
     //    }
 
-//    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>loc_rad*loc_rad)&&
-//          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>loc_rad*loc_rad))
-//    {
-//        x=rand()%width;
-//        y=rand()%height;
-//    }
+    //    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>loc_rad*loc_rad)&&
+    //          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>loc_rad*loc_rad))
+    //    {
+    //        x=rand()%width;
+    //        y=rand()%height;
+    //    }
 
     vis=0;
     net=_net;
@@ -93,21 +93,25 @@ void neuronIzh::pull(float x1,float y1)
         float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
         vx=100*(x1-x)/rad2;
         vy=100*(y1-y)/rad2;
-    x+=vx;
-    y+=vy;
+        if(x+vx>40)
+            x+=vx;
+        if(y+vy>40)
+            y+=vy;
     }
 }
 
 void neuronIzh::push(float x1,float y1)
 {
 
-   if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
+    if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
     {
         float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
         vx=100*(x1-x)/rad2;
         vy=100*(y1-y)/rad2;
-    x-=vx;
-    y-=vy;
+        if(x+vx>40)
+            x-=vx;
+        if(y+vy>40)
+            y-=vy;
     }
 }
 
@@ -139,7 +143,7 @@ void neuronIzh::test(float x)
 
 void neuronIzh::CalculateStep()
 {
-//        input_sum=0;
+    //        input_sum=0;
 
     for(int i=0;i<net->size;i++)
         if(net->neuron[i].weight[ID]!=0)
