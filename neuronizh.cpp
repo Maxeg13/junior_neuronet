@@ -88,13 +88,26 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 void neuronIzh::pull(float x1,float y1)
 {
 
-    if((abs(x1-x)>20)&&(abs(y1-y)>20))
+    if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
     {
         float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
         vx=100*(x1-x)/rad2;
         vy=100*(y1-y)/rad2;
     x+=vx;
     y+=vy;
+    }
+}
+
+void neuronIzh::push(float x1,float y1)
+{
+
+   if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
+    {
+        float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
+        vx=100*(x1-x)/rad2;
+        vy=100*(y1-y)/rad2;
+    x-=vx;
+    y-=vy;
     }
 }
 

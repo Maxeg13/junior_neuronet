@@ -13,13 +13,15 @@
 #include <QSlider>
 #include <vector>
 #include <QLineEdit>
-
+#include <QCheckBox>
 
 
 //#include "vars.h"
+QCheckBox *pull_check;
 QPointF MouseP;
 int mouse_ind;
-bool mouse_pull;
+bool pull=1;
+bool mouse_pull_push;
 bool mouse_drop;
 float my_scale=1.5;
 
@@ -115,7 +117,8 @@ Dialog::Dialog(QWidget *parent) :
 
     button_stop= new myQPushButton(this,"stop spiking!");
 
-    button1= new myQPushButton(this,"nothing button 1");
+    button1= new myQPushButton(this,"pull");
+
 
     L_E=new QLineEdit;
 
@@ -171,6 +174,8 @@ Dialog::Dialog(QWidget *parent) :
     layout1->addWidget(slider_current);
     layout1->addWidget(L_E);
     layout1->addWidget(L_E2);
+    //pull_change
+    connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
 
     connect(button_stop,SIGNAL(clicked()),this,SLOT(spikesStop()));
 
@@ -253,6 +258,19 @@ void Dialog::trySlider2(int x)
     //    net.ext_show=x/1000.;
 }
 
+void Dialog::pull_change()
+{
+    pull=!pull;
+    switch(pull)
+    {
+    case 0: button1->setText("puhing");break;
+    case 1: button1->setText("pulling");
+
+    }
+
+
+}
+
 void Dialog::spikesStop()
 {
     net.spikesStop();
@@ -279,7 +297,7 @@ void Dialog::drawing()
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
 {
     mouse_drop=0;
-    mouse_pull=0;
+    mouse_pull_push=0;
     QPointF V=MouseP-e->pos()/my_scale;
     if(QPointF::dotProduct(V,V)>net.rad*net.rad)
     {
@@ -302,10 +320,12 @@ void Dialog::mouseMoveEvent(QMouseEvent *e)
         net.neuron[mouse_ind].y=(e->y()/my_scale);
         net.setArrows();
     }
-    if(mouse_pull)
+    if(mouse_pull_push)
     {
         for(int i=0;i<net.size;i++)
+            if(pull)
             net.neuron[i].pull(e->x()/my_scale,e->y()/my_scale);
+        else net.neuron[i].push(e->x()/my_scale,e->y()/my_scale);
         net.setArrows();
     }
 
@@ -331,7 +351,7 @@ void Dialog::mousePressEvent(QMouseEvent *e)
     }
     //
     if(mouse_drop==0)
-        mouse_pull=1;
+        mouse_pull_push=1;
 
 }
 
