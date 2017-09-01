@@ -14,6 +14,7 @@ void CNet::spikesStop()
 
 CNet::CNet(int _size, neuronType _type)
 {    
+    rad=5;
     circle_val=50;
     size=_size;
     type=_type;

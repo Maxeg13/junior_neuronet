@@ -11,6 +11,7 @@
 #include <QPushButton>
 #include <QGroupBox>
 #include <QSlider>
+#include <vector>
 
 
 
@@ -20,15 +21,14 @@ QPointF MouseP;
 int mouse_ind;
 bool mouse_drop;
 float my_scale=1.5;
-int rad=5;
+
 float f;
-int slider_circle_val=50;
+int slider_circle_val;
+int slider_weight_val;
 float test_val;
 QTimer *timer;
-CNet net(20,TC);//4
+CNet net(27,RS);//4
 
-QGroupBox* horizontalGroupBox;
-QVBoxLayout *mainLayout, *pictureLayout;
 
 
 class myQSlider:public QSlider
@@ -70,7 +70,9 @@ public:
 };
 
 myQPushButton *button1, *button_stop;
-myQSlider *slider_circle, *slider_show_ext;
+myQSlider *slider_circle, *slider_show_ext, *slider_weight_rad;
+QGroupBox* horizontalGroupBox , *horizontalGroupBox1;
+QVBoxLayout *mainLayout, *pictureLayout;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -92,19 +94,22 @@ Dialog::Dialog(QWidget *parent) :
     //    pictureLayout = new QVBoxLayout();
 
     QHBoxLayout *layout = new QHBoxLayout;
+    QHBoxLayout *layout1 = new QHBoxLayout;
     horizontalGroupBox = new QGroupBox();
+    horizontalGroupBox1 = new QGroupBox();
 //    QScrollArea *scroll = new QScrollArea;
 
-    this->setGeometry(QRect(40,40,700,500));
+    this->setGeometry(QRect(40,40,650,600));
 
     this->setLayout(mainLayout);
     //    horizontalGroupBox->addWidget(button);
     horizontalGroupBox->setLayout(layout);
-
+    horizontalGroupBox1->setLayout(layout1);
 
 
 //    horizontalGroupBox->setBaseSize(400,10);
     mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
+    mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
@@ -116,12 +121,16 @@ Dialog::Dialog(QWidget *parent) :
     slider_circle = new myQSlider(this);
     slider_circle->setRange(1, 50);
     slider_circle->setValue(slider_circle_val=50);
-//    QSlider::sliderReleased();
+
+    slider_weight_rad = new myQSlider(this);
+    slider_weight_rad->setRange(50, 2000);
+    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     layout->addWidget(button_stop);
     layout->addWidget(button1);
     layout->addWidget(slider_circle);
     layout->addWidget(slider_show_ext);
+    layout1->addWidget(slider_weight_rad);
 
     connect(button_stop,SIGNAL(clicked()),this,SLOT(spikesStop()));
 
@@ -130,8 +139,12 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(slider_circle, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider(int)));
+
+    connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged(int)));
+
 slider_circle->setToolTip("subcicles, default is 50");
 slider_show_ext->setToolTip("speed of fake blinkings");
+slider_weight_rad->setToolTip("rad of weights");
 
     this->update();
 
@@ -141,8 +154,11 @@ void Dialog::keyPressEvent(QKeyEvent *event)
 {
     if(event->text()==" ")
     {
+        for(int i=0;i<net.stim_ind.size();i++)
+        {
+            net.neuron[net.stim_ind[i]].external_I=2000;//40//2000
+        }
 
-        net.neuron[mouse_ind].external_I=2000;//40//2000
     }
     else if(event->text()=="h")
     {
@@ -156,6 +172,19 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         this->setToolTip(str);
 
         std::cout<<str.toStdString();
+    }
+    else if(event->text()=="s")
+    {
+        net.stim_ind.push_back(mouse_ind);
+    }
+    else if(event->text()=="r")
+    {
+        for(int i=0;i<net.stim_ind.size();i++)
+        {
+            if(net.stim_ind[i]==mouse_ind)
+                net.stim_ind.erase(net.stim_ind.begin()+i);
+        }
+//        net.stim_ind.push_back(mouse_ind);
     }
 }
 
@@ -179,10 +208,9 @@ void Dialog::spikesStop()
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)
 {
-    if(event->text()==" ")
+    for(int i=0;i<net.stim_ind.size();i++)
     {
-        //qDebug()<<"hello";
-        net.neuron[mouse_ind].external_I=0;//40//2000
+        net.neuron[net.stim_ind[i]].external_I=0;//40//2000
     }
 }
 
@@ -195,7 +223,7 @@ void Dialog::mouseReleaseEvent(QMouseEvent *e)
 {
     mouse_drop=0;
     QPointF V=MouseP-e->pos()/my_scale;
-    if(QPointF::dotProduct(V,V)>rad*rad)
+    if(QPointF::dotProduct(V,V)>net.rad*net.rad)
     {
         //        qDebug()<<"hello";
         for(int j=0;j<net.size;j++)
@@ -224,14 +252,12 @@ void Dialog::mousePressEvent(QMouseEvent *e)
     //    this->setToolTipDuration(5000);
     //    this->setToolTipDuration(0);
 
-
-
     MouseP=(e->pos()/my_scale);//works in origin space
     QPointF V;
     for(int i=0;i<net.size;i++)
     {
         V=MouseP-QPointF(net.neuron[i].x,net.neuron[i].y);
-        if(QPointF::dotProduct(V,V)<rad*rad)
+        if(QPointF::dotProduct(V,V)<net.rad*net.rad)
         {
             mouse_ind=i;
             mouse_drop=1;
@@ -347,15 +373,36 @@ void Dialog::paintEvent(QPaintEvent* e)
     for(int i=0;i<net.size;i++)
     {
         QPainterPath path;
-        path.addEllipse ( QPointF(net.neuron[i].x,net.neuron[i].y),  rad,  rad );
-        QRadialGradient gradient=QRadialGradient(QPointF(net.neuron[i].x,net.neuron[i].y),rad,
-                                                 QPointF(net.neuron[i].x,net.neuron[i].y)+0.5*QPointF(rad,rad));
-        //     gradient(0, 0, 0, 100);
-        gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
-        gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
-        //    painter->fillPath(path,QBrush(QColor(0,0,0)));
-        painter->fillPath(path,gradient);
+        path.addEllipse ( QPointF(net.neuron[i].x,net.neuron[i].y),  net.rad,  net.rad );
+        QRadialGradient gradient=QRadialGradient(QPointF(net.neuron[i].x,net.neuron[i].y),net.rad,
+                                                 QPointF(net.neuron[i].x,net.neuron[i].y)+0.5*QPointF(net.rad,net.rad));
+
+
+            {
+                //     gradient(0, 0, 0, 100);
+                gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
+                gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
+                //    painter->fillPath(path,QBrush(QColor(0,0,0)));
+                painter->fillPath(path,gradient);
+            }
+
+        for(int j=0;j<net.stim_ind.size();j++)
+        {
+            if(net.stim_ind[j]==i)
+            {
+                //     gradient(0, 0, 0, 100);
+                gradient.setColorAt(1.0, QColor(net.neuron[i].vis,(net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
+                gradient.setColorAt(0.0, QColor(net.neuron[i].vis,0,100));
+                //    painter->fillPath(path,QBrush(QColor(0,0,0)));
+                painter->fillPath(path,gradient);
+
+            }
+        }
+
     }
+
+
+
 
 
     delete painter;

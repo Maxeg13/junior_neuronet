@@ -1,6 +1,7 @@
 #ifndef NET_H
 #define NET_H
 #include "neuronizh.h"
+#include <vector>
 //#define neuronsType neuronType;
 //enum neuronType;
 
@@ -12,6 +13,8 @@ public:
     CNet(int , neuronType);
     neuronType type;
     int size;
+    int rad;
+    int weight_rad;
     int circle_val;
     neuronIzh *neuron;
     float step;
@@ -21,6 +24,7 @@ public:
     void setArrows();
     void setDelay(int i, int j);
     void spikesStop();
+    std::vector<int> stim_ind;
 };
 
 #endif // NET_H

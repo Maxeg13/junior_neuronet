@@ -2,12 +2,12 @@
 #include <QApplication>
 //#include <QDebug>
 #include "neuronizh.h"
-//#include <iostream>
+#include <iostream>
 
 
 int main(int argc, char *argv[])
 {
-//std::cout<<"fucked up!";
+std::cout<<"fucked up!";
     QApplication a(argc, argv);
     Dialog w;
     //    w.setToolTip("hello");

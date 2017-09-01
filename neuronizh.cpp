@@ -11,6 +11,7 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
+float k=0.15;
     int width=400;
     int height=350;
     //    int wh=6;
@@ -19,18 +20,18 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     //    float h2=(rand())%height-height/2;
     //    x=h1*h1*((h1>0)?1:(-1))/wh/wh*.6+width;
     //    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
-    x=rand()%width;
-    y=rand()%height;
-    float rad=width/4;
+    x=width*k+(rand()%width)*(1-2*k);
+    y=height*k+(rand()%height)*(1-2*k);
+//    float loc_rad=width/3;
 
-    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>rad*rad)
-    {
-        x=rand()%width;
-        y=rand()%height;
-    }
+//    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>loc_rad*loc_rad)
+//    {
+//        x=rand()%width;
+//        y=rand()%height;
+//    }
 
-//    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>rad*rad)&&
-//          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>rad*rad))
+//    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>loc_rad*loc_rad)&&
+//          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>loc_rad*loc_rad))
 //    {
 //        x=rand()%width;
 //        y=rand()%height;
@@ -60,10 +61,10 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
         break;
     }
 
-//    minWeight=50;
-//    maxWeight=100;
-    minWeight=20;
-    maxWeight=70;
+    minWeight=50;
+    maxWeight=100;
+//    minWeight=20;
+//    maxWeight=70;
     Cm      = 25;
     E_m=c;
     U_e=d;
