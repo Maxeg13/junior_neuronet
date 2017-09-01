@@ -19,13 +19,20 @@
 //#include "vars.h"
 QPointF MouseP;
 int mouse_ind;
+bool mouse_pull;
 bool mouse_drop;
 float my_scale=1.5;
 
 float f;
 int slider_circle_val;
 int slider_weight_val;
+int slider_current_val;
 float test_val;
+bool fire=0;
+
+
+QGroupBox* horizontalGroupBox , *horizontalGroupBox1;
+QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2;
 QTimer *timer;
@@ -71,24 +78,29 @@ public:
     } //
 };
 
+
+
 myQPushButton *button1, *button_stop;
-myQSlider *slider_circle, *slider_show_ext, *slider_weight_rad;
-QGroupBox* horizontalGroupBox , *horizontalGroupBox1;
-QVBoxLayout *mainLayout, *pictureLayout;
+myQSlider *slider_circle, *slider_show_ext,*slider_weight_rad, *slider_current;
 //QMenuBar* menuBar;
 //work* WK;
 
 
 void Dialog::setMinWeight()
 {
-   net.minWeight=L_E->text().toFloat();
-   qDebug()<<net.minWeight;
+    net.minWeight=L_E->text().toFloat();
+    qDebug()<<net.minWeight;
 }
 
 void Dialog::setMaxWeight()
 {
-   net.maxWeight=L_E2->text().toFloat();
-   qDebug()<<net.maxWeight;
+    net.maxWeight=L_E2->text().toFloat();
+    qDebug()<<net.maxWeight;
+}
+
+void Dialog::currentChange(int x)
+{
+    slider_current_val=slider_current->value();
 }
 
 Dialog::Dialog(QWidget *parent) :
@@ -107,7 +119,10 @@ Dialog::Dialog(QWidget *parent) :
 
     L_E=new QLineEdit;
 
-     L_E2=new QLineEdit;
+    L_E2=new QLineEdit;
+
+    L_E->setText(QString::number(net.minWeight));
+    L_E2->setText(QString::number( net.maxWeight));
 
     mainLayout = new QVBoxLayout();
     //    pictureLayout = new QVBoxLayout();
@@ -116,7 +131,7 @@ Dialog::Dialog(QWidget *parent) :
     QHBoxLayout *layout1 = new QHBoxLayout;
     horizontalGroupBox = new QGroupBox();
     horizontalGroupBox1 = new QGroupBox();
-//    QScrollArea *scroll = new QScrollArea;
+    //    QScrollArea *scroll = new QScrollArea;
 
     this->setGeometry(QRect(40,40,650,600));
 
@@ -126,14 +141,14 @@ Dialog::Dialog(QWidget *parent) :
     horizontalGroupBox1->setLayout(layout1);
 
 
-//    horizontalGroupBox->setBaseSize(400,10);
+    //    horizontalGroupBox->setBaseSize(400,10);
     mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
     mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
     slider_show_ext = new myQSlider(this);
-    slider_show_ext->setRange(10, 90);
+    slider_show_ext->setRange(10, 140);
     slider_show_ext->setValue(test_val=10);
     test_val/=20;
 
@@ -145,13 +160,17 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setRange(8, 300);
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
+    slider_current = new myQSlider(this);
+    slider_current->setRange(800, 2400);
+
     layout->addWidget(button_stop);
     layout->addWidget(button1);
     layout->addWidget(slider_circle);
     layout->addWidget(slider_show_ext);
     layout1->addWidget(slider_weight_rad);
+    layout1->addWidget(slider_current);
     layout1->addWidget(L_E);
-        layout1->addWidget(L_E2);
+    layout1->addWidget(L_E2);
 
     connect(button_stop,SIGNAL(clicked()),this,SLOT(spikesStop()));
 
@@ -161,19 +180,23 @@ Dialog::Dialog(QWidget *parent) :
     connect(slider_circle, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider(int)));
 
+    connect(slider_current, SIGNAL(valueChanged(int)), this,
+            SLOT(currentChange(int)));
+
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
     connect(L_E,SIGNAL(editingFinished()),this,SLOT(setMinWeight()));
 
-     connect(L_E2,SIGNAL(editingFinished()),this,SLOT(setMaxWeight()));
+    connect(L_E2,SIGNAL(editingFinished()),this,SLOT(setMaxWeight()));
 
-slider_circle->setToolTip("subcicles, default is 50");
-slider_show_ext->setToolTip("speed of fake blinkings");
-slider_weight_rad->setToolTip("rad of weights");
-L_E->setToolTip("set min weight");
-L_E2->setToolTip("set max weight");
-weightRadChanged();
-
+    slider_circle->setToolTip("subcicles, default is 50");
+    slider_show_ext->setToolTip("speed of fake blinkings");
+    slider_weight_rad->setToolTip("rad of weights");
+    slider_current->setToolTip("set external current value");
+    L_E->setToolTip("set min weight");
+    L_E2->setToolTip("set max weight");
+    weightRadChanged();
+    this->currentChange(1);
     this->update();
 
 }
@@ -182,9 +205,10 @@ void Dialog::keyPressEvent(QKeyEvent *event)
 {
     if(event->text()==" ")
     {
+        fire=1;
         for(int i=0;i<net.stim_ind.size();i++)
         {
-            net.neuron[net.stim_ind[i]].external_I=2000;//40//2000
+            net.neuron[net.stim_ind[i]].external_I=slider_current_val;//40//2000
         }
 
     }
@@ -212,21 +236,21 @@ void Dialog::keyPressEvent(QKeyEvent *event)
             if(net.stim_ind[i]==mouse_ind)
                 net.stim_ind.erase(net.stim_ind.begin()+i);
         }
-//        net.stim_ind.push_back(mouse_ind);
+        //        net.stim_ind.push_back(mouse_ind);
     }
 }
 
 void Dialog::trySlider(int x)
 {
-//    qDebug()<<x;
+    //    qDebug()<<x;
     slider_circle_val=x;
 }
 
 void Dialog::trySlider2(int x)
 {
     test_val=(float)x/20.;
-//    qDebug()<<x;
-//    net.ext_show=x/1000.;
+    //    qDebug()<<x;
+    //    net.ext_show=x/1000.;
 }
 
 void Dialog::spikesStop()
@@ -236,10 +260,15 @@ void Dialog::spikesStop()
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)
 {
-    for(int i=0;i<net.stim_ind.size();i++)
+    if(fire)
     {
-        net.neuron[net.stim_ind[i]].external_I=0;//40//2000
+        for(int i=0;i<net.stim_ind.size();i++)
+        {
+            net.neuron[net.stim_ind[i]].external_I=0;//40//2000
+        }
+        fire=0;
     }
+
 }
 
 void Dialog::drawing()
@@ -250,6 +279,7 @@ void Dialog::drawing()
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
 {
     mouse_drop=0;
+    mouse_pull=0;
     QPointF V=MouseP-e->pos()/my_scale;
     if(QPointF::dotProduct(V,V)>net.rad*net.rad)
     {
@@ -270,8 +300,15 @@ void Dialog::mouseMoveEvent(QMouseEvent *e)
     {
         net.neuron[mouse_ind].x=(e->x()/my_scale);
         net.neuron[mouse_ind].y=(e->y()/my_scale);
+        net.setArrows();
     }
-    net.setArrows();
+    if(mouse_pull)
+    {
+        for(int i=0;i<net.size;i++)
+            net.neuron[i].pull(e->x()/my_scale,e->y()/my_scale);
+        net.setArrows();
+    }
+
 }
 
 void Dialog::mousePressEvent(QMouseEvent *e)
@@ -293,6 +330,8 @@ void Dialog::mousePressEvent(QMouseEvent *e)
         }
     }
     //
+    if(mouse_drop==0)
+        mouse_pull=1;
 
 }
 
@@ -313,7 +352,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         mainCircle();
 
     QPainter* painter=new QPainter(this);
-//    painter->setRenderHint(QPainter::Antialiasing, 1);
+    //    painter->setRenderHint(QPainter::Antialiasing, 1);
     //    QPen pen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     QPen pen(Qt::black);
     painter->setPen(pen);
@@ -407,13 +446,13 @@ void Dialog::paintEvent(QPaintEvent* e)
                                                  QPointF(net.neuron[i].x,net.neuron[i].y)+0.5*QPointF(net.rad,net.rad));
 
 
-            {
-                //     gradient(0, 0, 0, 100);
-                gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
-                gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
-                //    painter->fillPath(path,QBrush(QColor(0,0,0)));
-                painter->fillPath(path,gradient);
-            }
+        {
+            //     gradient(0, 0, 0, 100);
+            gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
+            gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
+            //    painter->fillPath(path,QBrush(QColor(0,0,0)));
+            painter->fillPath(path,gradient);
+        }
 
         for(int j=0;j<net.stim_ind.size();j++)
         {
@@ -444,10 +483,10 @@ Dialog::~Dialog()
 
 void Dialog::weightRadChanged()
 {
-//    net= CNet(24,RS);
+    //    net= CNet(24,RS);
     net.weights_with_rad(slider_weight_rad->value());
-//    qDebug()<<slider_weight_rad->value();
-//    qDebug()<<"hello";
+    //    qDebug()<<slider_weight_rad->value();
+    //    qDebug()<<"hello";
 }
 
 //class myQHBoxLayout: public QHBoxLayout

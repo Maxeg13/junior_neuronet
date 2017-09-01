@@ -32,6 +32,7 @@ public slots:
      void weightRadChanged();
      void setMinWeight();
      void setMaxWeight();
+     void currentChange(int x);
 };
 
 #endif // DIALOG_H

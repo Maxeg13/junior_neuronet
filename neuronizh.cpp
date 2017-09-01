@@ -11,6 +11,8 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
+    vx=0;
+    vy=0;
     float k=0.15;
     int width=400;
     int height=350;
@@ -83,6 +85,19 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     arrow= new CArrow[net->size]();
 }
 
+void neuronIzh::pull(float x1,float y1)
+{
+
+    if((abs(x1-x)>20)&&(abs(y1-y)>20))
+    {
+        float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
+        vx=100*(x1-x)/rad2;
+        vy=100*(y1-y)/rad2;
+    x+=vx;
+    y+=vy;
+    }
+}
+
 void neuronIzh::weights_with_rad(float x1)
 {
     float xx=x1*x1;
@@ -111,7 +126,7 @@ void neuronIzh::test(float x)
 
 void neuronIzh::CalculateStep()
 {
-    //    input_sum=0;
+//        input_sum=0;
 
     for(int i=0;i<net->size;i++)
         if(net->neuron[i].weight[ID]!=0)

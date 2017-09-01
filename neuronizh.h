@@ -29,6 +29,8 @@ public:
     CArrow* arrow;
     float x;
     float y;
+    float vx;
+    float vy;
     float vis;
 
     neuronIzh();
@@ -57,6 +59,7 @@ public:
     void test(float);
     void CalculateStep();
     void weights_with_rad(float);
+    void pull(float x1, float y1);
 };
 
 #endif // NEURONIZH_H
