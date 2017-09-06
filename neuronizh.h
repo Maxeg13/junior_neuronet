@@ -38,8 +38,9 @@ public:
     neuronIzh* neighbour_neuron;
 //    net* netIzh;
     int ID;
+    float to_output;
     neuronType type;
-    bool is_exitory;
+    bool is_excitatory;
     deque<deque<float>> output;
     float input_sum;
     float external_I;
@@ -47,9 +48,12 @@ public:
 
     float psc_excxpire_time;
     float step;
-    float Cm;
     float* weight_norm;
     float* weight;
+    float* r1;
+    float* r2;
+    float* o1;
+    float* o2;
     float E_m;
     float U_e;
     float a;

@@ -19,6 +19,10 @@ public:
 //    int circle_val;
     neuronIzh *neuron;
     float step;
+    float tau_p;
+    float tau_x;
+    float tau_m;
+    float tau_y;
     float ext_show;
     void setLinks();
     void CalculateStep(float x);

@@ -46,18 +46,23 @@ void CNet::afterReWeight()
         }
     }
     for(int i=0;i<size;i++)
-            for(int j=0;j<size;j++)
-                setDelay(i,j);
+        for(int j=0;j<size;j++)
+            setDelay(i,j);
     setArrows();
 }
 
 CNet::CNet(int _size,int _perc, neuronType _type)
-{    
+{
+     tau_p=20;
+     tau_x=100;
+     tau_m=20;
+     tau_y=100;
+    STDP=2;
     minWeight=2;
     maxWeight=4;
     rad=4;
     inhibitory_perc=_perc;
-//    circle_val=50;
+    //    circle_val=50;
     size=_size;
     type=_type;
     step=0.5;
@@ -96,10 +101,17 @@ void CNet::setDelay(int i,int j)
 
 }
 
-void CNet::test(float x)
+void CNet::CalculateStep(float x)
 {
     for(int i=0;i<size;i++)
         neuron[i].test(x);
+
+    for(int j=0;j<size;j++)
+        for(int i=0;i<neuron[j].output.size();i++)
+        {
+            neuron[j].output[i].push_front(neuron[j].to_output);
+            neuron[j].output[i].pop_back();
+        }
 }
 void CNet::setArrows()
 {

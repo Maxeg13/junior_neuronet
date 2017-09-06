@@ -38,7 +38,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(90,0,RS);//4
+CNet net(50,0,RS);//4
 
 
 
@@ -104,7 +104,7 @@ void Dialog::setInhPerc()
 {
 //    net=CNet(90,L_E3->text().toInt(),RS);
     for(int i=0;i<net.size;i++)
-        net.neuron[i].is_exitory=((rand()%100)>(L_E3->text().toInt()-1));
+        net.neuron[i].is_excitatory=((rand()%100)>(L_E3->text().toInt()-1));
     net.weights_with_rad(slider_weight_rad->value());
 }
 
@@ -253,8 +253,8 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         w1=fabs(net.neuron[mouse_ind[0]].weight[mouse_ind[1]]);
         net.neuron[mouse_ind[0]].weight[mouse_ind[1]] =fabs(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]);
         net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w1;
-        if(!net.neuron[mouse_ind[0]].is_exitory)net.neuron[mouse_ind[0]].weight[mouse_ind[1]]*=-1;
-        if(!net.neuron[mouse_ind[1]].is_exitory)net.neuron[mouse_ind[1]].weight[mouse_ind[0]]*=-1;
+        if(!net.neuron[mouse_ind[0]].is_excitatory)net.neuron[mouse_ind[0]].weight[mouse_ind[1]]*=-1;
+        if(!net.neuron[mouse_ind[1]].is_excitatory)net.neuron[mouse_ind[1]].weight[mouse_ind[0]]*=-1;
         net.setArrows();
     }
     else if(event->text()=="s")
@@ -387,7 +387,7 @@ void Dialog::mousePressEvent(QMouseEvent *e)
 void Dialog::mainCircle()
 {
 
-    net.test(test_val/slider_circle_val);
+    net.CalculateStep(test_val/slider_circle_val);
     //    net.
 
 
@@ -496,7 +496,7 @@ void Dialog::paintEvent(QPaintEvent* e)
                                                  QPointF(net.neuron[i].x,net.neuron[i].y)+0.5*QPointF(net.rad,net.rad));
 
 
-        if(net.neuron[i].is_exitory)
+        if(net.neuron[i].is_excitatory)
         {
             gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
             gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
@@ -517,7 +517,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             if(net.stim_ind[j]==i)
             {
                 //     gradient(0, 0, 0, 100);
-                if(net.neuron[i].is_exitory)
+                if(net.neuron[i].is_excitatory)
                     gradient.setColorAt(1.0, QColor(0.5*(200+net.neuron[i].vis),(net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
 
                 else
