@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <QDebug>
+#include <iostream>
 
 neuronIzh::neuronIzh()
 {
@@ -13,7 +14,8 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
 {
     vx=0;
     vy=0;
-    float k=0.15;
+    //    float k=0.15;
+    float k=0.3;
     int width=400;
     int height=350;
     //    int wh=6;
@@ -74,13 +76,16 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_exitory,CNet* _net)
     output.resize(net->size);
     weight=new float[net->size];
     weight_norm=new float[net->size];
-    for(int i=0;i<net->size;i++)
-    {
-        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
-        weight_norm[i]/=(net->maxWeight - net->minWeight);
-    }
-    weight[ID]=0;
-    weight_norm[ID]=0;
+
+
+    weights_with_rad(600);
+//    for(int i=0;i<net->size;i++)
+//    {
+//        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+//        weight_norm[i]/=(net->maxWeight - net->minWeight);
+//    }
+//    weight[ID]=0;
+//    weight_norm[ID]=0;
 
     arrow= new CArrow[net->size]();
 }
@@ -103,14 +108,14 @@ void neuronIzh::pull(float x1,float y1)
 void neuronIzh::push(float x1,float y1)
 {
 
-    if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
+//    if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
     {
         float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
         vx=100*(x1-x)/rad2;
         vy=100*(y1-y)/rad2;
-        if(x+vx>40)
+        if(x-vx>40)
             x-=vx;
-        if(y+vy>40)
+        if(y-vy>40)
             y-=vy;
     }
 }
@@ -122,9 +127,11 @@ void neuronIzh::weights_with_rad(float x1)
     {
         if(xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y)))
         {
-            if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
-            weight_norm[i]/=(net->maxWeight - net->minWeight);
-
+            if(i!=ID)
+            {
+                weight[i]=(is_exitory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+                weight_norm[i]/=(net->maxWeight - net->minWeight);
+            }
 
         }
         else
@@ -151,9 +158,10 @@ void neuronIzh::CalculateStep()
 
     input_sum*=exp(-step/psc_excxpire_time);
     
-    float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I)/Cm;
-    float dU_e = a*(b*E_m - U_e);
+    float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I);
+    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I);
     E_m += net->step * dE_m;
+    float dU_e = a*(b*E_m - U_e);
     U_e += net->step * dU_e;
 
     //    if(ID==0)

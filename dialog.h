@@ -34,6 +34,7 @@ public slots:
      void setMaxWeight();
      void currentChange(int x);
      void pull_change();
+     void setInhPerc();
 };
 
 #endif // DIALOG_H

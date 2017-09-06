@@ -18,9 +18,7 @@ void CNet::weights_with_rad(float x1)
     {
         neuron[i].weights_with_rad(x1);
     }
-    for(int i=0;i<size;i++)
-            for(int j=0;j<size;j++)
-    setDelay(i,j);
+
     afterReWeight();
 }
 
@@ -47,22 +45,26 @@ void CNet::afterReWeight()
             }
         }
     }
+    for(int i=0;i<size;i++)
+            for(int j=0;j<size;j++)
+                setDelay(i,j);
     setArrows();
 }
 
-CNet::CNet(int _size, neuronType _type)
+CNet::CNet(int _size,int _perc, neuronType _type)
 {    
-    minWeight=50;
-    maxWeight=100;
+    minWeight=2;
+    maxWeight=4;
     rad=4;
-    circle_val=50;
+    inhibitory_perc=_perc;
+//    circle_val=50;
     size=_size;
     type=_type;
     step=0.5;
     ext_show=0.001;
     neuron=new neuronIzh[size]();
     for(int i=0;i<size;i++)
-        neuron[i]= neuronIzh(i,_type,rand()%2,this);
+        neuron[i]= neuronIzh(i,_type,((rand()%100)>(inhibitory_perc-1)),this);
 
     afterReWeight();
 

@@ -10,12 +10,13 @@ class CNet
 public:
 
     CNet();
-    CNet(int , neuronType);
+    CNet(int ,int, neuronType);
     neuronType type;
     int size;
     int rad;
     int weight_rad;
-    int circle_val;
+    int inhibitory_perc;
+//    int circle_val;
     neuronIzh *neuron;
     float step;
     float ext_show;
