@@ -11,22 +11,23 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     width=400;
     height=350;
     STDP_cnt=0;
-    STDP_div=10;
+    STDP_div=5;
+
+
     tau_p=16;
-    tau_x=100;
+    tau_x=20;
     tau_m=32;
-    tau_y=125;
+    tau_y=20;
     Am2=.007;
     Am3=.00023;
     Ap2=5*.0000000001;
     Ap3=.0062;
-    //    Am2=.7;
-    //    Am3=.023;
-    //    Ap2=5*.00000001;
-    //    Ap3=.62;
+
+
+
     STDP=2;
-    minWeight=2;
-    maxWeight=4;
+    minWeight=4;
+    maxWeight=8;
     rad=4;
     inhibitory_perc=_perc;
     //    circle_val=50;

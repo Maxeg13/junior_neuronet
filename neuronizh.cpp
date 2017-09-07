@@ -221,8 +221,9 @@ void neuronIzh::CalculateStep()
                     if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))//inputs
                     {
                         //post
-                        net->neuron[i].weight[ID]+= net->neuron[i].r1[ID]*
-                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]);
+                        net->neuron[i].weight[ID]+= (net->neuron[i].r1[ID]*
+                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))*
+                                (net->maxWeight-net->neuron[i].weight[ID]);
                         if(net->neuron[i].weight[ID]>net->maxWeight)net->neuron[i].weight[ID]=net->maxWeight;
                         net->neuron[i].o1[ID]+=1;
                         net->neuron[i].o2[ID]+=1;
@@ -231,7 +232,7 @@ void neuronIzh::CalculateStep()
                     else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
                     {
                         //pre
-                        weight[i]-=o1[i]*(net->Am2+net->Am3*r2[i]);
+                        weight[i]-=o1[i]*(net->Am2+net->Am3*r2[i])*(weight[i]-net->minWeight);
                         if(weight[i]<net->minWeight)weight[i]=net->minWeight;
                         r1[i]+=1;
                         r2[i]+=1;
