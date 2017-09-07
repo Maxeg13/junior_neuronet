@@ -25,7 +25,7 @@ protected:
      void paintEvent(QPaintEvent *e);
 public slots:
      void drawing();
-
+     void neuroGrab();
      void trySlider(int x);
      void trySlider2(int x);
      void spikesStop();

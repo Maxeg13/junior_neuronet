@@ -14,19 +14,17 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
     vx=0;
     vy=0;
+    locate();
     //    float k=0.15;
-    float k=0.3;
-    int width=400;
-    int height=350;
+
     //    int wh=6;
     //    int hh=6;
     //    float h1=(rand())%width-width/2;
     //    float h2=(rand())%height-height/2;
     //    x=h1*h1*((h1>0)?1:(-1))/wh/wh*.6+width;
     //    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
-    x=width*k+(rand()%width)*(1-2*k);
-    y=height*k+(rand()%height)*(1-2*k);
-    float loc_rad=width/3;
+
+    //    float loc_rad=width/3;
 
     //    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>loc_rad*loc_rad)
     //    {
@@ -93,6 +91,14 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     arrow= new CArrow[net->size]();
 }
 
+void neuronIzh::locate()
+{
+    float k=0.1;
+    int width=400;
+    int height=350;
+    x=width*k+(rand()%width)*(1-2*k);
+    y=height*k+(rand()%height)*(1-2*k);
+}
 
 void neuronIzh::pull(float x1,float y1)
 {
@@ -154,6 +160,14 @@ void neuronIzh::test(float x)
 void neuronIzh::CalculateStep()
 {
     //        input_sum=0;
+    if(net->STDP==2)
+    {
+//        if(is_excitatory)
+//            for(int i=0;i<net->size;i++)
+//                if(net->neuron[i].exci)
+//        r[]
+    }
+
 
     for(int i=0;i<net->size;i++)
         if(net->neuron[i].weight[ID]!=0)
@@ -171,7 +185,7 @@ void neuronIzh::CalculateStep()
     //    qDebug()<<"ID 0   "<<E_m;
     //    if(ID==1)
     //    qDebug()<<"ID 1   "<<E_m;
-     to_output=0;
+    to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
         to_output=1;
@@ -182,14 +196,27 @@ void neuronIzh::CalculateStep()
         U_e = U_e + d;
 
         if(net->STDP==2)//triplet STDP
-        if(is_excitatory)
-            for(int i=0;i<net->size;i++)
+            if(is_excitatory)
             {
-                if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))
+
+                for(int i=0;i<net->size;i++)
                 {
-                net->neuron[i].o1[ID]+=1;
-                net->neuron[i].o2[ID]+=1;
-//                net->neuron[i].weight[ID]+=net->neuron[i]
+                    if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))//inputs
+                    {
+                        //post
+                        net->neuron[i].weight[ID]+= net->neuron[i].r1[ID]*
+                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]);
+                        net->neuron[i].o1[ID]+=1;
+                        net->neuron[i].o2[ID]+=1;
+
+                    }
+                    else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
+                    {
+                        //pre
+                        w[i]-=o1[i]*(net->Am2+net->Am3*r2[i]);
+                        r1[i]+=1;
+                        r2[i]+=1;
+                    }
                 }
             }
 

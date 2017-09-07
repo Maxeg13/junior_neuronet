@@ -38,7 +38,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(50,0,RS);//4
+CNet net(100,0,RS);//4
 
 
 
@@ -82,7 +82,7 @@ public:
 
 
 
-myQPushButton *button1, *button_stop;
+myQPushButton *button1, *button_stop, *button_grab;
 myQSlider *slider_circle, *slider_show_ext,*slider_weight_rad, *slider_current;
 //QMenuBar* menuBar;
 //work* WK;
@@ -124,9 +124,8 @@ Dialog::Dialog(QWidget *parent) :
     timer->start(40);
 
     button_stop= new myQPushButton(this,"stop spiking!");
-
     button1= new myQPushButton(this,"pull");
-
+    button_grab= new myQPushButton(this,"grab");
 
     L_E=new QLineEdit;
     L_E2=new QLineEdit;
@@ -184,8 +183,11 @@ Dialog::Dialog(QWidget *parent) :
     layout1->addWidget(L_E);
     layout1->addWidget(L_E2);
     layout1->addWidget(L_E3);
-    //pull_change
+
+
     connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
+
+    connect(button_grab,SIGNAL(clicked()),this,SLOT(neuroGrab()));
 
     connect(button_stop,SIGNAL(clicked()),this,SLOT(spikesStop()));
 
@@ -320,6 +322,11 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
 void Dialog::drawing()
 {
     this->update();
+}
+
+void Dialog::neuroGrab()
+{
+
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent *e)

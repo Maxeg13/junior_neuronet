@@ -65,6 +65,7 @@ public:
     void weights_with_rad(float);
     void pull(float x1, float y1);
     void push(float x1, float y1);
+    void locate();
 };
 
 #endif // NEURONIZH_H

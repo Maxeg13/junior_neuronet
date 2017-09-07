@@ -18,6 +18,14 @@ public:
     int inhibitory_perc;
 //    int circle_val;
     neuronIzh *neuron;
+    float Ap2;
+    float Ap3;
+    float Am2;
+    float Am3;
+    float tau_p;
+    float tau_x;
+    float tau_m;
+    float tau_y;
     float step;
     float ext_show;
     void setLinks();

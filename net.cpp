@@ -3,6 +3,42 @@
 #include <math.h>
 #include <QDebug>
 
+
+CNet::CNet(int _size,int _perc, neuronType _type)
+{
+    tau_p=16;
+    tau_x=100;
+    tau_m=32;
+    tau_y=100;
+    Am2=.007;
+    Am3=.00023;
+    Ap2=5*.0000000001;
+    Ap3=.0062;
+    STDP=2;
+    minWeight=2;
+    maxWeight=4;
+    rad=4;
+    inhibitory_perc=_perc;
+    //    circle_val=50;
+    size=_size;
+    type=_type;
+    step=0.5;
+    ext_show=0.001;
+    neuron=new neuronIzh[size]();
+    for(int i=0;i<size;i++)
+        neuron[i]= neuronIzh(i,_type,((rand()%100)>(inhibitory_perc-1)),this);
+
+    afterReWeight();
+
+
+    for(int i=0;i<size;i++)
+        for(int j=0;j<size;j++)
+        {
+            setDelay(i,j);
+        }
+}
+
+
 void CNet::spikesStop()
 {
     for(int i=0;i<size;i++)
@@ -49,36 +85,6 @@ void CNet::afterReWeight()
         for(int j=0;j<size;j++)
             setDelay(i,j);
     setArrows();
-}
-
-CNet::CNet(int _size,int _perc, neuronType _type)
-{
-     tau_p=20;
-     tau_x=100;
-     tau_m=20;
-     tau_y=100;
-    STDP=2;
-    minWeight=2;
-    maxWeight=4;
-    rad=4;
-    inhibitory_perc=_perc;
-    //    circle_val=50;
-    size=_size;
-    type=_type;
-    step=0.5;
-    ext_show=0.001;
-    neuron=new neuronIzh[size]();
-    for(int i=0;i<size;i++)
-        neuron[i]= neuronIzh(i,_type,((rand()%100)>(inhibitory_perc-1)),this);
-
-    afterReWeight();
-
-
-    for(int i=0;i<size;i++)
-        for(int j=0;j<size;j++)
-        {
-            setDelay(i,j);
-        }
 }
 
 
