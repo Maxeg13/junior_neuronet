@@ -38,7 +38,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(100,0,RS);//4
+CNet net(30,0,RS);//4
 
 
 
@@ -91,13 +91,13 @@ myQSlider *slider_circle, *slider_show_ext,*slider_weight_rad, *slider_current;
 void Dialog::setMinWeight()
 {
     net.minWeight=L_E->text().toFloat();
-    qDebug()<<net.minWeight;
+//    qDebug()<<net.minWeight;
 }
 
 void Dialog::setMaxWeight()
 {
     net.maxWeight=L_E2->text().toFloat();
-    qDebug()<<net.maxWeight;
+//    qDebug()<<net.maxWeight;
 }
 
 void Dialog::setInhPerc()
@@ -176,6 +176,7 @@ Dialog::Dialog(QWidget *parent) :
 
     layout->addWidget(button_stop);
     layout->addWidget(button1);
+    layout->addWidget(button_grab);
     layout->addWidget(slider_circle);
     layout->addWidget(slider_show_ext);
     layout1->addWidget(slider_weight_rad);
@@ -240,14 +241,14 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="neuron subtype: ";
         str+=(net.type==RS)?"RS\n":"TC\n";
         str+="ID: "+QString::number(net.neuron[mouse_ind[0]].ID);
-        str+="\ncurrent: "+QString::number(net.neuron[mouse_ind[0]].U_e
-                );
+        str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
+        str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
         str+="\n\n";
 
         this->setToolTip(str);
 
-        //        std::cout<<str.toStdString();
-        qDebug()<<str;
+                std::cout<<str.toStdString();
+//        qDebug()<<str;
     }
     else if(event->text()=="i")
     {
@@ -326,7 +327,10 @@ void Dialog::drawing()
 
 void Dialog::neuroGrab()
 {
+for(int i=0;i<net.size;i++)
+    net.neuron[i].locate();
 
+net.weights_with_rad(slider_weight_rad->value());
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent *e)

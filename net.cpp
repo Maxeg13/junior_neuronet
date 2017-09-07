@@ -14,6 +14,10 @@ CNet::CNet(int _size,int _perc, neuronType _type)
     Am3=.00023;
     Ap2=5*.0000000001;
     Ap3=.0062;
+//    Am2=.7;
+//    Am3=.023;
+//    Ap2=5*.00000001;
+//    Ap3=.62;
     STDP=2;
     minWeight=2;
     maxWeight=4;
@@ -142,8 +146,4 @@ void CNet::setArrows()
         }
 }
 
-void CNet::setLinks()
-{
-    //    for(int i=0;i<size;i++)
-    //        for(int )
-}
+

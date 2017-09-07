@@ -16,7 +16,6 @@ public:
     int rad;
     int weight_rad;
     int inhibitory_perc;
-//    int circle_val;
     neuronIzh *neuron;
     float Ap2;
     float Ap3;
@@ -28,7 +27,6 @@ public:
     float tau_y;
     float step;
     float ext_show;
-    void setLinks();
     void CalculateStep(float x);
     void setArrows();
     void setDelay(int i, int j);
