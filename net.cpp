@@ -4,20 +4,26 @@
 #include <QDebug>
 
 
-CNet::CNet(int _size,int _perc, neuronType _type)
+CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
+//    a=100;
+    size_k=0.1;
+    width=400;
+    height=350;
+    STDP_cnt=0;
+    STDP_div=10;
     tau_p=16;
     tau_x=100;
     tau_m=32;
-    tau_y=100;
+    tau_y=125;
     Am2=.007;
     Am3=.00023;
     Ap2=5*.0000000001;
     Ap3=.0062;
-//    Am2=.7;
-//    Am3=.023;
-//    Ap2=5*.00000001;
-//    Ap3=.62;
+    //    Am2=.7;
+    //    Am3=.023;
+    //    Ap2=5*.00000001;
+    //    Ap3=.62;
     STDP=2;
     minWeight=2;
     maxWeight=4;
@@ -27,6 +33,7 @@ CNet::CNet(int _size,int _perc, neuronType _type)
     size=_size;
     type=_type;
     step=0.5;
+
     ext_show=0.001;
     neuron=new neuronIzh[size]();
     for(int i=0;i<size;i++)
@@ -42,6 +49,20 @@ CNet::CNet(int _size,int _perc, neuronType _type)
         }
 }
 
+void CNet::normWeights()
+{
+    for (int i=0;i<size;i++)
+    {
+        for (int j=0;j<size;j++)
+        {
+            if(neuron[i].weight[j]!=0)
+                neuron[i].weight_norm[j]=fabs(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight);
+
+            if(neuron[j].weight[i]!=0)
+                neuron[j].weight_norm[i]=fabs(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight);
+        }
+    }
+}
 
 void CNet::spikesStop()
 {

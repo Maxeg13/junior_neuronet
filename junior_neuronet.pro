@@ -13,11 +13,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         dialog.cpp \
-    work.cpp \
     neuronizh.cpp \
     net.cpp
 
 HEADERS  += dialog.h \
-    work.h \
     neuronizh.h \
     cnet.h

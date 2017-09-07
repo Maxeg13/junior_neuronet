@@ -12,7 +12,11 @@ public:
     CNet();
     CNet(int ,int, neuronType);
     neuronType type;
+    int a;
     int size;
+    float size_k;
+    int width;
+    int height;
     int rad;
     int weight_rad;
     int inhibitory_perc;
@@ -26,7 +30,10 @@ public:
     float tau_m;
     float tau_y;
     float step;
+    float step2;
     float ext_show;
+    int STDP_cnt;
+    int STDP_div;
     void CalculateStep(float x);
     void setArrows();
     void setDelay(int i, int j);
@@ -37,6 +44,7 @@ public:
     float maxWeight;
     void weights_with_rad(float x1);
     void afterReWeight();
+    void normWeights();
 };
 
 #endif // NET_H

@@ -18,7 +18,6 @@ public:
         x[1]=0;
         y[0]=0;
         y[1]=0;
-
     }
 };
 
@@ -31,8 +30,7 @@ public:
     float y;
     float vx;
     float vy;
-    float vis;
-
+    float vis;    
     neuronIzh();
     neuronIzh(int, neuronType, bool, CNet*);
     neuronIzh* neighbour_neuron;

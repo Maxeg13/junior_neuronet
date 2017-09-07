@@ -14,7 +14,8 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
     vx=0;
     vy=0;
-    locate();
+
+
     //    float k=0.15;
 
     //    int wh=6;
@@ -78,7 +79,8 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     r2=new float[net->size];
     o1=new float[net->size];
     o2=new float[net->size];
-
+//    qDebug()<<net->width;
+    locate();
     weights_with_rad(600);
     //    for(int i=0;i<net->size;i++)
     //    {
@@ -93,24 +95,25 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
 void neuronIzh::locate()
 {
-    float k=0.1;
-    int width=400;
-    int height=350;
-    x=width*k+(rand()%width)*(1-2*k);
-    y=height*k+(rand()%height)*(1-2*k);
+
+    x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
+
+        y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
+//    x=rand()%400;
+//    y=rand()%400;
 }
 
 void neuronIzh::pull(float x1,float y1)
 {
-
+//    qDebug()<<net->width;
     if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
     {
-        float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
-        vx=100*(x1-x)/rad2;
-        vy=100*(y1-y)/rad2;
-        if(x+vx>40)
+        float rad2=sqrt((x1-x)*(x1-x)+(y1-y)*(y1-y));
+        vx=(x1-x)/rad2;
+        vy=(y1-y)/rad2;
+        if(x+vx>net->width*net->size_k)
             x+=vx;
-        if(y+vy>40)
+        if(y+vy>net->height*net->size_k)
             y+=vy;
     }
 }
@@ -118,16 +121,15 @@ void neuronIzh::pull(float x1,float y1)
 void neuronIzh::push(float x1,float y1)
 {
 
-    //    if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
-    {
-        float rad2=(x1-x)*(x1-x)+(y1-y)*(y1-y);
-        vx=100*(x1-x)/rad2;
-        vy=100*(y1-y)/rad2;
-        if(x-vx>40)
-            x-=vx;
-        if(y-vy>40)
-            y-=vy;
-    }
+
+    float rad2=((x1-x)*(x1-x)+(y1-y)*(y1-y));
+    vx=100*(x1-x)/rad2;
+    vy=100*(y1-y)/rad2;
+    if(x-vx>net->width*net->size_k)
+        x-=vx;
+    if(y-vy>net->height*net->size_k)
+        y-=vy;
+
 }
 
 void neuronIzh::weights_with_rad(float x1)
@@ -160,17 +162,27 @@ void neuronIzh::test(float x)
 void neuronIzh::CalculateStep()
 {
     //        input_sum=0;
+
+    net->STDP_cnt++;
+    if(net->STDP_cnt==net->STDP_div)
+    {
+        net->STDP_cnt=0;
+//qDebug()<<net->STDP_div;
+    }
     if(net->STDP==2)
     {
-        if(is_excitatory)
-            for(int i=0;i<net->size;i++)
-                if(net->neuron[i].is_excitatory)
-                {
-                    r1[i]*=exp(-net->step/net->tau_p);
-                    r2[i]*=exp(-net->step/net->tau_x);
-                    o1[i]*=exp(-net->step/net->tau_m);
-                    o2[i]*=exp(-net->step/net->tau_y);
-                }
+        if(net->STDP_cnt==0)
+        {
+            if(is_excitatory)
+                for(int i=0;i<net->size;i++)
+                    if(net->neuron[i].is_excitatory)
+                    {
+                        r1[i]*=exp(-net->STDP_div/net->tau_p);
+                        r2[i]*=exp(-net->STDP_div/net->tau_x);
+                        o1[i]*=exp(-net->STDP_div/net->tau_m);
+                        o2[i]*=exp(-net->STDP_div/net->tau_y);
+                    }
+        }
     }
 
 
@@ -178,7 +190,7 @@ void neuronIzh::CalculateStep()
         if(net->neuron[i].weight[ID]!=0)
             input_sum+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
 
-    input_sum*=exp(-step/psc_excxpire_time);
+    input_sum*=exp(-1/psc_excxpire_time);
     
     float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I);
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I);
