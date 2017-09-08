@@ -79,6 +79,16 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     r2=new float[net->size];
     o1=new float[net->size];
     o2=new float[net->size];
+
+    if(is_excitatory)
+        for(int i=0;i<net->size;i++)
+            if(net->neuron[i].is_excitatory)
+            {
+                r1[i]=0;
+                r2[i]=0;
+                o1[i]=0;
+                o2[i]=0;
+            }
 //    qDebug()<<net->width;
     locate();
     weights_with_rad(600);
@@ -142,6 +152,7 @@ void neuronIzh::weights_with_rad(float x1)
             if(i!=ID)
             {
                 weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+                weight_norm[i]+=0.1;
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
             }
         }
@@ -222,9 +233,10 @@ void neuronIzh::CalculateStep()
                     {
                         //post
                         net->neuron[i].weight[ID]+= (net->neuron[i].r1[ID]*
-                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))*
-                                (net->maxWeight-net->neuron[i].weight[ID]);
-                        if(net->neuron[i].weight[ID]>net->maxWeight)net->neuron[i].weight[ID]=net->maxWeight;
+                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
+//                                (net->maxWeight-net->neuron[i].weight[ID]);
+                        if(net->neuron[i].weight[ID]   >   net->maxWeight)
+                            net->neuron[i].weight[ID]=net->maxWeight;
                         net->neuron[i].o1[ID]+=1;
                         net->neuron[i].o2[ID]+=1;
 
@@ -232,8 +244,10 @@ void neuronIzh::CalculateStep()
                     else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
                     {
                         //pre
-                        weight[i]-=o1[i]*(net->Am2+net->Am3*r2[i])*(weight[i]-net->minWeight);
-                        if(weight[i]<net->minWeight)weight[i]=net->minWeight;
+                        weight[i]-=o1[i]*(net->Am2+net->Am3*r2[i])/250;
+//                        (weight[i]-net->minWeight);
+                        if(weight[i]  <  net->minWeight)
+                            weight[i]=net->minWeight;
                         r1[i]+=1;
                         r2[i]+=1;
                     }

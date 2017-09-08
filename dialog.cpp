@@ -25,7 +25,7 @@ bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
 float my_scale=1.5;
-
+int color_max=150;
 float f;
 int slider_circle_val;
 int slider_weight_val;
@@ -39,7 +39,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(90,0,RS);//4
+CNet net(100,0,RS);//4
 
 
 
@@ -241,8 +241,9 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         QString str;
         str+="neuron type: Izhikevich's neuron\n";
         str+="neuron subtype: ";
-        str+=(net.type==RS)?"RS\n":"TC\n";
-        str+="ID: "+QString::number(net.neuron[mouse_ind[0]].ID);
+        str+=(net.type==RS)?"RS":"TC";
+        str+="\nis excitatory: "+QString::number(net.neuron[mouse_ind[0]].is_excitatory);
+        str+="\nID: "+QString::number(net.neuron[mouse_ind[0]].ID);
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
         str+="\n\n";
@@ -437,7 +438,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             for(int j=0;j<net.size;j++)
             {
-                float h=net.neuron[i].weight_norm[j]*180;
+                float h=net.neuron[i].weight_norm[j]*color_max;
 
                 if(h!=0)
                 {
@@ -452,7 +453,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     painter->setPen(pen);
     for(int j=0;j<net.size;j++)
     {
-        float h=net.neuron[mouse_ind[0]].weight_norm[j]*255;
+        float h=net.neuron[mouse_ind[0]].weight_norm[j]*color_max;
         if(h!=0)
         {
             if(!mouse_drop)

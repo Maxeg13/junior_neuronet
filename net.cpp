@@ -14,15 +14,20 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     STDP_div=5;
 
 
-    tau_p=16;
+    tau_p=20;
     tau_x=20;
-    tau_m=32;
+    tau_m=20;
     tau_y=20;
-    Am2=.007;
-    Am3=.00023;
-    Ap2=5*.0000000001;
-    Ap3=.0062;
 
+//    Am2=.007;
+//    Am3=.00023;
+//    Ap2=5*.0000000001;
+//    Ap3=.0062;
+
+    Am2=.007;
+    Am3=.007;
+    Ap2=7*.001;
+    Ap3=.007;
 
 
     STDP=2;
@@ -57,10 +62,10 @@ void CNet::normWeights()
         for (int j=0;j<size;j++)
         {
             if(neuron[i].weight[j]!=0)
-                neuron[i].weight_norm[j]=fabs(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight);
+                neuron[i].weight_norm[j]=fabs(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight)+.1;
 
             if(neuron[j].weight[i]!=0)
-                neuron[j].weight_norm[i]=fabs(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight);
+                neuron[j].weight_norm[i]=fabs(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight)+.1;
         }
     }
 }
