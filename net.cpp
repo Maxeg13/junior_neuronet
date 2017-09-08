@@ -7,12 +7,14 @@
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
     psc_excxpire_time=0.1;//4
+    step=1;
+    steph=step/2;
 
     size_k=0.1;
     width=400;
     height=350;
     STDP_cnt=0;
-    STDP_div=5;
+    STDP_div=1;
 
 
     tau_p=20;
@@ -20,15 +22,20 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     tau_m=20;
     tau_y=20;
 
-//    Am2=.007;
-//    Am3=.00023;
-//    Ap2=5*.0000000001;
-//    Ap3=.0062;
+    exp_tau_p=exp(-step*STDP_div/tau_p);
+    exp_tau_x=exp(-step*STDP_div/tau_x);
+    exp_tau_m=exp(-step*STDP_div/tau_m);
+    exp_tau_y=exp(-step*STDP_div/tau_y);
 
     Am2=.007;
-    Am3=.007;
-    Ap2=7*.001;
-    Ap3=.007;
+    Am3=.00023;
+    Ap2=5*.0000000001;
+    Ap3=.0062;
+
+//    Am2=.007;
+//    Am3=.007;
+//    Ap2=7*.001;
+//    Ap3=.007;
 
 
     STDP=2;
@@ -39,8 +46,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    circle_val=50;
     size=_size;
     type=_type;
-    step=1;
-    steph=step/2;
+
 
 
     ext_show=0.001;

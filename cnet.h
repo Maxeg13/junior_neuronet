@@ -26,6 +26,10 @@ public:
     float Ap3;
     float Am2;
     float Am3;
+    float exp_tau_p;
+    float exp_tau_x;
+    float exp_tau_m;
+    float exp_tau_y;
     float tau_p;
     float tau_x;
     float tau_m;

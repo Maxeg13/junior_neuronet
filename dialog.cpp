@@ -182,7 +182,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_current = new myQSlider(this);
 //    slider_current->setRange(3000,6000);
-    slider_current->setRange(10000,20000);
+    slider_current->setRange(5000,12000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
     slider_freq->setRange(2,30);
@@ -217,7 +217,7 @@ Dialog::Dialog(QWidget *parent) :
             SLOT(currentChange(int)));
 
     connect(slider_freq, SIGNAL(valueChanged(int)), this,
-            SLOT(freqChange()));
+            SLOT(freqChange(int)));
 
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
@@ -236,7 +236,7 @@ Dialog::Dialog(QWidget *parent) :
     L_E2->setToolTip("set max weight");
     L_E3->setToolTip("inhibitory percentage");
 
-    freqChange();
+    freqChange(0);
     weightRadChanged();
     this->currentChange(1);
     this->update();
@@ -352,11 +352,14 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
 
 }
 
-void Dialog::freqChange()
+void Dialog::freqChange(int x)
 {
-    net.neuron[mouse_ind[0]].freq=slider_freq->value();
-    net.neuron[mouse_ind[0]].freq_cnt=0;
-    net.neuron[mouse_ind[0]].time_from_freq=1000/slider_freq->value();
+    for(int i=0;i<net.stim_ind.size();i++)
+    {
+    net.neuron[net.stim_ind[i]].freq=slider_freq->value();
+    net.neuron[net.stim_ind[i]].freq_cnt=0;
+    net.neuron[net.stim_ind[i]].time_from_freq=1000/slider_freq->value();
+    }
 }
 
 void Dialog::drawing()

@@ -178,7 +178,7 @@ void neuronIzh::CalculateStep()
         freq_cnt=0;
         freq_modulator=1;
     }
-    else if(freq_cnt==(5))freq_modulator=0;
+    else if(freq_cnt==(12))freq_modulator=0;
 
 
     net->STDP_cnt++;
@@ -195,10 +195,10 @@ void neuronIzh::CalculateStep()
                 for(int i=0;i<net->size;i++)
                     if(net->neuron[i].is_excitatory)
                     {
-                        r1[i]*=exp(-net->step*net->STDP_div/net->tau_p);
-                        r2[i]*=exp(-net->step*net->STDP_div/net->tau_x);
-                        o1[i]*=exp(-net->step*net->STDP_div/net->tau_m);
-                        o2[i]*=exp(-net->step*net->STDP_div/net->tau_y);
+                        r1[i]*=net->exp_tau_p;
+                        r2[i]*=net->exp_tau_x;
+                        o1[i]*=net->exp_tau_m;
+                        o2[i]*=net->exp_tau_y;
                     }
         }
     }
@@ -245,7 +245,7 @@ void neuronIzh::CalculateStep()
                         //post
                         dw=(net->neuron[i].r1[ID]*
                                 (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
-                        net->neuron[i].weight[ID]+= dw;
+//                        net->neuron[i].weight[ID]+= dw;
                         //                                (net->maxWeight-net->neuron[i].weight[ID]);
                         if(net->neuron[i].weight[ID]   >   net->maxWeight)
                             net->neuron[i].weight[ID]=net->maxWeight;
