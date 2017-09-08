@@ -47,7 +47,7 @@ public:
     int freq_cnt;
     int time_from_freq;
     int freq_modulator;
-    float psc_excxpire_time;
+//    float psc_excxpire_time;
     float step;
     float* weight_norm;
     float* weight;

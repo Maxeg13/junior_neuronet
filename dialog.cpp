@@ -181,10 +181,11 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-    slider_current->setRange(3000,6000);
+//    slider_current->setRange(3000,6000);
+    slider_current->setRange(10000,20000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
-    slider_freq->setRange(2,20);
+    slider_freq->setRange(2,30);
     slider_freq->setValue(2);
 
     layout->addWidget(button_stop);

@@ -44,7 +44,6 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     vis=0;
     net=_net;
     step=net->step;
-    psc_excxpire_time=4;//4
     is_excitatory=_is_excitatory;
 
     ID=_ID;
@@ -196,10 +195,10 @@ void neuronIzh::CalculateStep()
                 for(int i=0;i<net->size;i++)
                     if(net->neuron[i].is_excitatory)
                     {
-                        r1[i]*=exp(-net->STDP_div/net->tau_p);
-                        r2[i]*=exp(-net->STDP_div/net->tau_x);
-                        o1[i]*=exp(-net->STDP_div/net->tau_m);
-                        o2[i]*=exp(-net->STDP_div/net->tau_y);
+                        r1[i]*=exp(-net->step*net->STDP_div/net->tau_p);
+                        r2[i]*=exp(-net->step*net->STDP_div/net->tau_x);
+                        o1[i]*=exp(-net->step*net->STDP_div/net->tau_m);
+                        o2[i]*=exp(-net->step*net->STDP_div/net->tau_y);
                     }
         }
     }
@@ -209,15 +208,18 @@ void neuronIzh::CalculateStep()
         if(net->neuron[i].weight[ID]!=0)
             input_sum+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
 
-    input_sum*=exp(-1/psc_excxpire_time);
+
     
 
     float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I*freq_modulator);
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I*freq_modulator);
-    E_m += net->step * dE_m;
-    float dU_e = a*(b*E_m - U_e);
-    U_e += net->step * dU_e;
 
+
+    E_m +=  dE_m*net->step;
+    float dU_e = a*(b*E_m - U_e);
+    U_e +=   dU_e*net->step;
+
+    input_sum*=exp(-net->step/net->psc_excxpire_time);
 
 
     to_output=0;
@@ -252,7 +254,7 @@ void neuronIzh::CalculateStep()
 
                         if((i==2)&&(ID==0))
                         {
-                            qDebug()<<net->neuron[1].freq<<"  "<<dw;
+                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
                         }
 
                     }

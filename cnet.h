@@ -9,6 +9,7 @@ class CNet
 {
 public:
 
+    float psc_excxpire_time;
     CNet();
     CNet(int ,int, neuronType);
     neuronType type;
@@ -30,7 +31,7 @@ public:
     float tau_m;
     float tau_y;
     float step;
-    float step2;
+    float steph;
     float ext_show;
     int STDP_cnt;
     int STDP_div;

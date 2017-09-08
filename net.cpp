@@ -6,7 +6,8 @@
 
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
-//    a=100;
+    psc_excxpire_time=0.1;//4
+
     size_k=0.1;
     width=400;
     height=350;
@@ -31,14 +32,16 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
 
     STDP=2;
-    minWeight=2;
-    maxWeight=8;
+    minWeight=30;
+    maxWeight=80;
     rad=4;
     inhibitory_perc=_perc;
     //    circle_val=50;
     size=_size;
     type=_type;
-    step=0.5;
+    step=1;
+    steph=step/2;
+
 
     ext_show=0.001;
     neuron=new neuronIzh[size]();
