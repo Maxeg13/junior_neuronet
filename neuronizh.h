@@ -43,7 +43,10 @@ public:
     float input_sum;
     float external_I;
     float* link_length;
-
+    int freq;
+    int freq_cnt;
+    int time_from_freq;
+    int freq_modulator;
     float psc_excxpire_time;
     float step;
     float* weight_norm;

@@ -35,6 +35,7 @@ public slots:
      void currentChange(int x);
      void pull_change();
      void setInhPerc();
+     void freqChange();
 };
 
 #endif // DIALOG_H

@@ -31,7 +31,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
 
     STDP=2;
-    minWeight=4;
+    minWeight=2;
     maxWeight=8;
     rad=4;
     inhibitory_perc=_perc;
@@ -123,7 +123,7 @@ void CNet::setDelay(int i,int j)
 {
     if(neuron[i].weight[j]!=0)
     {
-        float ex=neuron[i].x-neuron[j].x;
+        float ex=neuron[i].x-neuron[j].x;        
         float ey=neuron[i].y-neuron[j].y;
         float square=ex*ex+ey*ey+0.001;
 

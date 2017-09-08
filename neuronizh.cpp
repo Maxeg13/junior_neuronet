@@ -40,6 +40,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     //        y=rand()%height;
     //    }
 
+    freq_cnt=0;
     vis=0;
     net=_net;
     step=net->step;
@@ -89,7 +90,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
                 o1[i]=0;
                 o2[i]=0;
             }
-//    qDebug()<<net->width;
+    //    qDebug()<<net->width;
     locate();
     weights_with_rad(600);
     //    for(int i=0;i<net->size;i++)
@@ -108,14 +109,14 @@ void neuronIzh::locate()
 
     x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
 
-        y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
-//    x=rand()%400;
-//    y=rand()%400;
+    y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
+    //    x=rand()%400;
+    //    y=rand()%400;
 }
 
 void neuronIzh::pull(float x1,float y1)
 {
-//    qDebug()<<net->width;
+    //    qDebug()<<net->width;
     if(!((abs(x1-x)<20)&&(abs(y1-y)<20)))
     {
         float rad2=sqrt((x1-x)*(x1-x)+(y1-y)*(y1-y));
@@ -172,13 +173,20 @@ void neuronIzh::test(float x)
 
 void neuronIzh::CalculateStep()
 {
-    //        input_sum=0;
+    freq_cnt++;
+    if(freq_cnt==time_from_freq)
+    {
+        freq_cnt=0;
+        freq_modulator=1;
+    }
+    else if(freq_cnt==(5))freq_modulator=0;
+
 
     net->STDP_cnt++;
     if(net->STDP_cnt==net->STDP_div)
     {
         net->STDP_cnt=0;
-//qDebug()<<net->STDP_div;
+        //qDebug()<<net->STDP_div;
     }
     if(net->STDP==2)
     {
@@ -203,16 +211,15 @@ void neuronIzh::CalculateStep()
 
     input_sum*=exp(-1/psc_excxpire_time);
     
-    float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I);
-    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I);
+
+    float dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I*freq_modulator);
+    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I*freq_modulator);
     E_m += net->step * dE_m;
     float dU_e = a*(b*E_m - U_e);
     U_e += net->step * dU_e;
 
-    //    if(ID==0)
-    //    qDebug()<<"ID 0   "<<E_m;
-    //    if(ID==1)
-    //    qDebug()<<"ID 1   "<<E_m;
+
+
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
@@ -233,8 +240,8 @@ void neuronIzh::CalculateStep()
                     {
                         //post
                         net->neuron[i].weight[ID]+= (net->neuron[i].r1[ID]*
-                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
-//                                (net->maxWeight-net->neuron[i].weight[ID]);
+                                                     (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
+                        //                                (net->maxWeight-net->neuron[i].weight[ID]);
                         if(net->neuron[i].weight[ID]   >   net->maxWeight)
                             net->neuron[i].weight[ID]=net->maxWeight;
                         net->neuron[i].o1[ID]+=1;
@@ -245,7 +252,7 @@ void neuronIzh::CalculateStep()
                     {
                         //pre
                         weight[i]-=o1[i]*(net->Am2+net->Am3*r2[i])/250;
-//                        (weight[i]-net->minWeight);
+                        //                        (weight[i]-net->minWeight);
                         if(weight[i]  <  net->minWeight)
                             weight[i]=net->minWeight;
                         r1[i]+=1;

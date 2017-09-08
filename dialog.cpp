@@ -34,12 +34,13 @@ float test_val;
 bool fire=0;
 
 
-QGroupBox* horizontalGroupBox , *horizontalGroupBox1;
+QGroupBox *horizontalGroupBox ,
+*horizontalGroupBox1, *horizontalGroupBox2;
 QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(100,0,RS);//4
+CNet net(3,0,RS);//4
 
 
 
@@ -84,7 +85,8 @@ public:
 
 
 myQPushButton *button1, *button_stop, *button_grab;
-myQSlider *slider_circle, *slider_show_ext,*slider_weight_rad, *slider_current;
+myQSlider *slider_circle, *slider_show_ext,
+*slider_weight_rad, *slider_current, *slider_freq;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -120,6 +122,7 @@ Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
 
+
     timer=new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(drawing()));
 
@@ -142,21 +145,25 @@ Dialog::Dialog(QWidget *parent) :
 
     QHBoxLayout *layout = new QHBoxLayout;
     QHBoxLayout *layout1 = new QHBoxLayout;
+    QHBoxLayout *layout2 = new QHBoxLayout;
     horizontalGroupBox = new QGroupBox();
     horizontalGroupBox1 = new QGroupBox();
+    horizontalGroupBox2 = new QGroupBox();
     //    QScrollArea *scroll = new QScrollArea;
 
-    this->setGeometry(QRect(40,40,650,600));
+    this->setGeometry(QRect(40,40,640,670));
 
     this->setLayout(mainLayout);
-    //    horizontalGroupBox->addWidget(button);
+
     horizontalGroupBox->setLayout(layout);
     horizontalGroupBox1->setLayout(layout1);
+    horizontalGroupBox2->setLayout(layout2);
 
 
     //    horizontalGroupBox->setBaseSize(400,10);
     mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
     mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
+    mainLayout->addWidget(horizontalGroupBox2,0,Qt::AlignBottom);
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
@@ -174,7 +181,11 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-    slider_current->setRange(60,160);
+    slider_current->setRange(3000,6000);
+    slider_current = new myQSlider(this);
+    slider_freq = new myQSlider(this);
+    slider_freq->setRange(2,20);
+    slider_freq->setValue(2);
 
     layout->addWidget(button_stop);
     layout->addWidget(button1);
@@ -186,6 +197,7 @@ Dialog::Dialog(QWidget *parent) :
     layout1->addWidget(L_E);
     layout1->addWidget(L_E2);
     layout1->addWidget(L_E3);
+    layout2->addWidget(slider_freq);
 
 
     connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
@@ -203,6 +215,9 @@ Dialog::Dialog(QWidget *parent) :
     connect(slider_current, SIGNAL(valueChanged(int)), this,
             SLOT(currentChange(int)));
 
+    connect(slider_freq, SIGNAL(valueChanged(int)), this,
+            SLOT(freqChange()));
+
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
     connect(L_E,SIGNAL(editingFinished()),this,SLOT(setMinWeight()));
@@ -215,9 +230,12 @@ Dialog::Dialog(QWidget *parent) :
     slider_show_ext->setToolTip("speed of fake blinkings");
     slider_weight_rad->setToolTip("rad of weights");
     slider_current->setToolTip("set external current value");
+    slider_freq->setToolTip("set modulator frequency");
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");
     L_E3->setToolTip("inhibitory percentage");
+
+    freqChange();
     weightRadChanged();
     this->currentChange(1);
     this->update();
@@ -232,6 +250,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         for(int i=0;i<net.stim_ind.size();i++)
         {
             net.neuron[net.stim_ind[i]].external_I=slider_current_val;//40//2000
+
         }
 
     }
@@ -246,6 +265,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nID: "+QString::number(net.neuron[mouse_ind[0]].ID);
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
+        str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]].size() );
         str+="\n\n";
 
         this->setToolTip(str);
@@ -267,6 +287,14 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     {
         net.stim_ind.push_back(mouse_ind[0]);
         //        QDebug
+    }
+    else if(event->text()=="m")
+    {
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=(net.maxWeight+net.minWeight)/2;
+    }
+    else if(event->text()=="l")
+    {
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=net.minWeight;
     }
     else if(event->text()=="r")
     {
@@ -321,6 +349,13 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
         fire=0;
     }
 
+}
+
+void Dialog::freqChange()
+{
+    net.neuron[mouse_ind[0]].freq=slider_freq->value();
+    net.neuron[mouse_ind[0]].freq_cnt=0;
+    net.neuron[mouse_ind[0]].time_from_freq=1000/slider_freq->value();
 }
 
 void Dialog::drawing()
