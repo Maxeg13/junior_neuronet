@@ -44,7 +44,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     vis=0;
     net=_net;
     step=net->step;
-    psc_excxpire_time=4;
+    psc_excxpire_time=4;//4
     is_excitatory=_is_excitatory;
 
     ID=_ID;
@@ -223,6 +223,7 @@ void neuronIzh::CalculateStep()
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
+        float dw;
         to_output=1;
         vis=220;
         //        is_spike = true;
@@ -236,28 +237,43 @@ void neuronIzh::CalculateStep()
 
                 for(int i=0;i<net->size;i++)
                 {
+
                     if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))//inputs
                     {
                         //post
-                        net->neuron[i].weight[ID]+= (net->neuron[i].r1[ID]*
-                                                     (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
+                        dw=(net->neuron[i].r1[ID]*
+                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
+                        net->neuron[i].weight[ID]+= dw;
                         //                                (net->maxWeight-net->neuron[i].weight[ID]);
                         if(net->neuron[i].weight[ID]   >   net->maxWeight)
                             net->neuron[i].weight[ID]=net->maxWeight;
                         net->neuron[i].o1[ID]+=1;
                         net->neuron[i].o2[ID]+=1;
 
+                        if((i==2)&&(ID==0))
+                        {
+                            qDebug()<<net->neuron[1].freq<<"  "<<dw;
+                        }
+
                     }
                     else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
                     {
                         //pre
-                        weight[i]-=o1[i]*(net->Am2+net->Am3*r2[i])/250;
+                        dw=-o1[i]*(net->Am2+net->Am3*r2[i])/250;
+                        weight[i]+=dw;
                         //                        (weight[i]-net->minWeight);
                         if(weight[i]  <  net->minWeight)
                             weight[i]=net->minWeight;
                         r1[i]+=1;
                         r2[i]+=1;
+
+
+//                        if((i==0)&&(ID==2))
+//                        {
+//                            qDebug()<<net->neuron[1].freq<<"  "<<dw;
+//                        }
                     }
+
                 }
             }
 

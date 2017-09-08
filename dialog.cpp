@@ -256,7 +256,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="h")
     {
-        //        qDebug()<<"hello";
+
         QString str;
         str+="neuron type: Izhikevich's neuron\n";
         str+="neuron subtype: ";
@@ -378,7 +378,7 @@ void Dialog::mouseReleaseEvent(QMouseEvent *e)
     QPointF V=MouseP-e->pos()/my_scale;
     if(QPointF::dotProduct(V,V)>net.rad*net.rad)
     {
-        //        qDebug()<<"hello";
+
         for(int j=0;j<net.size;j++)
         {
             net.setDelay(mouse_ind[0],j);
@@ -606,10 +606,9 @@ Dialog::~Dialog()
 
 void Dialog::weightRadChanged()
 {
-    //    net= CNet(24,RS);
+
     net.weights_with_rad(slider_weight_rad->value());
-    //    qDebug()<<slider_weight_rad->value();
-    //    qDebug()<<"hello";
+
 }
 
 //class myQHBoxLayout: public QHBoxLayout
