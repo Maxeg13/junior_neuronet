@@ -26,6 +26,7 @@ class neuronIzh
 public:
     CNet* net;
     CArrow* arrow;
+    int i;
     float x;
     float y;
     float vx;
@@ -57,6 +58,8 @@ public:
     float* o2;
     float E_m;
     float U_e;
+    float dE_m;
+    float dU_e;
     float a;
     float b;
     float c;
