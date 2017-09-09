@@ -10,6 +10,7 @@ class CNet
 public:
 
     float psc_excxpire_time;
+    float exp_psc_exc;
     CNet();
     CNet(int ,int, neuronType);
     neuronType type;

@@ -178,7 +178,7 @@ void neuronIzh::CalculateStep()
         freq_cnt=0;
         freq_modulator=1;
     }
-    else if(freq_cnt==(12))freq_modulator=0;
+    else if(freq_cnt==(10))freq_modulator=0;
 
 
     net->STDP_cnt++;
@@ -219,7 +219,7 @@ void neuronIzh::CalculateStep()
     float dU_e = a*(b*E_m - U_e);
     U_e +=   dU_e*net->step;
 
-    input_sum*=exp(-net->step/net->psc_excxpire_time);
+    input_sum*=net->exp_psc_exc;
 
 
     to_output=0;
@@ -244,26 +244,26 @@ void neuronIzh::CalculateStep()
                     {
                         //post
                         dw=(net->neuron[i].r1[ID]*
-                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;
-//                        net->neuron[i].weight[ID]+= dw;
-                        //                                (net->maxWeight-net->neuron[i].weight[ID]);
+                                (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/250;//(net->maxWeight-net->neuron[i].weight[ID]);
+                        net->neuron[i].weight[ID]+= dw;
+
                         if(net->neuron[i].weight[ID]   >   net->maxWeight)
                             net->neuron[i].weight[ID]=net->maxWeight;
                         net->neuron[i].o1[ID]+=1;
                         net->neuron[i].o2[ID]+=1;
 
-                        if((i==2)&&(ID==0))
-                        {
-                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-                        }
+//                        if((i==2)&&(ID==0))
+//                        {
+//                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+//                        }
 
                     }
                     else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
                     {
                         //pre
                         dw=-o1[i]*(net->Am2+net->Am3*r2[i])/250;
-                        weight[i]+=dw;
-                        //                        (weight[i]-net->minWeight);
+                        weight[i]+=dw;//                        (weight[i]-net->minWeight);
+
                         if(weight[i]  <  net->minWeight)
                             weight[i]=net->minWeight;
                         r1[i]+=1;
@@ -272,7 +272,7 @@ void neuronIzh::CalculateStep()
 
 //                        if((i==0)&&(ID==2))
 //                        {
-//                            qDebug()<<net->neuron[1].freq<<"  "<<dw;
+//                           std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
 //                        }
                     }
 

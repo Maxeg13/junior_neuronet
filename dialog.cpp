@@ -40,7 +40,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(3,0,RS);//4
+CNet net(90,0,RS);//4
 
 
 
@@ -182,10 +182,10 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_current = new myQSlider(this);
 //    slider_current->setRange(3000,6000);
-    slider_current->setRange(5000,12000);
+    slider_current->setRange(500,2000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
-    slider_freq->setRange(2,30);
+    slider_freq->setRange(2,50);
     slider_freq->setValue(2);
 
     layout->addWidget(button_stop);
@@ -295,7 +295,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=net.minWeight;
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=net.minWeight*0.001;
     }
     else if(event->text()=="r")
     {
