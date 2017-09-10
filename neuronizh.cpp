@@ -178,7 +178,7 @@ void neuronIzh::CalculateStep()
         freq_cnt=0;
         freq_modulator=1;
     }
-    else if(freq_cnt==(10))freq_modulator=0;
+    else if(freq_cnt==(2))freq_modulator=0;
 
 
     net->STDP_cnt++;
@@ -226,6 +226,7 @@ void neuronIzh::CalculateStep()
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
+        std::cout<<ID<<"\n";
         float dw;
         to_output=1;
         vis=220;
@@ -271,10 +272,10 @@ void neuronIzh::CalculateStep()
                         r2[i]+=1;
 
 
-                        if((i==0)&&(ID==2))
-                        {
-                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-                        }
+//                        if((i==0)&&(ID==2))
+//                        {
+//                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+//                        }
                     }
 
                 }
