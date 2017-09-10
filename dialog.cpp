@@ -40,7 +40,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(90,0,RS);//4
+CNet net(3,0,RS);//4
 
 
 
@@ -181,8 +181,8 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-//    slider_current->setRange(3000,6000);
-    slider_current->setRange(500,2000);
+    slider_current->setRange(3000,6000);
+//    slider_current->setRange(500,2000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
     slider_freq->setRange(2,50);
