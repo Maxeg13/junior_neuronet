@@ -173,7 +173,7 @@ Dialog::Dialog(QWidget *parent) :
     test_val/=20;
 
     slider_circle = new myQSlider(this);
-    slider_circle->setRange(1, 25);
+    slider_circle->setRange(1, 100);
     slider_circle->setValue(slider_circle_val=24);
 
     slider_weight_rad = new myQSlider(this);
@@ -185,7 +185,7 @@ Dialog::Dialog(QWidget *parent) :
 //    slider_current->setRange(500,2000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
-    slider_freq->setRange(1,70);
+    slider_freq->setRange(1,50);
     slider_freq->setValue(1);
 
     layout->addWidget(button_stop);
