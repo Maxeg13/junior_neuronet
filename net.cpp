@@ -7,7 +7,7 @@
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
     step=1;
-    psc_excxpire_time=.1;//4,0.1
+    psc_excxpire_time=.001;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
 
     steph=step/2;

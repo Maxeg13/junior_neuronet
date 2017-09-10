@@ -42,6 +42,7 @@ public:
     bool is_excitatory;
     deque<deque<float>> output;
     float input_sum;
+    float input_from_neurons;
     float external_I;
     float* link_length;
     int freq;

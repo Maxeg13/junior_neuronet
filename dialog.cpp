@@ -181,12 +181,12 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-    slider_current->setRange(9000,20000);
+    slider_current->setRange(9000,50000);
 //    slider_current->setRange(500,2000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
-    slider_freq->setRange(2,50);
-    slider_freq->setValue(2);
+    slider_freq->setRange(1,70);
+    slider_freq->setValue(1);
 
     layout->addWidget(button_stop);
     layout->addWidget(button1);
@@ -265,6 +265,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nis excitatory: "+QString::number(net.neuron[mouse_ind[0]].is_excitatory);
         str+="\nID: "+QString::number(net.neuron[mouse_ind[0]].ID);
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
+        str+="\ninput_sum: "+QString::number(net.neuron[mouse_ind[0]].input_sum);
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
         str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]].size() );
         str+="\n\n";
