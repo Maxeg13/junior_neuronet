@@ -159,8 +159,11 @@ void CNet::CalculateStep(float x)
     for(int j=0;j<size;j++)
         for(int i=0;i<neuron[j].output.size();i++)
         {
+//            if(!((j==2)&&(i==0)))//test
+            {
             neuron[j].output[i].push_front(neuron[j].to_output);
             neuron[j].output[i].pop_back();
+            }
         }
 }
 void CNet::setArrows()

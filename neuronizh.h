@@ -41,6 +41,7 @@ public:
     neuronType type;
     bool is_excitatory;
     deque<deque<float>> output;
+    float input_from_neurons;
     float input_sum;
     float external_I;
     float* link_length;

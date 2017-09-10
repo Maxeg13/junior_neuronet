@@ -70,7 +70,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
     E_m=c;
     U_e=d;
-    input_sum=0;
+    input_from_neurons=0;
     external_I=0;
     output.resize(net->size);
     weight=new float[net->size];
@@ -206,21 +206,21 @@ void neuronIzh::CalculateStep()
 
     for(i=0;i<net->size;i++)
         if(net->neuron[i].weight[ID]!=0)
-            input_sum+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
-
+            input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
+    input_sum=input_from_neurons+external_I*freq_modulator;
 
     
 
-    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I*freq_modulator);
+    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
     E_m +=  dE_m*net->steph;
-    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum+external_I*freq_modulator);
+    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
     E_m +=  dE_m*net->steph;
 
 
     dU_e = a*(b*E_m - U_e);
     U_e +=   dU_e*net->step;
 
-    input_sum*=net->exp_psc_exc;
+    input_from_neurons*=net->exp_psc_exc;
 
 
     to_output=0;
@@ -253,10 +253,10 @@ void neuronIzh::CalculateStep()
                         net->neuron[i].o1[ID]+=1;
                         net->neuron[i].o2[ID]+=1;
 
-                        //                        if((i==2)&&(ID==0))
-                        //                        {
-                        //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-                        //                        }
+//                        if((i==2)&&(ID==0))
+//                        {
+//                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+//                        }
 
                     }
                     else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
@@ -271,10 +271,10 @@ void neuronIzh::CalculateStep()
                         r2[i]+=1;
 
 
-                        //                        if((i==0)&&(ID==2))
-                        //                        {
-                        //                           std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-                        //                        }
+//                        if((i==0)&&(ID==2))
+//                        {
+//                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+//                        }
                     }
 
                 }
