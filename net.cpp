@@ -19,20 +19,20 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     STDP_div=1;
 
 
-    tau_p=20;
-    tau_x=20;
-    tau_m=20;
-    tau_y=20;
-
-    exp_tau_p=exp(-step*STDP_div/tau_p);
-    exp_tau_x=exp(-step*STDP_div/tau_x);
-    exp_tau_m=exp(-step*STDP_div/tau_m);
-    exp_tau_y=exp(-step*STDP_div/tau_y);
+    tau_p=16;
+    tau_x=100;
+    tau_m=30;
+    tau_y=125;
 
     Am2=.007;
     Am3=.00023;
     Ap2=5*.0000000001;
     Ap3=.0062;
+
+    exp_tau_p=exp(-step*STDP_div/tau_p);
+    exp_tau_x=exp(-step*STDP_div/tau_x);
+    exp_tau_m=exp(-step*STDP_div/tau_m);
+    exp_tau_y=exp(-step*STDP_div/tau_y);
 
 //    Am2=.007;
 //    Am3=.007;
