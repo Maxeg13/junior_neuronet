@@ -36,7 +36,7 @@ public slots:
      void pull_change();
      void setInhPerc();
      void freqChange(int x);
-     void change_STDP_speed(int );
+     void change_STDP_speed( );
 };
 
 #endif // DIALOG_H

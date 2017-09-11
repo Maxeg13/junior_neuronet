@@ -71,6 +71,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     E_m=c;
     U_e=d;
     input_from_neurons=0;
+    freq_cnt=0;
     external_I=0;
     output.resize(net->size);
     weight=new float[net->size];
@@ -152,9 +153,9 @@ void neuronIzh::weights_with_rad(float x1)
             if(i!=ID)
             {
                 //                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
-                weight[i]=(net->maxWeight + net->minWeight)/2+
-                      (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*.4;
-//                        (rand() % ((int)(net->maxWeight - net->minWeight)*100))/400.0f;
+                weight[i]=(is_excitatory?1:(-1))*(net->maxWeight + net->minWeight)/2+
+                        (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*.4;
+                //                        (rand() % ((int)(net->maxWeight - net->minWeight)*100))/400.0f;
                 weight_norm[i]+=0.1;
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
             }
@@ -176,15 +177,15 @@ void neuronIzh::test(float x)
 void neuronIzh::CalculateStep()
 {
     freq_cnt++;
-    if(freq_cnt==time_from_freq)
+    if(freq_cnt>(time_from_freq+1))
     {
         freq_cnt=0;
         freq_modulator=1;
     }
-    else if(freq_cnt==(10))freq_modulator=0;
+    else if(freq_cnt==(1))freq_modulator=0;
 
 
-    net->STDP_cnt++;
+   if(ID==0) net->STDP_cnt++;//from old mistake
     if(net->STDP_cnt==net->STDP_div)
     {
         net->STDP_cnt=0;
@@ -211,7 +212,7 @@ void neuronIzh::CalculateStep()
         if(net->neuron[i].weight[ID]!=0)
             input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
     input_sum=input_from_neurons+external_I*freq_modulator;
-
+//    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
 
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
@@ -238,49 +239,47 @@ void neuronIzh::CalculateStep()
         U_e = U_e + d;
 
         if(net->STDP==2)//triplet STDP
-            if(is_excitatory)
+
+            for(i=0;i<net->size;i++)
             {
 
-                for(i=0;i<net->size;i++)
+                if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))//inputs
                 {
+                    //post
+                    dw=(net->neuron[i].r1[ID]*
+                        (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))*net->STDP_speed;//(net->maxWeight-net->neuron[i].weight[ID]);
+                    net->neuron[i].weight[ID]+= dw;
 
-                    if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))//inputs
-                    {
-                        //post
-                        dw=(net->neuron[i].r1[ID]*
-                            (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))*net->STDP_speed;//(net->maxWeight-net->neuron[i].weight[ID]);
-                        net->neuron[i].weight[ID]+= dw;
+                    if(net->neuron[i].weight[ID]   >   net->maxWeight)
+                        net->neuron[i].weight[ID]=net->maxWeight;
+                    net->neuron[i].o1[ID]+=1;
+                    net->neuron[i].o2[ID]+=1;
 
-                        if(net->neuron[i].weight[ID]   >   net->maxWeight)
-                            net->neuron[i].weight[ID]=net->maxWeight;
-                        net->neuron[i].o1[ID]+=1;
-                        net->neuron[i].o2[ID]+=1;
-
-                        //                        if((i==2)&&(ID==0))
-                        //                        {
-                        //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-                        //                        }
-
-                    }
-                    else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
-                    {
-                        //pre
-                        dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
-                        weight[i]+=dw;//                        (weight[i]-net->minWeight);
-
-                        if(weight[i]  <  net->minWeight)
-                            weight[i]=net->minWeight;
-                        r1[i]+=1;
-                        r2[i]+=1;
-
-
-                        //                        if((i==0)&&(ID==2))
-                        //                        {
-                        //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-                        //                        }
-                    }
+                    //                        if((i==2)&&(ID==0))
+                    //                        {
+                    //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+                    //                        }
 
                 }
+                else if(weight[i]&&is_excitatory)//outputs
+                {
+                    //pre
+                    dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
+                    weight[i]+=dw;//                        (weight[i]-net->minWeight);
+
+                    if(weight[i]  <  net->minWeight)
+                        weight[i]=net->minWeight;
+                    r1[i]+=1;
+                    r2[i]+=1;
+
+
+                    //                        if((i==0)&&(ID==2))
+                    //                        {
+                    //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+                    //                        }
+                }
+
+
             }
 
     }

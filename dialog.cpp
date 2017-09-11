@@ -25,7 +25,7 @@ bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
 float my_scale=1.5;
-int color_max=150;
+int color_max=210;
 float f;
 int slider_circle_val;
 int slider_weight_val;
@@ -38,9 +38,9 @@ QGroupBox *horizontalGroupBox ,
 *horizontalGroupBox1, *horizontalGroupBox2;
 QVBoxLayout *mainLayout, *pictureLayout;
 
-QLineEdit *L_E, *L_E2, *L_E3;
+QLineEdit *L_E, *L_E2, *L_E3, *L_E4;
 QTimer *timer;
-CNet net(50,0,RS);//4
+CNet net(90,0,RS);//4
 
 
 
@@ -86,8 +86,7 @@ public:
 
 myQPushButton *button1, *button_stop, *button_grab;
 myQSlider *slider_circle, *slider_show_ext,
-*slider_weight_rad, *slider_current, *slider_freq,
-*slider_STDP_speed;
+*slider_weight_rad, *slider_current, *slider_freq;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -114,9 +113,9 @@ void Dialog::setInhPerc()
     net.weights_with_rad(slider_weight_rad->value());
 }
 
-void Dialog::change_STDP_speed(int x)
+void Dialog::change_STDP_speed()
 {
-    net.STDP_speed=slider_STDP_speed->value()*0.01;
+    net.STDP_speed=L_E4->text().toFloat();
 }
 
 void Dialog::currentChange(int x)
@@ -141,10 +140,12 @@ Dialog::Dialog(QWidget *parent) :
     L_E=new QLineEdit;
     L_E2=new QLineEdit;
     L_E3=new QLineEdit;
+    L_E4=new QLineEdit;
 
     L_E->setText(QString::number(net.minWeight));
     L_E2->setText(QString::number( net.maxWeight));
     L_E3->setText(QString::number(0));
+    L_E4->setText(QString::number(.01));
 
     mainLayout = new QVBoxLayout();
     //    pictureLayout = new QVBoxLayout();
@@ -178,9 +179,6 @@ Dialog::Dialog(QWidget *parent) :
     slider_show_ext->setValue(test_val=10);
     test_val/=20;
 
-    slider_STDP_speed= new myQSlider(this);
-    slider_show_ext->setRange(2, 100);
-    slider_show_ext->setValue(test_val=10);
 //    test_val/=20;
 
     slider_circle = new myQSlider(this);
@@ -210,7 +208,7 @@ Dialog::Dialog(QWidget *parent) :
     layout1->addWidget(L_E2);
     layout1->addWidget(L_E3);
     layout2->addWidget(slider_freq);
-    layout2->addWidget(slider_STDP_speed);
+    layout2->addWidget(L_E4);
 
 
     connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
@@ -221,9 +219,6 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(slider_show_ext, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider2(int)));
-
-    connect(slider_STDP_speed, SIGNAL(valueChanged(int)), this,
-            SLOT(change_STDP_speed(int)));
 
     connect(slider_circle, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider(int)));
@@ -242,6 +237,9 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(L_E3,SIGNAL(editingFinished()),this,SLOT(setInhPerc()));
 
+    connect(L_E4, SIGNAL(editingFinished()), this,
+            SLOT(change_STDP_speed()));
+
     slider_circle->setToolTip("subcicles, default is 24");
     slider_show_ext->setToolTip("speed of fake blinkings");
     slider_weight_rad->setToolTip("rad of weights");
@@ -253,7 +251,7 @@ Dialog::Dialog(QWidget *parent) :
 
     freqChange(0);
     weightRadChanged();
-    change_STDP_speed(1);
+    change_STDP_speed();
     this->currentChange(1);
     this->update();
 
@@ -283,11 +281,13 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
         str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]].size() );
+        str+="\ntest value: "+QString::number(net.STDP_speed);
         str+="\n\n";
 
         this->setToolTip(str);
 
         std::cout<<str.toStdString();
+        /*qDebug()<<net.STDP_speed;*/
         //        qDebug()<<str;
     }
     else if(event->text()=="i")
