@@ -20,6 +20,7 @@ public:
     int width;
     int height;
     int rad;
+    float STDP_speed;
     int weight_rad;
     int inhibitory_perc;
     neuronIzh *neuron;

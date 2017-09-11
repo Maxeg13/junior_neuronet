@@ -43,7 +43,8 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     STDP=2;
 //    minWeight=30;//for experiment
 //    maxWeight=80;
-    minWeight=1;
+    minWeight=.1;
+
     maxWeight=7;
     rad=4;
     inhibitory_perc=_perc;

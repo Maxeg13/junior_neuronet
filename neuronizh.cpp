@@ -151,7 +151,10 @@ void neuronIzh::weights_with_rad(float x1)
         {
             if(i!=ID)
             {
-                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+                //                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+                weight[i]=(net->maxWeight + net->minWeight)/2+
+                      (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*.4;
+//                        (rand() % ((int)(net->maxWeight - net->minWeight)*100))/400.0f;
                 weight_norm[i]+=0.1;
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
             }
@@ -245,7 +248,7 @@ void neuronIzh::CalculateStep()
                     {
                         //post
                         dw=(net->neuron[i].r1[ID]*
-                            (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))/50;//(net->maxWeight-net->neuron[i].weight[ID]);
+                            (net->Ap2+net->Ap3*net->neuron[i].o2[ID]))*net->STDP_speed;//(net->maxWeight-net->neuron[i].weight[ID]);
                         net->neuron[i].weight[ID]+= dw;
 
                         if(net->neuron[i].weight[ID]   >   net->maxWeight)
@@ -253,16 +256,16 @@ void neuronIzh::CalculateStep()
                         net->neuron[i].o1[ID]+=1;
                         net->neuron[i].o2[ID]+=1;
 
-//                        if((i==2)&&(ID==0))
-//                        {
-//                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-//                        }
+                        //                        if((i==2)&&(ID==0))
+                        //                        {
+                        //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+                        //                        }
 
                     }
                     else if(weight[i]&&net->neuron[i].is_excitatory)//outputs
                     {
                         //pre
-                        dw=-o1[i]*(net->Am2+net->Am3*r2[i])/50;
+                        dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
                         weight[i]+=dw;//                        (weight[i]-net->minWeight);
 
                         if(weight[i]  <  net->minWeight)
@@ -271,10 +274,10 @@ void neuronIzh::CalculateStep()
                         r2[i]+=1;
 
 
-//                        if((i==0)&&(ID==2))
-//                        {
-//                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
-//                        }
+                        //                        if((i==0)&&(ID==2))
+                        //                        {
+                        //                            std::cout<<net->neuron[1].freq<<"  "<<dw<<"\n";
+                        //                        }
                     }
 
                 }

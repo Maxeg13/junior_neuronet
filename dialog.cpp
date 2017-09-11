@@ -40,7 +40,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(50,0,TC);//4
+CNet net(50,0,RS);//4
 
 
 
@@ -86,7 +86,8 @@ public:
 
 myQPushButton *button1, *button_stop, *button_grab;
 myQSlider *slider_circle, *slider_show_ext,
-*slider_weight_rad, *slider_current, *slider_freq;
+*slider_weight_rad, *slider_current, *slider_freq,
+*slider_STDP_speed;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -111,6 +112,11 @@ void Dialog::setInhPerc()
     for(int i=0;i<net.size;i++)
         net.neuron[i].is_excitatory=((rand()%100)>(L_E3->text().toInt()-1));
     net.weights_with_rad(slider_weight_rad->value());
+}
+
+void Dialog::change_STDP_speed(int x)
+{
+    net.STDP_speed=slider_STDP_speed->value()*0.01;
 }
 
 void Dialog::currentChange(int x)
@@ -172,6 +178,11 @@ Dialog::Dialog(QWidget *parent) :
     slider_show_ext->setValue(test_val=10);
     test_val/=20;
 
+    slider_STDP_speed= new myQSlider(this);
+    slider_show_ext->setRange(2, 100);
+    slider_show_ext->setValue(test_val=10);
+//    test_val/=20;
+
     slider_circle = new myQSlider(this);
     slider_circle->setRange(1, 100);
     slider_circle->setValue(slider_circle_val=24);
@@ -199,6 +210,7 @@ Dialog::Dialog(QWidget *parent) :
     layout1->addWidget(L_E2);
     layout1->addWidget(L_E3);
     layout2->addWidget(slider_freq);
+    layout2->addWidget(slider_STDP_speed);
 
 
     connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
@@ -209,6 +221,9 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(slider_show_ext, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider2(int)));
+
+    connect(slider_STDP_speed, SIGNAL(valueChanged(int)), this,
+            SLOT(change_STDP_speed(int)));
 
     connect(slider_circle, SIGNAL(valueChanged(int)), this,
             SLOT(trySlider(int)));
@@ -238,6 +253,7 @@ Dialog::Dialog(QWidget *parent) :
 
     freqChange(0);
     weightRadChanged();
+    change_STDP_speed(1);
     this->currentChange(1);
     this->update();
 
@@ -295,7 +311,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=net.minWeight*0.001;
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=net.minWeight;
     }
     else if(event->text()=="r")
     {
