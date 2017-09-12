@@ -9,10 +9,12 @@ class CNet
 {
 public:
 
+    float weight_diap;
     float psc_excxpire_time;
     float exp_psc_exc;
     CNet();
     CNet(int ,int, neuronType);
+    void kohonSettings();
     neuronType type;
     int a;
     int size;

@@ -92,7 +92,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
             }
     //    qDebug()<<net->width;
     locate();
-    weights_with_rad(600);
+
     //    for(int i=0;i<net->size;i++)
     //    {
     //        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
@@ -107,11 +107,16 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 void neuronIzh::locate()
 {
 
-    x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
+    //    x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
+    //    y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
+    switch(ID)
+    {
+    case 0: x=net->width/2*.8; y=net->height*.45; break;
+    case 1: x=net->width/2*1.2; y=net->height*.45;break;
+    default:
+         y=net->height*.6;x=net->width/2+((ID-6))*net->width*0.07;
+    }
 
-    y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
-    //    x=rand()%400;
-    //    y=rand()%400;
 }
 
 void neuronIzh::locate(int _x, int _y)
@@ -160,7 +165,7 @@ void neuronIzh::weights_with_rad(float x1)
             if(i!=ID)
             {
                 //                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
-                setRandomWeight(i);
+                setRandomWeight(i,is_excitatory);
                 //                        (rand() % ((int)(net->maxWeight - net->minWeight)*100))/400.0f;
                 weight_norm[i]+=0.1;
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
@@ -174,10 +179,10 @@ void neuronIzh::weights_with_rad(float x1)
     }
 }
 
-void neuronIzh::setRandomWeight(int i)
+void neuronIzh::setRandomWeight(int i, bool b)
 {
-    weight[i]=((is_excitatory?1:(-1))*(net->maxWeight + net->minWeight)/2+
-                            (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*.5);
+    weight[i]=((b?1:(-1))*(net->maxWeight + net->minWeight)/2+
+               (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*net->weight_diap);
 }
 
 void neuronIzh::test(float x)
@@ -197,7 +202,7 @@ void neuronIzh::CalculateStep()
     else if(freq_cnt==(1))freq_modulator=0;
 
 
-   if(ID==0) net->STDP_cnt++;//from old mistake
+    if(ID==0) net->STDP_cnt++;//from old mistake
     if(net->STDP_cnt==net->STDP_div)
     {
         net->STDP_cnt=0;
@@ -224,7 +229,7 @@ void neuronIzh::CalculateStep()
         if(net->neuron[i].weight[ID]!=0)
             input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
     input_sum=input_from_neurons+external_I*freq_modulator;
-//    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
+    //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
 
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);

@@ -9,7 +9,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     step=1;
     psc_excxpire_time=1;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
-
+    weight_diap=.5;
     steph=step/2;
 
     size_k=0.1;
@@ -34,18 +34,18 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     exp_tau_m=exp(-step*STDP_div/tau_m);
     exp_tau_y=exp(-step*STDP_div/tau_y);
 
-//    Am2=.007;
-//    Am3=.007;
-//    Ap2=7*.001;
-//    Ap3=.007;
+    //    Am2=.007;
+    //    Am3=.007;
+    //    Ap2=7*.001;
+    //    Ap3=.007;
 
 
     STDP=2;
     minWeight=1;//for experiment
     maxWeight=17;
-//    minWeight=.1;
+    //    minWeight=.1;
 
-//    maxWeight=7;
+    //    maxWeight=7;
     rad=4;
     inhibitory_perc=_perc;
     //    circle_val=50;
@@ -57,14 +57,17 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     for(int i=0;i<size;i++)
         neuron[i]= neuronIzh(i,_type,((rand()%100)>(inhibitory_perc-1)),this);
 
-    afterReWeight();
+    //        for(int i=0;i<size;i++)
+    //        neuron[i].weights_with_rad(600);
+    //    afterReWeight();
 
+    kohonSettings();
 
-    for(int i=0;i<size;i++)
-        for(int j=0;j<size;j++)
-        {
-            setDelay(i,j);
-        }
+    //    for(int i=0;i<size;i++)
+    //        for(int j=0;j<size;j++)
+    //        {
+    //            setDelay(i,j);
+    //        }
 }
 
 void CNet::normWeights()
@@ -130,12 +133,26 @@ void CNet::afterReWeight()
     setArrows();
 }
 
+void CNet::kohonSettings()
+{
+    for(int j=0;j<2;j++)
+        for(int i=2;i<size;i++)
+            neuron[i].setRandomWeight(j,1);
+
+    neuron[0].setRandomWeight(1,0);
+     neuron[1].setRandomWeight(0,0);
+
+    for(int i=0;i<size;i++)
+        for(int j=0;j<size;j++)
+            setDelay(i,j);
+    setArrows();
+}
 
 void CNet::setDelay(int i,int j)
 {
     if(neuron[i].weight[j]!=0)
     {
-        float ex=neuron[i].x-neuron[j].x;        
+        float ex=neuron[i].x-neuron[j].x;
         float ey=neuron[i].y-neuron[j].y;
         float square=ex*ex+ey*ey+0.001;
 
@@ -158,10 +175,10 @@ void CNet::CalculateStep(float x)
     for(int j=0;j<size;j++)
         for(int i=0;i<neuron[j].output.size();i++)
         {
-//            if(!((j==2)&&(i==0)))//test
+            //            if(!((j==2)&&(i==0)))//test
             {
-            neuron[j].output[i].push_front(neuron[j].to_output);
-            neuron[j].output[i].pop_back();
+                neuron[j].output[i].push_front(neuron[j].to_output);
+                neuron[j].output[i].pop_back();
             }
         }
 }
@@ -170,7 +187,7 @@ void CNet::setArrows()
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)
         {
-            if(neuron[i].weight[j]!=0)
+            if(fabs(neuron[i].weight[j])>minWeight)
             {
                 float ex=neuron[i].x-neuron[j].x;
                 float ey=neuron[i].y-neuron[j].y;

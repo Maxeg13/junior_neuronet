@@ -72,7 +72,7 @@ public:
     void push(float x1, float y1);
     void locate();
     void locate(int _x, int _y);
-    void setRandomWeight(int );
+    void setRandomWeight(int , bool);
 };
 
 #endif // NEURONIZH_H

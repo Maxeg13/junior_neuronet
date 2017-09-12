@@ -40,7 +40,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4;
 QTimer *timer;
-CNet net(90,0,RS);//4
+CNet net(10,0,RS);//4
 
 
 
@@ -386,10 +386,10 @@ void Dialog::drawing()
 
 void Dialog::neuroGrab()
 {
-    for(int i=0;i<net.size;i++)
-        net.neuron[i].locate();
+//    for(int i=0;i<net.size;i++)
+//        net.neuron[i].locate();
 
-    net.weights_with_rad(slider_weight_rad->value());
+//    net.weights_with_rad(slider_weight_rad->value());
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
@@ -530,7 +530,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         if((i!=mouse_ind[0]))
             for(int j=0;j<net.size;j++)
             {
-                if(net.neuron[i].weight[j]!=0)
+                if(fabs(net.neuron[i].weight[j])>net.minWeight)
                 {
                     painter->drawLine(net.neuron[j].x,net.neuron[j].y,
                                       net.neuron[j].x+net.neuron[i].arrow[j].x[0],
@@ -553,7 +553,7 @@ void Dialog::paintEvent(QPaintEvent* e)
 
     for(int j=0;j<net.size;j++)
     {
-        if(net.neuron[mouse_ind[0]].weight[j]!=0)
+        if(fabs(net.neuron[mouse_ind[0]].weight[j])>net.minWeight)
         {
             painter->drawLine(net.neuron[j].x,net.neuron[j].y,
                               net.neuron[j].x+net.neuron[mouse_ind[0]].arrow[j].x[0],
@@ -628,7 +628,7 @@ Dialog::~Dialog()
 void Dialog::weightRadChanged()
 {
 
-    net.weights_with_rad(slider_weight_rad->value());
+//    net.weights_with_rad(slider_weight_rad->value());
 
 }
 
