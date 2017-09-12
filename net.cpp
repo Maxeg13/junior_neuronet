@@ -42,7 +42,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
     STDP=2;
     minWeight=1;//for experiment
-    maxWeight=20;
+    maxWeight=17;
 //    minWeight=.1;
 
 //    maxWeight=7;

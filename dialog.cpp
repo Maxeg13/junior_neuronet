@@ -25,7 +25,7 @@ bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
 float my_scale=1.5;
-int color_max=210;
+int color_max=190;
 float f;
 int slider_circle_val;
 int slider_weight_val;
@@ -303,6 +303,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     else if(event->text()=="s")
     {
         net.stim_ind.push_back(mouse_ind[0]);
+        freqChange(1);
         //        QDebug
     }
     else if(event->text()=="m")
