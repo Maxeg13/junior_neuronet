@@ -114,6 +114,13 @@ void neuronIzh::locate()
     //    y=rand()%400;
 }
 
+void neuronIzh::locate(int _x, int _y)
+{
+    x=_x;
+    y=_y;
+}
+
+
 void neuronIzh::pull(float x1,float y1)
 {
     //    qDebug()<<net->width;
@@ -153,8 +160,7 @@ void neuronIzh::weights_with_rad(float x1)
             if(i!=ID)
             {
                 //                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
-                weight[i]=(is_excitatory?1:(-1))*(net->maxWeight + net->minWeight)/2+
-                        (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*.4;
+                setRandomWeight(i);
                 //                        (rand() % ((int)(net->maxWeight - net->minWeight)*100))/400.0f;
                 weight_norm[i]+=0.1;
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
@@ -166,6 +172,12 @@ void neuronIzh::weights_with_rad(float x1)
             weight_norm[i]=0;
         }
     }
+}
+
+void neuronIzh::setRandomWeight(int i)
+{
+    weight[i]=((is_excitatory?1:(-1))*(net->maxWeight + net->minWeight)/2+
+                            (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*.5);
 }
 
 void neuronIzh::test(float x)

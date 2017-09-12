@@ -52,8 +52,6 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     size=_size;
     type=_type;
 
-
-
     ext_show=0.001;
     neuron=new neuronIzh[size]();
     for(int i=0;i<size;i++)
