@@ -67,7 +67,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
     //    net->minWeight=20;
     //    net->maxWeight=70;
-
+    input_sum=0;
     E_m=c;
     U_e=d;
     input_from_neurons=0;
@@ -151,7 +151,8 @@ void neuronIzh::weights_with_rad(float x1)
         {
             if(i!=ID)
             {
-                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+//                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
+                weight[i]=(net->maxWeight + net->minWeight)/2;
                 weight_norm[i]+=0.1;
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
             }
@@ -208,25 +209,25 @@ void neuronIzh::CalculateStep()
     for(i=0;i<net->size;i++)
         if(net->neuron[i].weight[ID]!=0)
             input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
-    input_sum=input_from_neurons+external_I*freq_modulator;
+    input_sum+=input_from_neurons+external_I*freq_modulator;
 
     
 
-    //    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
-    //    E_m +=  dE_m*net->steph;
-    //    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
-    //    E_m +=  dE_m*net->steph;
+        dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
+        E_m +=  dE_m*net->steph;
+        dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
+        E_m +=  dE_m*net->steph;
 
 
     dU_e = a*(b*E_m - U_e);
     U_e +=   dU_e*net->step;
 
-    //    input_from_neurons*=net->exp_psc_exc;
+        input_sum*=net->exp_psc_exc;
 
 
     to_output=0;
-    //    if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
-    if(input_sum>.5)
+        if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
+//    if(input_sum>.5)
     {
         //                std::cout<<ID<<"\n";
         float dw;

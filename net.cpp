@@ -7,7 +7,7 @@
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
     step=1;
-    psc_excxpire_time=.001;//4,0.1
+    psc_excxpire_time=.5;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
 
     steph=step/2;
@@ -29,20 +29,20 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     exp_tau_m=exp(-step*STDP_div/tau_m);
     exp_tau_y=exp(-step*STDP_div/tau_y);
 
-//    Am2=.007;
-//    Am3=.00023;
-//    Ap2=5*.0000000001;
-//    Ap3=.0062;
+    Am2=.007;
+    Am3=.00023;
+    Ap2=5*.0000000001;
+    Ap3=.0062;
 
-    Am2=.0071;
-    Am3=0;
-    Ap2=0;
-    Ap3=.0065;
+//    Am2=.0071;
+//    Am3=0;
+//    Ap2=0;
+//    Ap3=.0065;
 
 
     STDP=2;
-    minWeight=30;//for experiment
-    maxWeight=80;
+    minWeight=1;//for experiment
+    maxWeight=40;
 //    minWeight=1;
 //    maxWeight=5;
     rad=4;
