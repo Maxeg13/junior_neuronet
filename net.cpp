@@ -29,15 +29,15 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     exp_tau_m=exp(-step*STDP_div/tau_m);
     exp_tau_y=exp(-step*STDP_div/tau_y);
 
-    Am2=.007;
-    Am3=.00023;
-    Ap2=5*.0000000001;
-    Ap3=.0062;
-
 //    Am2=.007;
-//    Am3=.007;
-//    Ap2=7*.001;
-//    Ap3=.007;
+//    Am3=.00023;
+//    Ap2=5*.0000000001;
+//    Ap3=.0062;
+
+    Am2=.0071;
+    Am3=0;
+    Ap2=0;
+    Ap3=.0065;
 
 
     STDP=2;
@@ -159,8 +159,11 @@ void CNet::CalculateStep(float x)
     for(int j=0;j<size;j++)
         for(int i=0;i<neuron[j].output.size();i++)
         {
+            if(!((j==2)&&(i==0)))
+            {
             neuron[j].output[i].push_front(neuron[j].to_output);
             neuron[j].output[i].pop_back();
+            }
         }
 }
 void CNet::setArrows()
