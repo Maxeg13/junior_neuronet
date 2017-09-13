@@ -35,8 +35,10 @@ public slots:
      void currentChange(int x);
      void pull_change();
      void setInhPerc();
-     void freqChange(int x);
+     void freqChange();
      void change_STDP_speed( );
+     void changeWeight();
+     void killDelay();
 };
 
 #endif // DIALOG_H

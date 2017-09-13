@@ -3,6 +3,13 @@
 #include <math.h>
 #include <QDebug>
 
+float thresh(int x)
+{
+    if(x>1)
+        return(1);
+    else
+        return(x);
+}
 
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
@@ -76,11 +83,17 @@ void CNet::normWeights()
     {
         for (int j=0;j<size;j++)
         {
-            if(neuron[i].weight[j]!=0)
-                neuron[i].weight_norm[j]=fabs(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight)+.1;
+            if(neuron[i].weight[j]>0.01)
+                neuron[i].weight_norm[j]=(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight)+.1;
 
-            if(neuron[j].weight[i]!=0)
-                neuron[j].weight_norm[i]=fabs(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight)+.1;
+            if(neuron[j].weight[i]>0.01)
+                neuron[j].weight_norm[i]=(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight)+.1;
+
+            if(neuron[i].weight[j]<-0.01)
+                neuron[i].weight_norm[j]=thresh(-(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight))+.1;
+
+            if(neuron[j].weight[i]<-0.01)
+                neuron[j].weight_norm[i]=thresh(-(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight))+.1;
         }
     }
 }
@@ -150,7 +163,7 @@ void CNet::kohonSettings()
 
 void CNet::setDelay(int i,int j)
 {
-    if(neuron[i].weight[j]!=0)
+    if(fabs(neuron[i].weight[j])>0.1)
     {
         float ex=neuron[i].x-neuron[j].x;
         float ey=neuron[i].y-neuron[j].y;

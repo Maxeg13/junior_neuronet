@@ -84,9 +84,10 @@ public:
 
 
 
-myQPushButton *button1, *button_stop, *button_grab;
+myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay;
 myQSlider *slider_circle, *slider_show_ext,
-*slider_weight_rad, *slider_current, *slider_freq;
+*slider_weight_rad, *slider_current, *slider_freq,
+*slider_weight_test;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -105,12 +106,28 @@ void Dialog::setMaxWeight()
     //    qDebug()<<net.maxWeight;
 }
 
+void Dialog::changeWeight()
+{
+   if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.1)
+       net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=slider_weight_test->value();
+if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-0.1)
+      net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=-slider_weight_test->value();
+}
+
 void Dialog::setInhPerc()
 {
     //    net=CNet(90,L_E3->text().toInt(),RS);
     for(int i=0;i<net.size;i++)
         net.neuron[i].is_excitatory=((rand()%100)>(L_E3->text().toInt()-1));
     net.weights_with_rad(slider_weight_rad->value());
+}
+
+void Dialog::killDelay()
+{
+    for(int i=0;i<net.size;i++)
+        for(int j=0;j<net.size;j++)
+            if(fabs(net.neuron[i].weight[j])>0.1)
+    net.neuron[i].output[j].resize(3,0);
 }
 
 void Dialog::change_STDP_speed()
@@ -136,6 +153,7 @@ Dialog::Dialog(QWidget *parent) :
     button_stop= new myQPushButton(this,"stop spiking!");
     button1= new myQPushButton(this,"pull");
     button_grab= new myQPushButton(this,"grab");
+    button_kill_delay=new myQPushButton(this,"kill delay");
 
     L_E=new QLineEdit;
     L_E2=new QLineEdit;
@@ -173,6 +191,10 @@ Dialog::Dialog(QWidget *parent) :
     mainLayout->addWidget(horizontalGroupBox2,0,Qt::AlignBottom);
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
+    slider_weight_test= new myQSlider(this);
+    slider_weight_test->setRange(1, 40);
+    slider_weight_test->setValue(10);
+
 
     slider_show_ext = new myQSlider(this);
     slider_show_ext->setRange(10, 140);
@@ -208,8 +230,11 @@ Dialog::Dialog(QWidget *parent) :
     layout1->addWidget(L_E2);
     layout1->addWidget(L_E3);
     layout2->addWidget(slider_freq);
+    layout2->addWidget(slider_weight_test);
     layout2->addWidget(L_E4);
+    layout2->addWidget(button_kill_delay);
 
+connect(button_kill_delay,SIGNAL(clicked()),this,SLOT(killDelay()));
 
     connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
 
@@ -226,10 +251,12 @@ Dialog::Dialog(QWidget *parent) :
     connect(slider_current, SIGNAL(valueChanged(int)), this,
             SLOT(currentChange(int)));
 
-    connect(slider_freq, SIGNAL(valueChanged(int)), this,
-            SLOT(freqChange(int)));
+    connect(slider_freq, SIGNAL(sliderReleased()), this,
+            SLOT(freqChange()));
 
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
+
+    connect(slider_weight_test,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
 
     connect(L_E,SIGNAL(editingFinished()),this,SLOT(setMinWeight()));
 
@@ -240,16 +267,21 @@ Dialog::Dialog(QWidget *parent) :
     connect(L_E4, SIGNAL(editingFinished()), this,
             SLOT(change_STDP_speed()));
 
+
+
     slider_circle->setToolTip("subcicles, default is 24");
     slider_show_ext->setToolTip("speed of fake blinkings");
     slider_weight_rad->setToolTip("rad of weights");
     slider_current->setToolTip("set external current value");
     slider_freq->setToolTip("set modulator frequency");
+    slider_weight_test->setToolTip("set weight");
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");
     L_E3->setToolTip("inhibitory percentage");
+    L_E4->setToolTip("STDP speed");
 
-    freqChange(0);
+
+    freqChange();
     weightRadChanged();
     change_STDP_speed();
     this->currentChange(1);
@@ -303,7 +335,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     else if(event->text()=="s")
     {
         net.stim_ind.push_back(mouse_ind[0]);
-        freqChange(1);
+        freqChange();
         //        QDebug
     }
     else if(event->text()=="m")
@@ -369,13 +401,13 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
 
 }
 
-void Dialog::freqChange(int x)
+void Dialog::freqChange()
 {
     for(int i=0;i<net.stim_ind.size();i++)
     {
-    net.neuron[net.stim_ind[i]].freq=slider_freq->value();
-    net.neuron[net.stim_ind[i]].freq_cnt=0;
-    net.neuron[net.stim_ind[i]].time_from_freq=1000/slider_freq->value();
+    net.neuron[mouse_ind[0]].freq=slider_freq->value();
+    net.neuron[mouse_ind[0]].freq_cnt=0;
+    net.neuron[mouse_ind[0]].time_from_freq=1000/slider_freq->value();
     }
 }
 
@@ -386,8 +418,9 @@ void Dialog::drawing()
 
 void Dialog::neuroGrab()
 {
-//    for(int i=0;i<net.size;i++)
-//        net.neuron[i].locate();
+
+    for(int i=0;i<net.size;i++)
+        net.neuron[i].locate();
 
 //    net.weights_with_rad(slider_weight_rad->value());
 }

@@ -71,6 +71,8 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     E_m=c;
     U_e=d;
     input_from_neurons=0;
+    freq=2;
+    time_from_freq=1000/freq;
     freq_cnt=0;
     external_I=0;
     output.resize(net->size);
@@ -226,7 +228,7 @@ void neuronIzh::CalculateStep()
 
 
     for(i=0;i<net->size;i++)
-        if(net->neuron[i].weight[ID]!=0)
+        if(fabs(net->neuron[i].weight[ID])>net->minWeight)
             input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
     input_sum=input_from_neurons+external_I*freq_modulator;
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
