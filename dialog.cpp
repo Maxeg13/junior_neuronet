@@ -40,7 +40,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3;
 QTimer *timer;
-CNet net(3,0,RS);//4
+CNet net(3,0,IB);//4
 
 
 
@@ -182,7 +182,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_current = new myQSlider(this);
     slider_current->setRange(9000,50000);
-//    slider_current->setRange(500,2000);
+    //    slider_current->setRange(500,2000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
     slider_freq->setRange(1,50);
@@ -247,12 +247,14 @@ void Dialog::keyPressEvent(QKeyEvent *event)
 {
     if(event->text()==" ")
     {
-        fire=1;
-        for(int i=0;i<net.stim_ind.size();i++)
-        {
-            net.neuron[net.stim_ind[i]].external_I=slider_current_val;//40//2000
+        fire=!fire;
 
-        }
+            for(int i=0;i<net.stim_ind.size();i++)
+            {
+                net.neuron[net.stim_ind[i]].external_I=fire*slider_current_val;//40//2000
+
+            }
+
 
     }
     else if(event->text()=="h")
@@ -342,14 +344,7 @@ void Dialog::spikesStop()
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)
 {
-    if(fire)
-    {
-        for(int i=0;i<net.stim_ind.size();i++)
-        {
-            net.neuron[net.stim_ind[i]].external_I=0;//40//2000
-        }
-        fire=0;
-    }
+
 
 }
 
@@ -357,9 +352,9 @@ void Dialog::freqChange(int x)
 {
     for(int i=0;i<net.stim_ind.size();i++)
     {
-    net.neuron[net.stim_ind[i]].freq=slider_freq->value();
-    net.neuron[net.stim_ind[i]].freq_cnt=0;
-    net.neuron[net.stim_ind[i]].time_from_freq=1000/slider_freq->value();
+        net.neuron[net.stim_ind[i]].freq=slider_freq->value();
+        net.neuron[net.stim_ind[i]].freq_cnt=0;
+        net.neuron[net.stim_ind[i]].time_from_freq=1000/slider_freq->value();
     }
 }
 

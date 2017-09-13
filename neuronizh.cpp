@@ -61,6 +61,12 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
         b=0.25;
         c=-65;
         d=0.05;
+
+    case IB:
+        a=0.02;
+        b=0.2;
+        c=-55;
+        d=4;
         break;
     }
 

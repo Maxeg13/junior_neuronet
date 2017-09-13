@@ -4,7 +4,7 @@
 #include <deque>
 //#include "net.h"
 using namespace std;
-enum neuronType {RS, TC};
+enum neuronType {RS, TC, IB};
 class CNet;
 //class neuronIzh;
 
