@@ -117,7 +117,6 @@ void Dialog::setMaxWeight()
 void Dialog::setPattern(int i)
 {
 //    int i=0;
-    std::cout<<i;
     for(int j=0;j<net.stim_ind.size();j++)
     {
         net.neuron[net.stim_ind[j]].external_I=0;
@@ -325,7 +324,8 @@ Dialog::Dialog(QWidget *parent) :
     slider_show_ext->setToolTip("speed of fake blinkings");
     slider_weight_rad->setToolTip("rad of weights");
     slider_current->setToolTip("set external current value");
-    slider_freq->setToolTip("set modulator frequency");
+    slider_freq->setToolTip("set modulator frequency: "+
+                            QString::number(slider_freq->value()));
     slider_weight_test->setToolTip("set weight");
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");
@@ -466,6 +466,8 @@ void Dialog::freqChange()
         net.neuron[mouse_ind[0]].freq_cnt=0;
         net.neuron[mouse_ind[0]].time_from_freq=1000/slider_freq->value();
     }
+    slider_freq->setToolTip("set modulator frequency: "+
+                            QString::number(slider_freq->value()));
 }
 
 void Dialog::drawing()
