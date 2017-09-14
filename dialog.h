@@ -40,7 +40,8 @@ public slots:
      void changeWeight();
      void killDelay();
      void savePattern();
-     void setPattern();
+     void setPattern(int i=0);
+     void startLearning();
 };
 
 #endif // DIALOG_H

@@ -16,6 +16,7 @@
 #include <QCheckBox>
 #include "pattern.h"
 
+int ptn_n;
 pattern ptn[2];
 int cnt1;
 QCheckBox *pull_check;
@@ -32,6 +33,7 @@ int slider_weight_val;
 int slider_current_val;
 float test_val;
 bool fire=0;
+bool learning_yes;
 
 
 QGroupBox *horizontalGroupBox ,
@@ -85,13 +87,18 @@ public:
 
 
 myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
-*button_save_pattern, *button_set_pattern;
+*button_save_pattern, *button_set_pattern, *button_learning;
 myQSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase;
 //QMenuBar* menuBar;
 //work* WK;
 
+
+void Dialog::startLearning()
+{
+    learning_yes=!learning_yes;
+}
 
 void Dialog::setMinWeight()
 {
@@ -107,10 +114,10 @@ void Dialog::setMaxWeight()
     //    qDebug()<<net.maxWeight;
 }
 
-void Dialog::setPattern()
+void Dialog::setPattern(int i)
 {
-    int i=0;
-
+//    int i=0;
+    std::cout<<i;
     for(int j=0;j<net.stim_ind.size();j++)
     {
         net.neuron[net.stim_ind[j]].external_I=0;
@@ -122,17 +129,21 @@ void Dialog::setPattern()
 
     for(int j=0;j<net.stim_ind.size();j++)
     {
-        net.neuron[net.stim_ind[j]].external_I=fire*slider_current->value();
+        net.neuron[net.stim_ind[j]].external_I=slider_current->value();
     }
 }
 
 void Dialog::savePattern()
 {
-    int i=0;
+
+    int i=ptn_n;
     ptn[i].freq.resize(net.stim_ind.size());
     ptn[i].ind=net.stim_ind;
     for(int j=0;j<net.stim_ind.size();j++)
         ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
+
+    ptn_n++;
+    ptn_n%=2;
 }
 
 void Dialog::changeWeight()
@@ -185,6 +196,7 @@ Dialog::Dialog(QWidget *parent) :
     button_kill_delay=new myQPushButton(this,"kill delay");
     button_save_pattern=new myQPushButton(this,"save pattern");
     button_set_pattern=new myQPushButton(this,"set pattern");
+    button_learning=new myQPushButton(this,"start learning");
 
     L_E=new QLineEdit;
     L_E2=new QLineEdit;
@@ -266,6 +278,9 @@ Dialog::Dialog(QWidget *parent) :
     layout2->addWidget(button_kill_delay);
     layout2->addWidget(button_save_pattern);
     layout2->addWidget(button_set_pattern);
+    layout2->addWidget(button_learning);
+
+    connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
 
     connect(button_save_pattern,SIGNAL(clicked()),this,SLOT(savePattern()));
 
@@ -323,6 +338,7 @@ Dialog::Dialog(QWidget *parent) :
     change_STDP_speed();
     this->currentChange(1);
     this->update();
+    setPattern(1);
 
 }
 
@@ -543,6 +559,16 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
+    static int learn_cnt=0;
+    learn_cnt++;
+    if((learn_cnt>8)&&learning_yes)
+    {
+        learn_cnt=0;
+        ptn_n++;
+        ptn_n%=2;
+        setPattern(ptn_n);
+    }
+
     for (int i=0;i<slider_circle_val;i++)
         mainCircle();
 
