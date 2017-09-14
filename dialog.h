@@ -39,6 +39,8 @@ public slots:
      void change_STDP_speed( );
      void changeWeight();
      void killDelay();
+     void savePattern();
+     void setPattern();
 };
 
 #endif // DIALOG_H

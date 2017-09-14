@@ -31,10 +31,18 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     tau_m=30;
     tau_y=125;
 
-    Am2=.007;
-    Am3=.00023;
-    Ap2=5*.0000000001;
-    Ap3=.0062;
+//    Am2=.007;
+//    Am3=.00023;
+//    Ap2=5*.0000000001;
+//    Ap3=.0062;
+    Am2=.0071;
+    Am3=0;
+    Ap2=0;
+    Ap3=.0065;
+
+
+
+
 
     exp_tau_p=exp(-step*STDP_div/tau_p);
     exp_tau_x=exp(-step*STDP_div/tau_x);
@@ -49,7 +57,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
     STDP=2;
     minWeight=1;//for experiment
-    maxWeight=12;
+    maxWeight=40;
     //    minWeight=.1;
 
     //    maxWeight=7;

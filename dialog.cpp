@@ -14,9 +14,9 @@
 #include <vector>
 #include <QLineEdit>
 #include <QCheckBox>
+#include "pattern.h"
 
-
-//#include "vars.h"
+pattern ptn[2];
 int cnt1;
 QCheckBox *pull_check;
 QPointF MouseP;
@@ -40,7 +40,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4;
 QTimer *timer;
-CNet net(10,0,RS);//4
+CNet net(10,0,IB);//4
 
 
 
@@ -84,10 +84,11 @@ public:
 
 
 
-myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay;
+myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
+*button_save_pattern, *button_set_pattern;
 myQSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
-*slider_weight_test;
+*slider_weight_test, *slider_phase;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -106,12 +107,40 @@ void Dialog::setMaxWeight()
     //    qDebug()<<net.maxWeight;
 }
 
+void Dialog::setPattern()
+{
+    int i=0;
+
+    for(int j=0;j<net.stim_ind.size();j++)
+    {
+        net.neuron[net.stim_ind[j]].external_I=0;
+    }
+
+    net.stim_ind=ptn[i].ind;
+    for(int j=0;j<ptn[i].freq.size();j++)
+        net.neuron[ptn[i].ind[j]].freq=ptn[i].freq[j];
+
+    for(int j=0;j<net.stim_ind.size();j++)
+    {
+        net.neuron[net.stim_ind[j]].external_I=fire*slider_current->value();
+    }
+}
+
+void Dialog::savePattern()
+{
+    int i=0;
+    ptn[i].freq.resize(net.stim_ind.size());
+    ptn[i].ind=net.stim_ind;
+    for(int j=0;j<net.stim_ind.size();j++)
+        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
+}
+
 void Dialog::changeWeight()
 {
-   if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.1)
-       net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=slider_weight_test->value();
-if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-0.1)
-      net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=-slider_weight_test->value();
+    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.1)
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=slider_weight_test->value();
+    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-0.1)
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=-slider_weight_test->value();
 }
 
 void Dialog::setInhPerc()
@@ -127,7 +156,7 @@ void Dialog::killDelay()
     for(int i=0;i<net.size;i++)
         for(int j=0;j<net.size;j++)
             if(fabs(net.neuron[i].weight[j])>0.1)
-    net.neuron[i].output[j].resize(3,0);
+                net.neuron[i].output[j].resize(3,0);
 }
 
 void Dialog::change_STDP_speed()
@@ -154,6 +183,8 @@ Dialog::Dialog(QWidget *parent) :
     button1= new myQPushButton(this,"pull");
     button_grab= new myQPushButton(this,"grab");
     button_kill_delay=new myQPushButton(this,"kill delay");
+    button_save_pattern=new myQPushButton(this,"save pattern");
+    button_set_pattern=new myQPushButton(this,"set pattern");
 
     L_E=new QLineEdit;
     L_E2=new QLineEdit;
@@ -201,7 +232,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_show_ext->setValue(test_val=10);
     test_val/=20;
 
-//    test_val/=20;
+    //    test_val/=20;
 
     slider_circle = new myQSlider(this);
     slider_circle->setRange(1, 100);
@@ -212,7 +243,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-//    slider_current->setRange(3000,6000);
+    //    slider_current->setRange(3000,6000);
     slider_current->setRange(5000,20000);
     slider_current = new myQSlider(this);
     slider_freq = new myQSlider(this);
@@ -233,8 +264,14 @@ Dialog::Dialog(QWidget *parent) :
     layout2->addWidget(slider_weight_test);
     layout2->addWidget(L_E4);
     layout2->addWidget(button_kill_delay);
+    layout2->addWidget(button_save_pattern);
+    layout2->addWidget(button_set_pattern);
 
-connect(button_kill_delay,SIGNAL(clicked()),this,SLOT(killDelay()));
+    connect(button_save_pattern,SIGNAL(clicked()),this,SLOT(savePattern()));
+
+    connect(button_set_pattern,SIGNAL(clicked()),this,SLOT(setPattern()));
+
+    connect(button_kill_delay,SIGNAL(clicked()),this,SLOT(killDelay()));
 
     connect(button1,SIGNAL(clicked()),this,SLOT(pull_change()));
 
@@ -293,12 +330,13 @@ void Dialog::keyPressEvent(QKeyEvent *event)
 {
     if(event->text()==" ")
     {
-        fire=1;
+
         for(int i=0;i<net.stim_ind.size();i++)
         {
-            net.neuron[net.stim_ind[i]].external_I=slider_current_val;//40//2000
+            net.neuron[net.stim_ind[i]].external_I=fire*slider_current_val;//40//2000
 
         }
+        fire=!fire;
 
     }
     else if(event->text()=="h")
@@ -351,7 +389,10 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         for(int i=0;i<net.stim_ind.size();i++)
         {
             if(net.stim_ind[i]==mouse_ind[0])
+            {
+                net.neuron[net.stim_ind[i]].external_I=0;
                 net.stim_ind.erase(net.stim_ind.begin()+i);
+            }
         }
         //        net.stim_ind.push_back(mouse_ind);
     }
@@ -390,14 +431,14 @@ void Dialog::spikesStop()
 
 void Dialog::keyReleaseEvent(QKeyEvent *event)
 {
-    if(fire)
-    {
-        for(int i=0;i<net.stim_ind.size();i++)
-        {
-            net.neuron[net.stim_ind[i]].external_I=0;//40//2000
-        }
-        fire=0;
-    }
+    //    if(fire)
+    //    {
+    //        for(int i=0;i<net.stim_ind.size();i++)
+    //        {
+    //            net.neuron[net.stim_ind[i]].external_I=0;//40//2000
+    //        }
+    //        fire=0;
+    //    }
 
 }
 
@@ -405,9 +446,9 @@ void Dialog::freqChange()
 {
     for(int i=0;i<net.stim_ind.size();i++)
     {
-    net.neuron[mouse_ind[0]].freq=slider_freq->value();
-    net.neuron[mouse_ind[0]].freq_cnt=0;
-    net.neuron[mouse_ind[0]].time_from_freq=1000/slider_freq->value();
+        net.neuron[mouse_ind[0]].freq=slider_freq->value();
+        net.neuron[mouse_ind[0]].freq_cnt=0;
+        net.neuron[mouse_ind[0]].time_from_freq=1000/slider_freq->value();
     }
 }
 
@@ -422,7 +463,8 @@ void Dialog::neuroGrab()
     for(int i=0;i<net.size;i++)
         net.neuron[i].locate();
 
-//    net.weights_with_rad(slider_weight_rad->value());
+    net.kohonSettings();
+    //    net.weights_with_rad(slider_weight_rad->value());
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
@@ -661,7 +703,7 @@ Dialog::~Dialog()
 void Dialog::weightRadChanged()
 {
 
-//    net.weights_with_rad(slider_weight_rad->value());
+    //    net.weights_with_rad(slider_weight_rad->value());
 
 }
 
