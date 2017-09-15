@@ -42,6 +42,7 @@ public slots:
      void savePattern();
      void setPattern(int i=0);
      void startLearning();
+     void chooseThePattern();
 };
 
 #endif // DIALOG_H

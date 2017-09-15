@@ -46,6 +46,7 @@ public:
     float external_I;
     float* link_length;
     int freq;
+    int stim_rnd;
     unsigned int freq_cnt;
     int time_from_freq;
     int freq_modulator;

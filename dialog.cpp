@@ -37,10 +37,10 @@ bool learning_yes;
 
 
 QGroupBox *horizontalGroupBox ,
-*horizontalGroupBox1, *horizontalGroupBox2;
+*horizontalGroupBox1, *horizontalGroupBox2, *horizontalGroupBox3;
 QVBoxLayout *mainLayout, *pictureLayout;
 
-QLineEdit *L_E, *L_E2, *L_E3, *L_E4;
+QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
 CNet net(10,0,IB);//4
 
@@ -87,7 +87,7 @@ public:
 
 
 myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
-*button_save_pattern, *button_set_pattern, *button_learning;
+*button_save_pattern, *button_learning;
 myQSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase;
@@ -110,6 +110,7 @@ void Dialog::setMinWeight()
 void Dialog::setMaxWeight()
 {
     net.maxWeight=L_E2->text().toFloat();
+    net.kohonSettings();
     net.normWeights();
     //    qDebug()<<net.maxWeight;
 }
@@ -147,10 +148,15 @@ void Dialog::savePattern()
 
 void Dialog::changeWeight()
 {
+
+    int w;
     if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.1)
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=slider_weight_test->value();
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
     if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-0.1)
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=-slider_weight_test->value();
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=-slider_weight_test->value();
+
+    slider_weight_test->setToolTip("set weight: "+
+                            QString::number(w));
 }
 
 void Dialog::setInhPerc()
@@ -179,6 +185,11 @@ void Dialog::currentChange(int x)
     slider_current_val=slider_current->value();
 }
 
+void Dialog::chooseThePattern()
+{
+    setPattern(L_E5->text().toInt());
+}
+
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
@@ -194,18 +205,19 @@ Dialog::Dialog(QWidget *parent) :
     button_grab= new myQPushButton(this,"grab");
     button_kill_delay=new myQPushButton(this,"kill delay");
     button_save_pattern=new myQPushButton(this,"save pattern");
-    button_set_pattern=new myQPushButton(this,"set pattern");
     button_learning=new myQPushButton(this,"start learning");
 
     L_E=new QLineEdit;
     L_E2=new QLineEdit;
     L_E3=new QLineEdit;
     L_E4=new QLineEdit;
+    L_E5=new QLineEdit;
 
     L_E->setText(QString::number(net.minWeight));
     L_E2->setText(QString::number( net.maxWeight));
     L_E3->setText(QString::number(0));
     L_E4->setText(QString::number(.01));
+    L_E5->setText(QString::number(0));
 
     mainLayout = new QVBoxLayout();
     //    pictureLayout = new QVBoxLayout();
@@ -213,9 +225,11 @@ Dialog::Dialog(QWidget *parent) :
     QHBoxLayout *layout = new QHBoxLayout;
     QHBoxLayout *layout1 = new QHBoxLayout;
     QHBoxLayout *layout2 = new QHBoxLayout;
+    QHBoxLayout *layout3 = new QHBoxLayout;
     horizontalGroupBox = new QGroupBox();
     horizontalGroupBox1 = new QGroupBox();
     horizontalGroupBox2 = new QGroupBox();
+    horizontalGroupBox3 = new QGroupBox();
     //    QScrollArea *scroll = new QScrollArea;
 
     this->setGeometry(QRect(40,40,640,670));
@@ -225,16 +239,18 @@ Dialog::Dialog(QWidget *parent) :
     horizontalGroupBox->setLayout(layout);
     horizontalGroupBox1->setLayout(layout1);
     horizontalGroupBox2->setLayout(layout2);
+    horizontalGroupBox3->setLayout(layout3);
 
 
     //    horizontalGroupBox->setBaseSize(400,10);
     mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
     mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
     mainLayout->addWidget(horizontalGroupBox2,0,Qt::AlignBottom);
+    mainLayout->addWidget(horizontalGroupBox3,0,Qt::AlignBottom);
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
     slider_weight_test= new myQSlider(this);
-    slider_weight_test->setRange(1, 40);
+    slider_weight_test->setRange(1, 100);
     slider_weight_test->setValue(10);
 
 
@@ -276,14 +292,12 @@ Dialog::Dialog(QWidget *parent) :
     layout2->addWidget(L_E4);
     layout2->addWidget(button_kill_delay);
     layout2->addWidget(button_save_pattern);
-    layout2->addWidget(button_set_pattern);
-    layout2->addWidget(button_learning);
+    layout3->addWidget(button_learning);
+    layout3->addWidget(L_E5);
 
     connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
 
     connect(button_save_pattern,SIGNAL(clicked()),this,SLOT(savePattern()));
-
-    connect(button_set_pattern,SIGNAL(clicked()),this,SLOT(setPattern()));
 
     connect(button_kill_delay,SIGNAL(clicked()),this,SLOT(killDelay()));
 
@@ -318,6 +332,9 @@ Dialog::Dialog(QWidget *parent) :
     connect(L_E4, SIGNAL(editingFinished()), this,
             SLOT(change_STDP_speed()));
 
+    connect(L_E5, SIGNAL(editingFinished()), this,
+            SLOT(chooseThePattern()));
+
 
 
     slider_circle->setToolTip("subcicles, default is 24");
@@ -331,7 +348,7 @@ Dialog::Dialog(QWidget *parent) :
     L_E2->setToolTip("set max weight");
     L_E3->setToolTip("inhibitory percentage");
     L_E4->setToolTip("STDP speed");
-
+    L_E5->setToolTip("choose the pattern");
 
     freqChange();
     weightRadChanged();
@@ -368,6 +385,8 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
         str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]].size() );
         str+="\ntest value: "+QString::number(net.STDP_speed);
+        str+="\nfreq: "+QString::number(net.neuron[mouse_ind[0]].freq);
+        str+="\nlearning is"+QString::number(learning_yes);
         str+="\n\n";
 
         this->setToolTip(str);

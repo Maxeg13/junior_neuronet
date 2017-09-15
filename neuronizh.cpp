@@ -39,7 +39,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     //        x=rand()%width;
     //        y=rand()%height;
     //    }
-
+    stim_rnd=0;
     freq_cnt=0;
     vis=0;
     net=_net;
@@ -189,7 +189,7 @@ void neuronIzh::weights_with_rad(float x1)
 
 void neuronIzh::setRandomWeight(int i, bool b)
 {
-    weight[i]=((b?1:(-1))*(net->maxWeight + net->minWeight)/2+
+    weight[i]=((b?1:(-3))*(net->maxWeight + net->minWeight)/2+
                (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*net->weight_diap);
 }
 
@@ -201,11 +201,13 @@ void neuronIzh::test(float x)
 
 void neuronIzh::CalculateStep()
 {
+
     freq_cnt++;
-    if(freq_cnt>(time_from_freq+1))
+    if(freq_cnt+stim_rnd>(time_from_freq+1))
     {
         freq_cnt=0;
         freq_modulator=1;
+        stim_rnd=rand()%4;
     }
     else if(freq_cnt==(1))freq_modulator=0;
 
