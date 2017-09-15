@@ -191,6 +191,7 @@ void neuronIzh::setRandomWeight(int i, bool b)
 {
     weight[i]=((b?1:(-3))*(net->maxWeight + net->minWeight)/2+
                (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*net->weight_diap);
+
 }
 
 void neuronIzh::test(float x)
@@ -270,7 +271,7 @@ void neuronIzh::CalculateStep()
             for(i=0;i<net->size;i++)
             {
 
-                if(net->neuron[i].weight[ID]&&(net->neuron[i].is_excitatory))//inputs
+                if((net->neuron[i].weight[ID]>0.0001)&&(net->neuron[i].is_excitatory))//inputs
                 {
                     //post
                     dw=(net->neuron[i].r1[ID]*
@@ -288,7 +289,7 @@ void neuronIzh::CalculateStep()
                     //                        }
 
                 }
-                else if(weight[i]&&is_excitatory)//outputs
+                else if((weight[i]>0.0001)&&is_excitatory)//outputs
                 {
                     //pre
                     dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;

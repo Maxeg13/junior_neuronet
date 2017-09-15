@@ -42,7 +42,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(10,0,IB);//4
+CNet net(10,0,TC);//4 IB
 
 
 
@@ -150,9 +150,9 @@ void Dialog::changeWeight()
 {
 
     int w;
-    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.1)
+    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.00001)
         net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
-    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-0.1)
+    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-0.00001)
         net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=-slider_weight_test->value();
 
     slider_weight_test->setToolTip("set weight: "+
@@ -171,7 +171,7 @@ void Dialog::killDelay()
 {
     for(int i=0;i<net.size;i++)
         for(int j=0;j<net.size;j++)
-            if(fabs(net.neuron[i].weight[j])>0.1)
+            if(fabs(net.neuron[i].weight[j])>0.00001)
                 net.neuron[i].output[j].resize(3,0);
 }
 
@@ -250,7 +250,7 @@ Dialog::Dialog(QWidget *parent) :
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
     slider_weight_test= new myQSlider(this);
-    slider_weight_test->setRange(1, 100);
+    slider_weight_test->setRange(0, 100);
     slider_weight_test->setValue(10);
 
 
@@ -386,7 +386,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]].size() );
         str+="\ntest value: "+QString::number(net.STDP_speed);
         str+="\nfreq: "+QString::number(net.neuron[mouse_ind[0]].freq);
-        str+="\nlearning is"+QString::number(learning_yes);
+        str+="\nlearning is: "+QString::number(learning_yes);
         str+="\n\n";
 
         this->setToolTip(str);
