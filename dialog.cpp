@@ -42,7 +42,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(10,0,TC);//4 IB
+CNet net(10,0,IB);//4 IB
 
 
 
@@ -366,6 +366,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
 
         for(int i=0;i<net.stim_ind.size();i++)
         {
+            net.neuron[net.stim_ind[i]].freq_cnt=0;
             net.neuron[net.stim_ind[i]].external_I=fire*slider_current_val;//40//2000
 
         }
@@ -378,7 +379,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         QString str;
         str+="neuron type: Izhikevich's neuron\n";
         str+="neuron subtype: ";
-        str+=(net.type==RS)?"RS":"TC";
+        str+=(net.type==RS)?"RS":(net.type==TC)?"TC":"IB";
         str+="\nis excitatory: "+QString::number(net.neuron[mouse_ind[0]].is_excitatory);
         str+="\nID: "+QString::number(net.neuron[mouse_ind[0]].ID);
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
@@ -413,7 +414,10 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="m")
     {
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=(net.maxWeight+net.minWeight)/2;
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=
+                ((net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>
+                .0001)?(1):(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]<-.0001)?(-1):
+                                                                                  (0))*(net.maxWeight+net.minWeight)/2;
     }
     else if(event->text()=="l")
     {
@@ -618,7 +622,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             {
                 float h=net.neuron[i].weight_norm[j]*color_max;
 
-                if(h!=0)
+                if(fabs(net.neuron[i].weight[j])>0.0001)
                 {
                     pen.setColor(QColor(h,h,h));
                     painter->setPen(pen);
@@ -632,7 +636,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     for(int j=0;j<net.size;j++)
     {
         float h=net.neuron[mouse_ind[0]].weight_norm[j]*color_max;
-        if(h!=0)
+        if( fabs(net.neuron[mouse_ind[0]].weight[j])>0.0001)
         {
             if(!mouse_drop)
             {

@@ -189,7 +189,7 @@ void neuronIzh::weights_with_rad(float x1)
 
 void neuronIzh::setRandomWeight(int i, bool b)
 {
-    weight[i]=((b?1:(-3))*(net->maxWeight + net->minWeight)/2+
+    weight[i]=((b?1:(-2))*(net->maxWeight + net->minWeight)/2+
                (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*net->weight_diap);
 
 }
