@@ -16,7 +16,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     step=1;
     psc_excxpire_time=20;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
-    weight_diap=.5;
+    weight_diap=.2;
     steph=step/2;
 
     size_k=0.1;

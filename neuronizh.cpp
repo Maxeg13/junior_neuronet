@@ -208,7 +208,8 @@ void neuronIzh::CalculateStep()
     {
         freq_cnt=0;
         freq_modulator=1;
-        stim_rnd=rand()%4;
+//        stim_rnd=rand()%4;
+        stim_rnd=0;
     }
     else if(freq_cnt==(1))freq_modulator=0;
 
