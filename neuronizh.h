@@ -11,13 +11,23 @@ class CNet;
 class CArrow
 {
 public:
-    float x[2],y[2];
+    float x[2],y[2], rx[4], ry[4];
     CArrow()
     {
         x[0]=0;
         x[1]=0;
         y[0]=0;
         y[1]=0;
+
+        rx[0]=0;
+        rx[1]=0;
+        ry[0]=0;
+        ry[1]=0;
+        rx[2]=0;
+        rx[3]=0;
+        ry[2]=0;
+        ry[3]=0;
+
     }
 };
 

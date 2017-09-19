@@ -41,6 +41,7 @@ public:
     float step;
     float steph;
     float ext_show;
+    bool spike_show;
     int STDP_cnt;
     int STDP_div;
     void CalculateStep(float x);

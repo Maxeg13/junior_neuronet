@@ -19,6 +19,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     weight_diap=.2;
     steph=step/2;
 
+    spike_show=1;
     size_k=0.1;
     width=400;
     height=350;
@@ -215,13 +216,26 @@ void CNet::setArrows()
                 float square=ex*ex+ey*ey+0.001;
                 ex=ex/sqrt(square);
                 ey=ey/sqrt(square);
-                float phi=0.1;
-                int length=this->rad+2;
+                float phi=0.25;
+                int length=this->rad+4;
                 neuron[i].arrow[j].x[0]=length*(ex*cos(phi)+ey*sin(phi));
                 //               qDebug()<<neuron[i].arrow[j].x[0];
                 neuron[i].arrow[j].y[0]=length*(-ex*sin(phi)+ey*cos(phi));
                 neuron[i].arrow[j].x[1]=length*(ex*cos(phi)-ey*sin(phi));
                 neuron[i].arrow[j].y[1]=length*(ex*sin(phi)+ey*cos(phi));
+                if(spike_show)
+                {
+
+                    neuron[i].arrow[j].rx[0]=ey+neuron[i].x;
+                    neuron[i].arrow[j].rx[1]=-ey+neuron[i].x;
+                    neuron[i].arrow[j].ry[0]=-ex+neuron[i].y;
+                    neuron[i].arrow[j].ry[1]=ex+neuron[i].y;
+                    neuron[i].arrow[j].rx[2]=ey+neuron[j].x;
+                    neuron[i].arrow[j].rx[3]=-ey+neuron[j].x;
+                    neuron[i].arrow[j].ry[2]=-ex+neuron[j].y;
+                    neuron[i].arrow[j].ry[3]=ex+neuron[j].y;
+
+                }
             }
         }
 }
