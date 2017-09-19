@@ -217,6 +217,7 @@ void CNet::setArrows()
                 ex=ex/sqrt(square);
                 ey=ey/sqrt(square);
                 float phi=0.25;
+                float width=1.5;
                 int length=this->rad+4;
                 neuron[i].arrow[j].x[0]=length*(ex*cos(phi)+ey*sin(phi));
                 //               qDebug()<<neuron[i].arrow[j].x[0];
@@ -226,14 +227,15 @@ void CNet::setArrows()
                 if(spike_show)
                 {
 
-                    neuron[i].arrow[j].rx[0]=ey+neuron[i].x;
-                    neuron[i].arrow[j].rx[1]=-ey+neuron[i].x;
-                    neuron[i].arrow[j].ry[0]=-ex+neuron[i].y;
-                    neuron[i].arrow[j].ry[1]=ex+neuron[i].y;
-                    neuron[i].arrow[j].rx[2]=ey+neuron[j].x;
-                    neuron[i].arrow[j].rx[3]=-ey+neuron[j].x;
-                    neuron[i].arrow[j].ry[2]=-ex+neuron[j].y;
-                    neuron[i].arrow[j].ry[3]=ex+neuron[j].y;
+                    neuron[i].arrow[j].rx[0]=ey*width+neuron[i].x;
+                    neuron[i].arrow[j].rx[1]=-ey*width+neuron[i].x;
+                    neuron[i].arrow[j].ry[0]=-ex*width+neuron[i].y;
+                    neuron[i].arrow[j].ry[1]=ex*width+neuron[i].y;
+
+                    neuron[i].arrow[j].rx[3]=ey*width+neuron[j].x;
+                    neuron[i].arrow[j].rx[2]=-ey*width+neuron[j].x;
+                    neuron[i].arrow[j].ry[3]=-ex*width+neuron[j].y;
+                    neuron[i].arrow[j].ry[2]=ex*width+neuron[j].y;
 
                 }
             }

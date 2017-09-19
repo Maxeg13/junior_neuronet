@@ -48,6 +48,7 @@ QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
 CNet net(10,0,IB);//4 IB
 
+void drawLinkWithSpike(int i, int j, QColor& QCLR, QPen& pen,QPainter* painter);
 
 float weightThresh(float x)
 {
@@ -642,28 +643,13 @@ void Dialog::paintEvent(QPaintEvent* e)
             for(int j=0;j<net.size;j++)
             {
                 float h=net.neuron[i].weight_norm[j]*color_max;
+                QColor QCLR=QColor(h,h,h);
 
                 if((net.neuron[i].weight[j])>0.0001)
                 {
                     if(net.spike_show)
                     {
-                        for(int k=0;k<4;k++)
-                        {
-
-                            qp.setPoint(k,net.neuron[i].arrow[j].rx[k],net.neuron[i].arrow[j].ry[k]);
-                        }
-                        QLinearGradient gradient1(0,1000,100,1000);
-                        gradient1.setColorAt(0, QColor(110,110,110));
-                        gradient1.setColorAt(0.4, QColor(110,110,110));
-                        gradient1.setColorAt(0.5, QColor(250,0,0));
-                        gradient1.setColorAt(0.6, QColor(110,110,110));
-                        gradient1.setColorAt(1, QColor(110,110,110));
-
-                        painter->setBrush(gradient1);
-                        pen.setColor(QColor(0,0,0,0));
-                        painter->setPen(pen);
-
-                        painter->drawPolygon(qp);
+                        drawLinkWithSpike(i,j,QCLR, pen,painter);
                     }
                     else
                     {
@@ -699,9 +685,11 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             if( (net.neuron[mouse_ind[0]].weight[j])>0.0001)
             {
-                pen.setColor(QColor(h,h,h));
-                painter->setPen(pen);
-                painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[j].x,net.neuron[j].y);
+                QColor QCLR=QColor(h,h,h);
+                drawLinkWithSpike(mouse_ind[0],j,QCLR, pen,painter);
+//                pen.setColor(QColor(h,h,h));
+//                painter->setPen(pen);
+//                painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[j].x,net.neuron[j].y);
             }
             else if((net.neuron[mouse_ind[0]].weight[j])<-0.0001)
             {
@@ -829,6 +817,41 @@ void Dialog::weightRadChanged()
 
 }
 
+
+void drawLinkWithSpike(int i, int j, QColor& QCLR, QPen& pen,QPainter* painter)
+{
+
+    for(int k=0;k<4;k++)
+    {
+
+        qp.setPoint(k,net.neuron[i].arrow[j].rx[k],net.neuron[i].arrow[j].ry[k]);
+    }
+    QLinearGradient gradient1(net.neuron[i].x,net.neuron[i].y,
+                              net.neuron[j].x,net.neuron[j].y);
+
+    float l=net.neuron[i].syn_cnt[j]/(float)net.neuron[i].output[j].size();
+
+    if(net.neuron[i].syn_cnt[j])
+    {
+        qDebug()<<l;
+        gradient1.setColorAt(0, QCLR);
+        gradient1.setColorAt((0.+l)/1.2, QCLR);
+        gradient1.setColorAt((0.1+l)/1.2, QColor(0,30,200));
+        gradient1.setColorAt((0.2+l)/1.2, QCLR);
+        gradient1.setColorAt(1, QCLR);
+        painter->setBrush(gradient1);
+    }
+    else
+    {
+        painter->setBrush(QBrush(QCLR));
+    }
+
+
+    pen.setColor(QColor(0,0,0,0));
+    painter->setPen(pen);
+
+    painter->drawPolygon(qp);
+}
 //class myQHBoxLayout: public QHBoxLayout
 //{
 
