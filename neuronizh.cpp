@@ -89,11 +89,11 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     o1=new float[net->size];
     o2=new float[net->size];
 
-
-    syn_cnt=new int[net->size];
-
-    for(int i=0;i<net->size;i++)
-    syn_cnt[i]=0;
+//syn_cnt.resize(
+//    syn_cnt=new int[net->size];
+    syn_cnt.resize(net->size);
+//    for(int i=0;i<net->size;i++)
+//    syn_cnt[i].;
 
     if(is_excitatory)
         for(int i=0;i<net->size;i++)
@@ -103,7 +103,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
                 r2[i]=0;
                 o1[i]=0;
                 o2[i]=0;
-                syn_cnt[i]=0;
+//                syn_cnt[i]=0;
             }
     //    qDebug()<<net->width;
     locate();
@@ -265,10 +265,13 @@ void neuronIzh::CalculateStep()
 
     for(i=0;i<net->size;i++)
     {
-        if(syn_cnt[i])
-        syn_cnt[i]++;
-        if(syn_cnt[i]>(output[i].size()))
-           syn_cnt[i]=0;
+        for(int j=0;j<syn_cnt[i].size();j++)
+        {
+        if(syn_cnt[i][j])
+        syn_cnt[i][j]++;
+        if(syn_cnt[i][j]>(output[i].size()))
+           syn_cnt[i].pop_back();
+        }
     }
 
 
@@ -276,7 +279,7 @@ void neuronIzh::CalculateStep()
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
         for(i=0;i<net->size;i++)
-            syn_cnt[i]=1;
+            syn_cnt[i].push_front(1);
 
         float dw;
         to_output=1;

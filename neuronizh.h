@@ -36,7 +36,7 @@ class neuronIzh
 public:
     CNet* net;
     CArrow* arrow;
-    int* syn_cnt;
+    deque<deque<int>> syn_cnt;
     int i;
     float x;
     float y;
