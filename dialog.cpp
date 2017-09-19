@@ -29,7 +29,7 @@ int mouse_ind[2];
 bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
-float my_scale=1.5;
+float my_scale=1;
 int color_max=190;
 float f;
 int slider_circle_val;
@@ -627,7 +627,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     cnt1++;
 
     QPainter* painter=new QPainter(this);
-    //        painter->setRenderHint(QPainter::Antialiasing, 1);
+    painter->setRenderHint(QPainter::Antialiasing, 1);
     //    QPen pen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     QPen pen(Qt::black);
     pen.setWidth(2);
@@ -782,8 +782,8 @@ void Dialog::paintEvent(QPaintEvent* e)
                     gradient.setColorAt(1.0, QColor(0.5*(200+net.neuron[i].vis),(net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
 
                 else
-                    gradient.setColorAt(1.0, QColor(0.5*(290+net.neuron[i].vis/1.5),0.3*(200+net.neuron[i].vis),
-                                                    0.3*(200+net.neuron[i].vis)));
+                    gradient.setColorAt(1.0, QColor(0.5*(290+net.neuron[i].vis/1.5),0.5*(200+net.neuron[i].vis),
+                                                    0.5*(200+net.neuron[i].vis)));
 
                 gradient.setColorAt(0.0, QColor(net.neuron[i].vis,0,100));
                 //    painter->fillPath(path,QBrush(QColor(0,0,0)));
@@ -839,7 +839,7 @@ void drawLinkWithSpike(int i, int j, QColor& QCLR, QPen& pen,QPainter* painter)
 
             l=net.neuron[i].syn_cnt[j][k]/(float)net.neuron[i].output[j].size();
             gradient1.setColorAt((0.+l)/1.2, QCLR);
-            gradient1.setColorAt((0.1+l)/1.2, QColor(0,30,200));
+            gradient1.setColorAt((0.1+l)/1.2, QColor(0,0,180));
             gradient1.setColorAt((0.2+l)/1.2, QCLR);
         }
         gradient1.setColorAt(1, QCLR);

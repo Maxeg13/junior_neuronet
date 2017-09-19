@@ -126,10 +126,10 @@ void neuronIzh::locate()
     //    y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
     switch(ID)
     {
-    case 0: x=net->width/2*.8; y=net->height*.45; break;
-    case 1: x=net->width/2*1.2; y=net->height*.45;break;
+    case 0: x=net->width/2*1.3; y=net->height*.53; break;
+    case 1: x=net->width/2*1.6; y=net->height*.53;break;
     default:
-         y=net->height*.6;x=net->width/2+((ID-6))*net->width*0.07;
+         y=net->height*.8;x=net->width/2*1.3+((ID-5))*net->width*0.13;
     }
 
 }

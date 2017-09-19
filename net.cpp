@@ -62,7 +62,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
-    rad=4;
+    rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;
     size=_size;
@@ -217,7 +217,7 @@ void CNet::setArrows()
                 ex=ex/sqrt(square);
                 ey=ey/sqrt(square);
                 float phi=0.25;
-                float width=1.5;
+                float width=2;
                 int length=this->rad+4;
                 neuron[i].arrow[j].x[0]=length*(ex*cos(phi)+ey*sin(phi));
                 //               qDebug()<<neuron[i].arrow[j].x[0];
