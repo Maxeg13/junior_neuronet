@@ -207,7 +207,7 @@ void neuronIzh::setRandomWeight(int i, bool b)
 
 }
 
-void neuronIzh::test(float x)
+void neuronIzh::oneStep(float x)
 {
     vis*=exp(-net->ext_show*x*40);//
     CalculateStep();

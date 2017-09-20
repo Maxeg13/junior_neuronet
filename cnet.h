@@ -13,7 +13,7 @@ public:
     float psc_excxpire_time;
     float exp_psc_exc;
     CNet();
-    CNet(int ,int, neuronType);
+    CNet(int _size, int _perc, neuronType _type);
     void kohonSettings();
     neuronType type;
     bool test;
@@ -57,6 +57,8 @@ public:
     void afterReWeight();
     void normWeights();
     void testSettings(int x);
+
+//    CNet(int _size, int _perc, neuronType /*_type);*/
 };
 
 #endif // NET_H

@@ -13,14 +13,22 @@ float thresh(int x)
 
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
+    test=1;
+    STDP=2;
+    minWeight=1/20.;//for experiment
+    maxWeight=40/20.;
     step=1;
     psc_excxpire_time=20;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
-    weight_diap=.2;
+    if(test)
+        weight_diap=.7;
+    else
+        weight_diap=.2;
+
     steph=step/2;
 
     spike_show=1;
-    size_k=0.1;
+    size_k=.1;
     width=400;
     height=350;
     STDP_cnt=0;
@@ -55,10 +63,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    Ap2=7*.001;
     //    Ap3=.007;
 
-    test=1;
-    STDP=2;
-    minWeight=1/20.;//for experiment
-    maxWeight=40/20.;
+
     //    minWeight=.1;
 
     //    maxWeight=7;
@@ -199,7 +204,7 @@ void CNet::setDelay(int i,int j)
 void CNet::CalculateStep(float x)
 {
     for(int i=0;i<size;i++)
-        neuron[i].test(x);
+        neuron[i].oneStep(x);
 
     for(int j=0;j<size;j++)
         for(int i=0;i<neuron[j].output.size();i++)
