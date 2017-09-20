@@ -55,14 +55,14 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    Ap2=7*.001;
     //    Ap3=.007;
 
-
+    test=1;
     STDP=2;
     minWeight=1/20.;//for experiment
     maxWeight=40/20.;
     //    minWeight=.1;
 
     //    maxWeight=7;
-    rad=6;
+    rad=8;
     inhibitory_perc=_perc;
     //    circle_val=50;
     size=_size;
@@ -73,18 +73,25 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     for(int i=0;i<size;i++)
         neuron[i]= neuronIzh(i,_type,((rand()%100)>(inhibitory_perc-1)),this);
 
-    //        for(int i=0;i<size;i++)
-    //        neuron[i].weights_with_rad(600);
-    //    afterReWeight();
+    testSettings(600);
 
     kohonSettings();
-
-    //    for(int i=0;i<size;i++)
-    //        for(int j=0;j<size;j++)
-    //        {
-    //            setDelay(i,j);
-    //        }
 }
+
+void CNet::testSettings(int x)
+{
+    for(int i=0;i<size;i++)
+    neuron[i].weights_with_rad(x);
+    afterReWeight();
+
+    for(int i=0;i<size;i++)
+    for(int j=0;j<size;j++)
+    {
+        setDelay(i,j);
+    }
+}
+
+
 
 void CNet::normWeights()
 {

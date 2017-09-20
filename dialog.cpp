@@ -29,7 +29,7 @@ int mouse_ind[2];
 bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
-float my_scale=1;
+float my_scale=0.9;
 int color_max=190;
 float f;
 int slider_circle_val;
@@ -46,7 +46,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(10,0,IB);//4 IB
+CNet net(30,0,IB);//4 IB
 
 void drawLinkWithSpike(int i, int j, QColor& QCLR, QPen& pen,QPainter* painter);
 
@@ -124,7 +124,11 @@ void Dialog::setMinWeight()
 void Dialog::setMaxWeight()
 {
     net.maxWeight=L_E2->text().toFloat();
-    net.kohonSettings();
+    if(net.test)
+        net.testSettings(slider_weight_rad->value());
+    else
+        net.kohonSettings();
+
     net.normWeights();
     //    qDebug()<<net.maxWeight;
 }
@@ -371,7 +375,8 @@ Dialog::Dialog(QWidget *parent) :
     L_E5->setToolTip("choose the pattern");
 
     freqChange();
-    weightRadChanged();
+    if(net.test)
+        weightRadChanged();
     change_STDP_speed();
     this->currentChange(1);
     this->update();
@@ -813,7 +818,7 @@ Dialog::~Dialog()
 void Dialog::weightRadChanged()
 {
 
-    //    net.weights_with_rad(slider_weight_rad->value());
+    net.weights_with_rad(slider_weight_rad->value());
 
 }
 

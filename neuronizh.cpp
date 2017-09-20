@@ -89,11 +89,11 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     o1=new float[net->size];
     o2=new float[net->size];
 
-//syn_cnt.resize(
-//    syn_cnt=new int[net->size];
+    //syn_cnt.resize(
+    //    syn_cnt=new int[net->size];
     syn_cnt.resize(net->size);
-//    for(int i=0;i<net->size;i++)
-//    syn_cnt[i].;
+    //    for(int i=0;i<net->size;i++)
+    //    syn_cnt[i].;
 
     if(is_excitatory)
         for(int i=0;i<net->size;i++)
@@ -103,7 +103,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
                 r2[i]=0;
                 o1[i]=0;
                 o2[i]=0;
-//                syn_cnt[i]=0;
+                //                syn_cnt[i]=0;
             }
     //    qDebug()<<net->width;
     locate();
@@ -121,16 +121,22 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
 void neuronIzh::locate()
 {
-
-    //    x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
-    //    y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
-    switch(ID)
+    if(net->test)
     {
-    case 0: x=net->width/2*1.3; y=net->height*.53; break;
-    case 1: x=net->width/2*1.6; y=net->height*.53;break;
-    default:
-         y=net->height*.8;x=net->width/2*1.3+((ID-5))*net->width*0.13;
+        x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
+        y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
     }
+    else
+    {
+        switch(ID)
+        {
+        case 0: x=net->width/2*1.3; y=net->height*.53; break;
+        case 1: x=net->width/2*1.6; y=net->height*.53;break;
+        default:
+            y=net->height*.8;x=net->width/2*1.3+((ID-5))*net->width*0.13;
+        }
+    }
+
 
 }
 
@@ -216,7 +222,7 @@ void neuronIzh::CalculateStep()
     {
         freq_cnt=0;
         freq_modulator=1;
-//        stim_rnd=rand()%4;
+        //        stim_rnd=rand()%4;
         stim_rnd=0;
     }
     else if(freq_cnt==(1))freq_modulator=0;
@@ -267,10 +273,10 @@ void neuronIzh::CalculateStep()
     {
         for(int j=0;j<syn_cnt[i].size();j++)
         {
-        if(syn_cnt[i][j])
-        syn_cnt[i][j]++;
-        if(syn_cnt[i][j]>(output[i].size()))
-           syn_cnt[i].pop_back();
+            if(syn_cnt[i][j])
+                syn_cnt[i][j]++;
+            if(syn_cnt[i][j]>(output[i].size()))
+                syn_cnt[i].pop_back();
         }
     }
 

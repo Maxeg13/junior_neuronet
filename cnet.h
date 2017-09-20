@@ -16,6 +16,7 @@ public:
     CNet(int ,int, neuronType);
     void kohonSettings();
     neuronType type;
+    bool test;
     int a;
     int size;
     float size_k;
@@ -55,6 +56,7 @@ public:
     void weights_with_rad(float x1);
     void afterReWeight();
     void normWeights();
+    void testSettings(int x);
 };
 
 #endif // NET_H
