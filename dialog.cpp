@@ -663,7 +663,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             for(int j=0;j<net.size;j++)
             {
                 float h=net.neuron[i].weight_norm[j]*color_max;
-                QColor QCLR=QColor(h,h,h);
+                QColor QCLR=QColor(h,h,h,100);
 
                 if((net.neuron[i].weight[j])>0.0001)
                 {
@@ -715,7 +715,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             if( (net.neuron[mouse_ind[0]].weight[j])>0.0001)
             {
-                QColor QCLR=QColor(h,h,h);
+                QColor QCLR=QColor(h,h,h,100);
                 drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_blue_spike,pen,painter);
                 //                pen.setColor(QColor(h,h,h));
                 //                painter->setPen(pen);
@@ -723,7 +723,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             }
             else if((net.neuron[mouse_ind[0]].weight[j])<-0.0001)
             {
-                QColor QCLR=QColor(h,h,h);
+                QColor QCLR=QColor(h,h,h,100);
                 drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_red_spike,pen,painter);
                 //                pen.setColor(inhibColor);
                 //                painter->setPen(pen);
