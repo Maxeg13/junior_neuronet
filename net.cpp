@@ -18,19 +18,20 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     minWeight=1/20.;//for experiment
     maxWeight=40/20.;
     step=1;
-    psc_excxpire_time=20;//4,0.1
+    size_k=.2;
+    psc_excxpire_time=8;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
     if(test)
-        weight_diap=.7;
+        weight_diap=.99;
     else
         weight_diap=.2;
 
     steph=step/2;
 
     spike_show=1;
-    size_k=.1;
-    width=400;
-    height=350;
+
+    width=850;
+    height=650;
     STDP_cnt=0;
     STDP_div=1;
 

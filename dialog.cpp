@@ -29,7 +29,7 @@ int mouse_ind[2];
 bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
-float my_scale=0.9;
+float my_scale=0.3;
 int color_max=190;
 float f;
 int slider_circle_val;
@@ -46,7 +46,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(30,0,RS);//10 IB
+CNet net(130,0,RS);//10 IB
 
 void drawLinkWithSpike(int i, int j, QColor& QCLR, QPen& pen,QPainter* painter);
 
@@ -104,7 +104,7 @@ myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
 *button_save_pattern, *button_learning;
 myQSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
-*slider_weight_test, *slider_phase, *slider_size;
+*slider_weight_test, *slider_phase, *slider_scale;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -118,13 +118,9 @@ void Dialog::setMinWeight()
 {
     net.minWeight=L_E->text().toFloat();
     net.normWeights();
-    //    qDebug()<<net.minWeight;
 }
 
-//void Dialog::setSize()
-//{
-//    slider_size;
-//}
+
 
 void Dialog::setMaxWeight()
 {
@@ -279,9 +275,9 @@ Dialog::Dialog(QWidget *parent) :
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
-    slider_size= new myQSlider(this);
-    slider_size->setRange(9, 50);
-    slider_size->setValue(9);
+    slider_scale= new myQSlider(this);
+    slider_scale->setRange(4, 20);
+    slider_scale->setValue(8);
 
     slider_weight_test= new myQSlider(this);
     slider_weight_test->setRange(-20, 20);
@@ -330,7 +326,7 @@ Dialog::Dialog(QWidget *parent) :
     layout2->addWidget(button_save_pattern);
     layout3->addWidget(button_learning);
     layout3->addWidget(L_E5);
-    layout3->addWidget(slider_size);
+    layout3->addWidget(slider_scale);
 
     connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
 
@@ -373,7 +369,7 @@ Dialog::Dialog(QWidget *parent) :
             SLOT(chooseThePattern()));
 
 
-    slider_size->setToolTip("set picture size");
+    slider_scale->setToolTip("set picture size");
     slider_circle->setToolTip("subcicles, default is 24");
     slider_show_ext->setToolTip("speed of fake blinkings");
     slider_weight_rad->setToolTip("rad of weights");
@@ -654,7 +650,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     pen.setWidth(2);
     painter->setPen(pen);
     //    painter->scale(my_scale,my_scale);
-    painter->scale(my_scale=(slider_size->value()/10.), slider_size->value()/10.);
+    painter->scale(my_scale=(slider_scale->value()/10.), slider_scale->value()/10.);
 
 
 
@@ -861,7 +857,12 @@ void drawLinkWithSpike(int i, int j, QColor& QCLR, QPen& pen,QPainter* painter)
 
             l=net.neuron[i].syn_cnt[j][k]/(float)net.neuron[i].output[j].size();
             gradient1.setColorAt((0.+l)/1.22, QCLR);
-            gradient1.setColorAt((0.1+l)/1.22, QColor(0,0,180));
+            if(net.neuron[i].weight[j]>0.0001)
+            gradient1.setColorAt((0.1+l)/1.22,QColor(0,0,180));
+            else
+                if(net.neuron[i].weight[j]<-0.0001)
+                    gradient1.setColorAt((0.1+l)/1.22,QColor(180,0,0));
+
             gradient1.setColorAt((0.2+l)/1.22, QCLR);
         }
         gradient1.setColorAt(1, QCLR);
