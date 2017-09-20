@@ -13,8 +13,12 @@ float thresh(int x)
 
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
+    //modes:
     test=1;
+    spike_show=1;
     STDP=2;
+
+
     minWeight=1/20.;//for experiment
     maxWeight=40/20.;
     step=1;
@@ -28,7 +32,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
     steph=step/2;
 
-    spike_show=1;
+
 
     width=850;
     height=650;
