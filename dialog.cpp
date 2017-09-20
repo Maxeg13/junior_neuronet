@@ -48,7 +48,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(130,0,RS);//10 IB
+CNet net(10,0,IB);//10 IB
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
 
