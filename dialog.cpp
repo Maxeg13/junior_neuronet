@@ -130,8 +130,8 @@ void Dialog::setMinWeight()
 void Dialog::setMaxWeight()
 {
     net.maxWeight=L_E2->text().toFloat();
-    if(net.test)
-        net.testSettings(slider_weight_rad->value());
+    if(net.demo)
+        net.demoSettings(slider_weight_rad->value());
     else
         net.kohonSettings();
 
@@ -389,7 +389,7 @@ Dialog::Dialog(QWidget *parent) :
     L_E5->setToolTip("choose the pattern");
 
     freqChange();
-    if(net.test)
+    if(net.demo)
         weightRadChanged();
     change_STDP_speed();
     this->currentChange(1);
@@ -544,8 +544,8 @@ void Dialog::neuroGrab()
     for(int i=0;i<net.size;i++)
         net.neuron[i].locate();
 
-    if(net.test)
-        net.testSettings(slider_weight_rad->value());
+    if(net.demo)
+        net.demoSettings(slider_weight_rad->value());
     else
         net.kohonSettings();
     //    net.weights_with_rad(slider_weight_rad->value());

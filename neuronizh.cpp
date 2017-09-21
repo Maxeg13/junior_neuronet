@@ -121,7 +121,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
 void neuronIzh::locate()
 {
-    if(net->test)
+    if(net->demo)
     {
         x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
         y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));

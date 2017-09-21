@@ -14,7 +14,7 @@ float thresh(int x)
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
     //modes:
-    test=1;
+    demo=1;
     spike_show=1;
     STDP=2;
 
@@ -25,7 +25,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     size_k=.2;
     psc_excxpire_time=10;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
-    if(test)
+    if(demo)
         weight_diap=.99;
     else
         weight_diap=.12;
@@ -88,7 +88,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     kohonSettings();
 }
 
-void CNet::testSettings(int x)
+void CNet::demoSettings(int x)
 {
     for(int i=0;i<size;i++)
     neuron[i].weights_with_rad(x);
