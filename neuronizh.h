@@ -2,6 +2,7 @@
 #define NEURONIZH_H
 #include <stdio.h>
 #include <deque>
+#include <QColor>
 //#include "net.h"
 using namespace std;
 enum neuronType {RS, TC, IB};
@@ -37,6 +38,7 @@ public:
     CNet* net;
     CArrow* arrow;
     deque<deque<int>> syn_cnt;
+    QColor QCLR;
     int i;
     float x;
     float y;

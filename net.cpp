@@ -14,7 +14,7 @@ float thresh(int x)
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
     //modes:
-    test=0;
+    test=1;
     spike_show=1;
     STDP=2;
 

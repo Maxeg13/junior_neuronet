@@ -16,6 +16,7 @@
 #include <QCheckBox>
 #include "pattern.h"
 
+QColor QCLR;
 QPolygon qp;
 QVector<QPoint> qpt;
 QColor* dropColor;
@@ -49,7 +50,8 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(10,0,IB);//10 IB
+//CNet net(10,0,IB);//10 IB Kohonen
+CNet net(50,0,RS);
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
 
@@ -664,13 +666,14 @@ void Dialog::paintEvent(QPaintEvent* e)
             for(int j=0;j<net.size;j++)
             {
                 float h=net.neuron[i].weight_norm[j]*syn_color_max;
-                QColor QCLR=QColor(h,h,h,transp_val);
+                 QCLR=QColor(h,h,h,transp_val);
 
                 if((net.neuron[i].weight[j])>0.0001)
                 {
                     if(net.spike_show)
                     {
-                        pen.setColor(QColor(h,h,h));
+                        QCLR=QColor(h,h,h);
+//                        pen.setColor(QColor(h,h,h));
                         drawLinkWithSpike(i,j,QCLR,QCLR_blue_spike, pen,painter);
                     }
                     else
@@ -685,7 +688,8 @@ void Dialog::paintEvent(QPaintEvent* e)
                 {
                     if(net.spike_show)
                     {
-                        pen.setColor(QColor(h,h,h));
+//                        pen.setColor(QColor(h,h,h));
+                        QCLR=QColor(140,100,100,transp_val);
                         drawLinkWithSpike(i,j,QCLR,QCLR_red_spike, pen,painter);
                     }
                     else
@@ -716,7 +720,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             if( (net.neuron[mouse_ind[0]].weight[j])>0.0001)
             {
-                QColor QCLR=QColor(h,h,h,transp_val);
+                 QCLR=QColor(h,h,h,transp_val);
                 drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_blue_spike,pen,painter);
                 //                pen.setColor(QColor(h,h,h));
                 //                painter->setPen(pen);
@@ -724,7 +728,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             }
             else if((net.neuron[mouse_ind[0]].weight[j])<-0.0001)
             {
-                QColor QCLR=QColor(h,h,h,transp_val);
+                 QCLR=QColor(140,100,100,transp_val);
                 drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_red_spike,pen,painter);
                 //                pen.setColor(inhibColor);
                 //                painter->setPen(pen);
@@ -793,15 +797,15 @@ void Dialog::paintEvent(QPaintEvent* e)
 
         if(net.neuron[i].is_excitatory)
         {
+            net.neuron[i].QCLR=QColor(0,net.neuron[i].vis,0);
             gradient.setColorAt(1.0, QColor(net.neuron[i].vis,net.neuron[i].vis,net.neuron[i].vis));
-            gradient.setColorAt(0.0, QColor(0,net.neuron[i].vis,0));
+            gradient.setColorAt(0.0, net.neuron[i].QCLR );
         }
         else
         {
-            gradient.setColorAt(1.0, QColor(60,0.3*(200+net.neuron[i].vis),
-                                            60));
-            gradient.setColorAt(0.0, QColor(100,0.5*(200+net.neuron[i].vis),
-                                            100));
+            net.neuron[i].QCLR=QColor(100,0.5*(200+net.neuron[i].vis),100);
+            gradient.setColorAt(1.0, QColor(60,0.3*(200+net.neuron[i].vis), 60));
+            gradient.setColorAt(0.0,net.neuron[i].QCLR );
         }
 
         painter->fillPath(path,gradient);
@@ -813,13 +817,14 @@ void Dialog::paintEvent(QPaintEvent* e)
             {
                 //     gradient(0, 0, 0, 100);
                 if(net.neuron[i].is_excitatory)
-                    gradient.setColorAt(1.0, QColor(0.5*(200+net.neuron[i].vis),(net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
-
+                    gradient.setColorAt(1.0, QColor(0.5*(200+net.neuron[i].vis),
+                                                    (net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
                 else
                     gradient.setColorAt(1.0, QColor(0.5*(290+net.neuron[i].vis/1.5),0.5*(200+net.neuron[i].vis),
                                                     0.5*(200+net.neuron[i].vis)));
 
-                gradient.setColorAt(0.0, QColor(net.neuron[i].vis,0,100));
+                    net.neuron[i].QCLR=QColor(net.neuron[i].vis,0,100);
+                gradient.setColorAt(0.0,net.neuron[i].QCLR );
                 //    painter->fillPath(path,QBrush(QColor(0,0,0)));
                 painter->fillPath(path,gradient);
 
@@ -867,7 +872,7 @@ void drawLinkWithSpike(int i, int j, QColor& QCLR, QColor& _QCLR, QPen& pen,QPai
 
     if(net.neuron[i].syn_cnt[j].size())
     {
-        gradient1.setColorAt(0, QCLR);
+        gradient1.setColorAt(0, net.neuron[i].QCLR);
         for(int k=0;k<net.neuron[i].syn_cnt[j].size();k++)
         {
 
