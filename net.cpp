@@ -18,12 +18,12 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     spike_show=1;
     STDP=2;
 
-
+    min_weight_norm=0.4;
     minWeight=1/20.;//for experiment
     maxWeight=40/20.;
     step=1;
     size_k=.2;
-    psc_excxpire_time=8;//4,0.1
+    psc_excxpire_time=10;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
     if(test)
         weight_diap=.99;
@@ -110,16 +110,16 @@ void CNet::normWeights()
         for (int j=0;j<size;j++)
         {
             if(neuron[i].weight[j]>0.01)
-                neuron[i].weight_norm[j]=(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight)+.1;
+                neuron[i].weight_norm[j]=(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight)+min_weight_norm;
 
             if(neuron[j].weight[i]>0.01)
-                neuron[j].weight_norm[i]=(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight)+.1;
+                neuron[j].weight_norm[i]=(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight)+min_weight_norm;
 
             if(neuron[i].weight[j]<-0.01)
-                neuron[i].weight_norm[j]=thresh(-(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight))+.1;
+                neuron[i].weight_norm[j]=thresh(-(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight))+min_weight_norm;
 
             if(neuron[j].weight[i]<-0.01)
-                neuron[j].weight_norm[i]=thresh(-(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight))+.1;
+                neuron[j].weight_norm[i]=thresh(-(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight))+min_weight_norm;
         }
     }
 }

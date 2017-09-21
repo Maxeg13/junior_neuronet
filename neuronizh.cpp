@@ -188,8 +188,9 @@ void neuronIzh::weights_with_rad(float x1)
                 //                weight[i]=(is_excitatory?1:(-1))*(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
                 setRandomWeight(i,is_excitatory);
                 //                        (rand() % ((int)(net->maxWeight - net->minWeight)*100))/400.0f;
-                weight_norm[i]+=0.1;
+
                 weight_norm[i]/=(net->maxWeight - net->minWeight);
+                weight_norm[i]+=net->min_weight_norm;
             }
         }
         else

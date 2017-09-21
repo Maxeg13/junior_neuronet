@@ -22,6 +22,7 @@ QColor* dropColor;
 QColor inhibColor=QColor(100,25,25);
 QColor QCLR_red_spike=QColor(220,0,0);
 QColor QCLR_blue_spike=QColor(0,0,220);
+int transp_val=120;
 int ptn_n;
 pattern ptn[2];
 int cnt1;
@@ -32,7 +33,7 @@ bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
 float my_scale=0.3;
-int color_max=190;
+int syn_color_max=150;
 float f;
 int slider_circle_val;
 int slider_weight_val;
@@ -662,8 +663,8 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             for(int j=0;j<net.size;j++)
             {
-                float h=net.neuron[i].weight_norm[j]*color_max;
-                QColor QCLR=QColor(h,h,h,100);
+                float h=net.neuron[i].weight_norm[j]*syn_color_max;
+                QColor QCLR=QColor(h,h,h,transp_val);
 
                 if((net.neuron[i].weight[j])>0.0001)
                 {
@@ -702,7 +703,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     painter->setPen(pen);
     for(int j=0;j<net.size;j++)
     {
-        float h=net.neuron[mouse_ind[0]].weight_norm[j]*color_max;
+        float h=net.neuron[mouse_ind[0]].weight_norm[j]*syn_color_max;
 
         if(mouse_drop)
         {
@@ -715,7 +716,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             if( (net.neuron[mouse_ind[0]].weight[j])>0.0001)
             {
-                QColor QCLR=QColor(h,h,h,100);
+                QColor QCLR=QColor(h,h,h,transp_val);
                 drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_blue_spike,pen,painter);
                 //                pen.setColor(QColor(h,h,h));
                 //                painter->setPen(pen);
@@ -723,7 +724,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             }
             else if((net.neuron[mouse_ind[0]].weight[j])<-0.0001)
             {
-                QColor QCLR=QColor(h,h,h,100);
+                QColor QCLR=QColor(h,h,h,transp_val);
                 drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_red_spike,pen,painter);
                 //                pen.setColor(inhibColor);
                 //                painter->setPen(pen);
@@ -737,7 +738,7 @@ void Dialog::paintEvent(QPaintEvent* e)
 
 
     //    pen.setColor(QColor(0,0,0));
-    pen=QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    pen=QPen(Qt::black, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     painter->setPen(pen);
     for(int i=0;(i<net.size);i++)
         if((i!=mouse_ind[0]))
@@ -757,6 +758,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             }
 
     //mouse ,arrows
+//    pen.setWidth(4);
     if(mouse_drop)
     {
         pen.setColor(QColor(150,0,0));

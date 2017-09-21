@@ -8,7 +8,7 @@
 class CNet
 {
 public:
-
+    float min_weight_norm;
     float weight_diap;
     float psc_excxpire_time;
     float exp_psc_exc;
