@@ -14,7 +14,7 @@ float thresh(int x)
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
     //modes:
-    demo=1;
+    demo=0;
     spike_show=1;
     STDP=2;
 
@@ -196,7 +196,7 @@ void CNet::setDelay(int i,int j)
         float square=ex*ex+ey*ey+0.001;
 
         //const
-        neuron[i].output[j].resize(1+sqrt(square)/1,0);
+        neuron[i].output[j].resize(1+sqrt(square)/4,0);
         //        qDebug()<< neuron[i].output[j].size();
     }
     else

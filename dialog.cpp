@@ -50,8 +50,8 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-//CNet net(10,0,IB);//10 IB Kohonen
-CNet net(50,0,RS);
+CNet net(10,0,IB);//10 IB Kohonen
+//CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
 
@@ -450,7 +450,6 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     {
         net.stim_ind.push_back(mouse_ind[0]);
         freqChange();
-        //        QDebug
     }
     else if(event->text()=="m")
     {
@@ -523,7 +522,7 @@ void Dialog::keyReleaseEvent(QKeyEvent *event)
 
 void Dialog::freqChange()
 {
-    for(int i=0;i<net.stim_ind.size();i++)
+//    for(int i=0;i<net.stim_ind.size();i++)
     {
         net.neuron[mouse_ind[0]].freq=slider_freq->value();
         net.neuron[mouse_ind[0]].freq_cnt=0;
@@ -672,7 +671,7 @@ void Dialog::paintEvent(QPaintEvent* e)
                 {
                     if(net.spike_show)
                     {
-                        QCLR=QColor(h,h,h);
+                        QCLR=QColor(h,h,h, transp_val);
 //                        pen.setColor(QColor(h,h,h));
                         drawLinkWithSpike(i,j,QCLR,QCLR_blue_spike, pen,painter);
                     }
@@ -817,7 +816,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             {
                 //     gradient(0, 0, 0, 100);
                 if(net.neuron[i].is_excitatory)
-                    gradient.setColorAt(1.0, QColor(0.5*(200+net.neuron[i].vis),
+                    gradient.setColorAt(1.0, QColor(0.6*(170+net.neuron[i].vis),
                                                     (net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
                 else
                     gradient.setColorAt(1.0, QColor(0.5*(290+net.neuron[i].vis/1.5),0.5*(200+net.neuron[i].vis),
