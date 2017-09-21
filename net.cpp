@@ -109,16 +109,16 @@ void CNet::normWeights()
     {
         for (int j=0;j<size;j++)
         {
-            if(neuron[i].weight[j]>0.01)
+            if(neuron[i].weight[j]>0.0001)
                 neuron[i].weight_norm[j]=(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight)+min_weight_norm;
 
-            if(neuron[j].weight[i]>0.01)
+            if(neuron[j].weight[i]>0.0001)
                 neuron[j].weight_norm[i]=(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight)+min_weight_norm;
 
-            if(neuron[i].weight[j]<-0.01)
+            if(neuron[i].weight[j]<-0.0001)
                 neuron[i].weight_norm[j]=thresh(-(neuron[i].weight[j]-minWeight)/(maxWeight-minWeight))+min_weight_norm;
 
-            if(neuron[j].weight[i]<-0.01)
+            if(neuron[j].weight[i]<-0.0001)
                 neuron[j].weight_norm[i]=thresh(-(neuron[j].weight[i]-minWeight)/(maxWeight-minWeight))+min_weight_norm;
         }
     }
@@ -189,7 +189,8 @@ void CNet::kohonSettings()
 
 void CNet::setDelay(int i,int j)
 {
-    if(fabs(neuron[i].weight[j])>0.1)
+    //////////////////////////////////////////////////
+    if((neuron[i].weight[j])>0.0001)
     {
         float ex=neuron[i].x-neuron[j].x;
         float ey=neuron[i].y-neuron[j].y;

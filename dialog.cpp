@@ -21,7 +21,7 @@ QPolygon qp;
 QVector<QPoint> qpt;
 QColor* dropColor;
 QColor inhibColor=QColor(100,25,25);
-QColor QCLR_red_spike=QColor(220,0,0);
+QColor QCLR_red_spike=QColor(250,0,0,255);
 QColor QCLR_blue_spike=QColor(0,0,220);
 int transp_val=120;
 int ptn_n;
