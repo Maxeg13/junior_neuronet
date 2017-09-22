@@ -71,7 +71,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
-    rad=8;
+    rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;
     size=_size;
@@ -174,8 +174,17 @@ void CNet::afterReWeight()
 void CNet::kohonSettings()
 {
     for(int j=0;j<2;j++)
-        for(int i=2;i<size;i++)
+        for(int i=2;i<10;i++)
             neuron[i].setRandomWeight(j,1);
+
+    for(int i=2;i<10;i++)
+    {
+        neuron[i].weight[i+8]=14;
+        neuron[i].STDP_set[i+8]=0;
+        neuron[i+8].setRandomWeight(0,1);
+    }
+
+
 
     neuron[0].setRandomWeight(1,0);
      neuron[1].setRandomWeight(0,0);

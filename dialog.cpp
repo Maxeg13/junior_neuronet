@@ -34,7 +34,7 @@ bool pull=1;
 bool mouse_pull_push;
 bool mouse_drop;
 float my_scale=0.3;
-int syn_color_max=150;
+int syn_color_max=120;
 float f;
 int slider_circle_val;
 int slider_weight_val;
@@ -50,16 +50,16 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(18,0,IB);//10 IB Kohonen
+CNet net(18,0,TC);//10 IB Kohonen
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
 
-float weightThresh(float x)
+int colorThresh(int x)
 {
-    if(x>net.maxWeight)
+    if(x>(syn_color_max+20))
     {
-        return(net.maxWeight);
+        return((syn_color_max+20));
     }
     else
         return(x);
@@ -664,7 +664,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         {
             for(int j=0;j<net.size;j++)
             {
-                float h=net.neuron[i].weight_norm[j]*syn_color_max;
+                float h=colorThresh(net.neuron[i].weight_norm[j]*syn_color_max);
                  QCLR=QColor(h,h,h,transp_val);
 
                 if((net.neuron[i].weight[j])>0.0001)
@@ -706,7 +706,7 @@ void Dialog::paintEvent(QPaintEvent* e)
     painter->setPen(pen);
     for(int j=0;j<net.size;j++)
     {
-        float h=net.neuron[mouse_ind[0]].weight_norm[j]*syn_color_max;
+        float h=colorThresh(net.neuron[mouse_ind[0]].weight_norm[j]*syn_color_max);
 
         if(mouse_drop)
         {

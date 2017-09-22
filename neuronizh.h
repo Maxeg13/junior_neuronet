@@ -52,6 +52,7 @@ public:
     int ID;
     float to_output;
     int STDP;
+    bool* STDP_set;
 
     neuronType type;
     bool is_excitatory;
