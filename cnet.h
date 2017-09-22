@@ -50,7 +50,6 @@ public:
     void setDelay(int i, int j);
     void spikesStop();
     std::vector<int> stim_ind;
-    int STDP;
     float minWeight; // веса, размерность пкА
     float maxWeight;
     void weights_with_rad(float x1);

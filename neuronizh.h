@@ -51,6 +51,8 @@ public:
 //    net* netIzh;
     int ID;
     float to_output;
+    int STDP;
+
     neuronType type;
     bool is_excitatory;
     deque<deque<float>> output;

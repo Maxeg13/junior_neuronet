@@ -16,7 +16,6 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //modes:
     demo=0;
     spike_show=1;
-    STDP=2;
 
     min_weight_norm=0.4;
     minWeight=1/20.;//for experiment

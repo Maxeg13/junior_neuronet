@@ -12,6 +12,8 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
+    STDP=2;
+
     vx=0;
     vy=0;
 
@@ -130,10 +132,33 @@ void neuronIzh::locate()
     {
         switch(ID)
         {
-        case 0: x=net->width/2*1.3; y=net->height*.53; break;
-        case 1: x=net->width/2*1.6; y=net->height*.53;break;
-        default:
-            y=net->height*.8;x=net->width/2*1.3+((ID-5))*net->width*0.13;
+        case 0: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53; break;
+        case 1: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53;break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+
+            y=net->height*(1-(ID-5.5)*(ID-5.5)/80.);
+            x=net->width/2*1.3+((ID-5.5))*net->width*0.10;
+            break;
+            //        case 101: qDebug()<<"hello "<<ID; break;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+            float shift1=13.5;
+            y=net->height*(.87-(ID-shift1)*(ID-shift1)/100.);
+            x=net->width/2*1.3+(ID-shift1)*net->width*0.06;
+            break;
         }
     }
 
@@ -235,7 +260,7 @@ void neuronIzh::CalculateStep()
         net->STDP_cnt=0;
         //qDebug()<<net->STDP_div;
     }
-    if(net->STDP==2)
+    if(STDP==2)
     {
         if(net->STDP_cnt==0)
         {
@@ -296,7 +321,7 @@ void neuronIzh::CalculateStep()
         //        E_m_old = 30; // just to show the peak
         U_e = U_e + d;
 
-        if(net->STDP==2)//triplet STDP
+        if(STDP==2)//triplet STDP
 
             for(i=0;i<net->size;i++)
             {
