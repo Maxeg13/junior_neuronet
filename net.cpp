@@ -179,7 +179,8 @@ void CNet::kohonSettings()
 
     for(int i=2;i<10;i++)
     {
-        neuron[i].weight[i+8]=14;
+//        neuron[i].weight[i+8]=14;
+        neuron[i].setRandomWeight(i+8,1);
         neuron[i].STDP_set[i+8]=0;
         neuron[i+8].setRandomWeight(0,1);
     }
