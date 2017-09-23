@@ -45,6 +45,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     freq_cnt=0;
     vis=0;
     net=_net;
+    freq_phase=1;
     step=net->step;
     is_excitatory=_is_excitatory;
 
@@ -250,11 +251,13 @@ void neuronIzh::CalculateStep()
     if(freq_cnt+stim_rnd>(time_from_freq+1))
     {
         freq_cnt=0;
-        freq_modulator=1;
+//        freq_modulator=1;
         //        stim_rnd=rand()%4;
         stim_rnd=0;
     }
-    else if(freq_cnt==(1))freq_modulator=0;
+
+    if(freq_cnt==(freq_phase))freq_modulator=1;
+    else freq_modulator=0;
 
 
     if(ID==0) net->STDP_cnt++;//from old mistake
@@ -313,8 +316,8 @@ void neuronIzh::CalculateStep()
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
-        if(ID==15)
-            qDebug()<<"hello!";
+//        if(ID==15)
+//            qDebug()<<"hello!";
 
         for(i=0;i<net->size;i++)
             syn_cnt[i].push_front(1);

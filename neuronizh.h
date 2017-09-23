@@ -53,7 +53,7 @@ public:
     float to_output;
     int STDP;
     bool* STDP_set;
-
+    int freq_phase;
     neuronType type;
     bool is_excitatory;
     deque<deque<float>> output;

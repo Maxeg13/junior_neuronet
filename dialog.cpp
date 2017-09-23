@@ -21,8 +21,8 @@ QPolygon qp;
 QVector<QPoint> qpt;
 QColor* dropColor;
 QColor inhibColor=QColor(100,25,25);
-QColor QCLR_red_spike=QColor(250,0,0,255);
-QColor QCLR_blue_spike=QColor(0,0,220);
+QColor QCLR_red_spike=QColor(250,100,0,255);
+QColor QCLR_blue_spike=QColor(0,100,220);
 int transp_val=120;
 int ptn_n;
 pattern ptn[2];
@@ -170,6 +170,11 @@ void Dialog::savePattern()
     ptn_n%=2;
 }
 
+void Dialog::setPhase()
+{
+    net.neuron[mouse_ind[0]].freq_phase=slider_phase->value();
+}
+
 void Dialog::changeWeight()
 {
 
@@ -305,10 +310,12 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-    //    slider_current->
-    //    slider_current->setRange(3000,6000);
     slider_current->setRange(1,30);
     slider_current-> setValue(30);
+
+    slider_phase= new myQSlider(this);
+    slider_phase->setRange(1,100);
+    slider_phase->setValue(1);
 
     slider_freq = new myQSlider(this);
     slider_freq->setRange(2,50);
@@ -332,6 +339,7 @@ Dialog::Dialog(QWidget *parent) :
     layout3->addWidget(button_learning);
     layout3->addWidget(L_E5);
     layout3->addWidget(slider_scale);
+    layout3->addWidget(slider_phase);
 
     connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
 
@@ -373,6 +381,8 @@ Dialog::Dialog(QWidget *parent) :
     connect(L_E5, SIGNAL(editingFinished()), this,
             SLOT(chooseThePattern()));
 
+    connect(slider_phase, SIGNAL(sliderReleased()),this,SLOT(setPhase()));
+
 
     slider_scale->setToolTip("set picture size");
     slider_circle->setToolTip("subcicles, default is 24");
@@ -382,6 +392,8 @@ Dialog::Dialog(QWidget *parent) :
     slider_freq->setToolTip("set modulator frequency: "+
                             QString::number(slider_freq->value()));
     slider_weight_test->setToolTip("set weight");
+    slider_phase->setToolTip("set phase");
+
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");
     L_E3->setToolTip("inhibitory percentage");
@@ -626,6 +638,11 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
+    static float blink_phase=0;
+    blink_phase++;
+//    QCLR_red_spike=QColor(250,100*0.5*(1+sin(0.9*blink_phase)),100*0.5*(1+sin(0.9*blink_phase)),255);
+//    QCLR_blue_spike=QColor(120*0.5*(1+sin(0.9*blink_phase)),120*0.5*(1+sin(0.9*blink_phase)),220*0.5*(1-sin(0.9*blink_phase)));
+
     static int learn_cnt=0;
     learn_cnt++;
     if((learn_cnt>8)&&learning_yes)
