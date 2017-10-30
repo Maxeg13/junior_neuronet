@@ -19,10 +19,10 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
     min_weight_norm=0.4;
     minWeight=1/20.;//for experiment
-    maxWeight=40/20.;
+    maxWeight=70;
     step=1;
     size_k=.2;
-    psc_excxpire_time=10;//4,0.1
+    psc_excxpire_time=1;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
     if(demo)
         weight_diap=.99;
@@ -175,20 +175,20 @@ void CNet::kohonSettings()
 {
     for(int j=0;j<2;j++)
         for(int i=2;i<10;i++)
-            neuron[i].setRandomWeight(j,1);
+            neuron[i].setWeight(j,25);
 
     for(int i=2;i<10;i++)
     {
-        neuron[i].weight[i+8]=6.75;
+        neuron[i].weight[i+8]=25;
 
         neuron[i].STDP_set[i+8]=0;
-        neuron[i+8].setRandomWeight(0,1);
+        neuron[i+8].setWeight(0,25);
     }
 
 
 
-    neuron[0].setRandomWeight(1,0);
-     neuron[1].setRandomWeight(0,0);
+    neuron[0].setWeight(1,-80);
+     neuron[1].setWeight(0,-80);
 
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)

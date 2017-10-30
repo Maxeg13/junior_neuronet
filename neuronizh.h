@@ -84,6 +84,7 @@ public:
     float d;
     void oneStep(float);
     void CalculateStep();
+    void setWeight(int i, float x);
     void weights_with_rad(float);
     void pull(float x1, float y1);
     void push(float x1, float y1);

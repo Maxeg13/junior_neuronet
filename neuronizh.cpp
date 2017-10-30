@@ -232,9 +232,14 @@ void neuronIzh::weights_with_rad(float x1)
 
 void neuronIzh::setRandomWeight(int i, bool b)
 {
-    weight[i]=((b?1:(-16))*(net->maxWeight + net->minWeight)/2+
+    weight[i]=((b?1:(-7))*(net->maxWeight + net->minWeight)/2+
                (rand()%100 -50)/100.*(net->maxWeight - net->minWeight)*net->weight_diap);
 
+}
+
+void neuronIzh::setWeight(int i, float x)
+{
+    weight[i]=x;
 }
 
 void neuronIzh::oneStep(float x)
@@ -292,12 +297,13 @@ void neuronIzh::CalculateStep()
 
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
     E_m +=  dE_m*net->steph;
+    dU_e = a*(b*E_m - U_e);
+    U_e +=   dU_e*net->steph;
+
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
     E_m +=  dE_m*net->steph;
-
-
     dU_e = a*(b*E_m - U_e);
-    U_e +=   dU_e*net->step;
+    U_e +=   dU_e*net->steph;
 
     input_from_neurons*=net->exp_psc_exc;
 

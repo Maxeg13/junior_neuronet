@@ -290,7 +290,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_scale->setValue(8);
 
     slider_weight_test= new myQSlider(this);
-    slider_weight_test->setRange(-20, 20);
+    slider_weight_test->setRange(-70, 70);
     slider_weight_test->setValue(0);
 
 
