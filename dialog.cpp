@@ -65,6 +65,7 @@ int colorThresh(int x)
         return(x);
 
 }
+
 class myQSlider:public QSlider
 {
 public:
@@ -82,6 +83,11 @@ public:
         d->keyReleaseEvent(event);
     } //
 };
+
+//class myLE:public QLineEdit
+//{
+
+//}
 
 
 class myQPushButton:public QPushButton
@@ -180,7 +186,9 @@ void Dialog::changeWeight()
 
     int w;
     //    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.00001)
-    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
+//    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
+   w= net.maxWeight=slider_weight_test->value();
+    net.kohonSettings();
 
     slider_weight_test->setToolTip("set weight: "+
                                    QString::number(w));
@@ -290,7 +298,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_scale->setValue(8);
 
     slider_weight_test= new myQSlider(this);
-    slider_weight_test->setRange(-70, 70);
+    slider_weight_test->setRange(-net.maxWeight, net.maxWeight);
     slider_weight_test->setValue(0);
 
 
@@ -310,8 +318,8 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
 
     slider_current = new myQSlider(this);
-    slider_current->setRange(1,30);
-    slider_current-> setValue(30);
+    slider_current->setRange(1,50);
+    slider_current-> setValue(50);
 
     slider_phase= new myQSlider(this);
     slider_phase->setRange(1,100);
@@ -369,16 +377,16 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(slider_weight_test,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
 
-    connect(L_E,SIGNAL(editingFinished()),this,SLOT(setMinWeight()));
+    connect(L_E,SIGNAL(returnPressed()),this,SLOT(setMinWeight()));
 
-    connect(L_E2,SIGNAL(editingFinished()),this,SLOT(setMaxWeight()));
+    connect(L_E2,SIGNAL(returnPressed()),this,SLOT(setMaxWeight()));
 
-    connect(L_E3,SIGNAL(editingFinished()),this,SLOT(setInhPerc()));
+    connect(L_E3,SIGNAL(returnPressed()),this,SLOT(setInhPerc()));
 
-    connect(L_E4, SIGNAL(editingFinished()), this,
+    connect(L_E4, SIGNAL(returnPressed()), this,
             SLOT(change_STDP_speed()));
 
-    connect(L_E5, SIGNAL(editingFinished()), this,
+    connect(L_E5, SIGNAL(returnPressed()), this,
             SLOT(chooseThePattern()));
 
     connect(slider_phase, SIGNAL(sliderReleased()),this,SLOT(setPhase()));
@@ -442,11 +450,11 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\ntime(freq): "+QString::number(net.neuron[mouse_ind[0]].time_from_freq);
         str+="\n\n";
 
-        //        this->setToolTip(str);
+                this->setToolTip(str);
 
         std::cout<<str.toStdString();
         /*qDebug()<<net.STDP_speed;*/
-        //        qDebug()<<str;
+//                qDebug()<<str;
     }
     else if(event->text()=="i")
     {
@@ -472,7 +480,8 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=net.minWeight;
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
+//        net.
     }
     else if(event->text()=="r")
     {
@@ -638,6 +647,7 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
+//    emit L_E->editingFinished();
     static float blink_phase=0;
     blink_phase++;
 //    QCLR_red_spike=QColor(250,100*0.5*(1+sin(0.9*blink_phase)),100*0.5*(1+sin(0.9*blink_phase)),255);

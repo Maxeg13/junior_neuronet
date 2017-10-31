@@ -185,10 +185,7 @@ void CNet::kohonSettings()
 
         neuron[i].STDP_set[i+8]=0;
         neuron[i+8].setWeight(0,maxWeight);
-
     }
-
-
 
     neuron[0].setWeight(1,-1*maxWeight);
      neuron[1].setWeight(0,-1*maxWeight);
