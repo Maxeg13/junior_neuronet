@@ -71,7 +71,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
-    detectors_size=2;
+    detectors_size=10;
     rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;

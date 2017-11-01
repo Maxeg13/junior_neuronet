@@ -50,7 +50,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(10,0,IB);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(18,0,IB);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -259,7 +259,7 @@ Dialog::Dialog(QWidget *parent) :
     L_E->setText(QString::number(net.minWeight));
     L_E2->setText(QString::number( net.maxWeight));
     L_E3->setText(QString::number(0));
-    L_E4->setText(QString::number(.01));
+    L_E4->setText(QString::number(50));
     L_E5->setText(QString::number(0));
 
     mainLayout = new QVBoxLayout();
@@ -798,7 +798,7 @@ void Dialog::paintEvent(QPaintEvent* e)
 
     for(int j=0;j<net.size;j++)
     {
-        if(fabs(net.neuron[mouse_ind[0]].weight[j])>net.minWeight)
+        if(fabs(net.neuron[mouse_ind[0]].weight[j])>0.0001)
         {
             painter->drawLine(net.neuron[j].x,net.neuron[j].y,
                               net.neuron[j].x+net.neuron[mouse_ind[0]].arrow[j].x[0],
