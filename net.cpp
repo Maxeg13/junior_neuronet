@@ -71,6 +71,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
+    detectors_size=2;
     rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;
@@ -175,20 +176,27 @@ void CNet::afterReWeight()
 
 void CNet::kohonSettings()
 {
-    for(int j=0;j<2;j++)
-        for(int i=2;i<10;i++)
+    for(int j=0;j<size;j++)
+        for(int i=0;i<size;i++)
+            neuron[i].setWeight(j,0);
+
+    for(int j=0;j<detectors_size;j++)
+        for(int i=detectors_size;i<size;i++)
             neuron[i].setWeight(j,maxWeight);
 
-    for(int i=2;i<10;i++)
-    {
+//    for(int i=2;i<size;i++)
+//    {
 //        neuron[i].weight[i+8]=maxWeight*2.5;
-        neuron[i].STDP_set[i+8]=0;
-        neuron[i+8].setWeight(0,maxWeight);
-        neuron[i+8].setWeight(1,maxWeight);
-    }
+//        neuron[i].STDP_set[i+8]=0;
+//        neuron[i+8].setWeight(0,maxWeight);
+//        neuron[i+8].setWeight(1,maxWeight);
+//    }
 
-    neuron[0].setWeight(1,-4*maxWeight);
-     neuron[1].setWeight(0,-4*maxWeight);
+    for(int i=0;i<detectors_size;i++)
+        for(int j=0;j<detectors_size;j++)
+            if(i!=j)
+    neuron[i].setWeight(j,-4*maxWeight);
+//     neuron[1].setWeight(0,-4*maxWeight);
 
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)

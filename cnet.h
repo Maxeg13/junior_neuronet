@@ -19,6 +19,7 @@ public:
     bool demo;
     int a;
     int size;
+    int detectors_size;
     float size_k;
     int width;
     int height;

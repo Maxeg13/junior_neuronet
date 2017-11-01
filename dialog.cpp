@@ -50,7 +50,7 @@ QVBoxLayout *mainLayout, *pictureLayout;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(18,0,IB);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(10,0,IB);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -655,7 +655,7 @@ void Dialog::paintEvent(QPaintEvent* e)
 
     static int learn_cnt=0;
     learn_cnt++;
-    if((learn_cnt>8)&&learning_yes)
+    if((learn_cnt>18)&&learning_yes)
     {
         learn_cnt=0;
         ptn_n++;
@@ -843,15 +843,19 @@ void Dialog::paintEvent(QPaintEvent* e)
             {
                 //     gradient(0, 0, 0, 100);
                 if(net.neuron[i].is_excitatory)
-                    gradient.setColorAt(1.0, QColor(0.6*(170+net.neuron[i].vis),
-                                                    (net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
+                                gradient.setColorAt(1.0,
+                                                    QColor(0,net.neuron[i].vis,250-net.neuron[i].vis));
+
+//                    gradient.setColorAt(1.0, QColor(0.6*(170+net.neuron[i].vis),
+//                                                    (net.neuron[i].vis+110)*0.4,(220-net.neuron[i].vis)));
+
                 else
+
                     gradient.setColorAt(1.0, QColor(0.5*(290+net.neuron[i].vis/1.5),0.5*(200+net.neuron[i].vis),
                                                     0.5*(200+net.neuron[i].vis)));
 
-                    net.neuron[i].QCLR=QColor(net.neuron[i].vis,0,100);
+                    net.neuron[i].QCLR=QColor(0.5*net.neuron[i].vis,net.neuron[i].vis,.5*net.neuron[i].vis);
                 gradient.setColorAt(0.0,net.neuron[i].QCLR );
-                //    painter->fillPath(path,QBrush(QColor(0,0,0)));
                 painter->fillPath(path,gradient);
 
             }

@@ -134,36 +134,34 @@ void neuronIzh::locate()
     }
     else
     {
-        switch(ID)
+        if(ID<net->detectors_size)
         {
-        case 0: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53; break;
-        case 1: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53;break;
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-        case 9:
+             x=net->width/2*1.3+(((rand()%100-50)/80.))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.);
 
-            y=net->height*(1-(ID-5.5)*(ID-5.5)/80.);
-            x=net->width/2*1.3+((ID-5.5))*net->width*0.10;
-            break;
-            //        case 101: qDebug()<<"hello "<<ID; break;
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-            float shift1=13.5;
-            y=net->height*(.87-(ID-shift1)*(ID-shift1)/100.);
-            x=net->width/2*1.3+(ID-shift1)*net->width*0.06;
-            break;
         }
+        else
+        {
+            y=net->height*(1-(ID-net->detectors_size-3.5)*(ID-net->detectors_size-3.5)/80.);
+            x=net->width/2*1.3+((ID-net->detectors_size-3.5))*net->width*0.10;
+        }
+//        switch(ID)
+//        {
+//        case 0: x=net->width/2*1.3+(rand()%100)*+((ID-.5))*net->width*0.10; y=net->height*.53; break;
+//        case 1: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53;break;
+//        case 2:
+//        case 3:
+//        case 4:
+//        case 5:
+//        case 6:
+//        case 7:
+//        case 8:
+//        case 9:
+
+//            y=net->height*(1-(ID-5.5)*(ID-5.5)/80.);
+//            x=net->width/2*1.3+((ID-5.5))*net->width*0.10;
+//            break;
+
+//        }
     }
 
 
