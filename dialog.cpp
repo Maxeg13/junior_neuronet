@@ -310,7 +310,7 @@ Dialog::Dialog(QWidget *parent) :
     //    test_val/=20;
 
     slider_circle = new myQSlider(this);
-    slider_circle->setRange(1, 100);
+    slider_circle->setRange(1, 300);
     slider_circle->setValue(slider_circle_val=24);
 
     slider_weight_rad = new myQSlider(this);
@@ -774,7 +774,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         if((i!=mouse_ind[0]))
             for(int j=0;j<net.size;j++)
             {
-                if(fabs(net.neuron[i].weight[j])>net.minWeight)
+                if(fabs(net.neuron[i].weight[j])>.0001)
                 {
                     painter->drawLine(net.neuron[j].x,net.neuron[j].y,
                                       net.neuron[j].x+net.neuron[i].arrow[j].x[0],
