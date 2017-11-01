@@ -53,6 +53,7 @@ public:
     float to_output;
     int STDP;
     bool* STDP_set;
+    int phase_noise;
     int freq_phase;
     neuronType type;
     bool is_excitatory;

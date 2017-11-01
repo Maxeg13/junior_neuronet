@@ -181,17 +181,14 @@ void CNet::kohonSettings()
 
     for(int i=2;i<10;i++)
     {
-        neuron[i].weight[i+8]=maxWeight;
-
+//        neuron[i].weight[i+8]=maxWeight*2.5;
         neuron[i].STDP_set[i+8]=0;
         neuron[i+8].setWeight(0,maxWeight);
-
+        neuron[i+8].setWeight(1,maxWeight);
     }
 
-
-
-    neuron[0].setWeight(1,-1*maxWeight);
-     neuron[1].setWeight(0,-1*maxWeight);
+    neuron[0].setWeight(1,-4*maxWeight);
+     neuron[1].setWeight(0,-4*maxWeight);
 
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)
@@ -209,7 +206,7 @@ void CNet::setDelay(int i,int j)
         float square=ex*ex+ey*ey+0.001;
 
         //const
-        neuron[i].output[j].resize(1+sqrt(square)/4,0);
+        neuron[i].output[j].resize(1+sqrt(square)/10,0);//4
         //        qDebug()<< neuron[i].output[j].size();
     }
     else

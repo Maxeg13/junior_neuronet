@@ -327,7 +327,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_freq = new myQSlider(this);
     slider_freq->setRange(2,50);
-    slider_freq->setValue(3);
+    slider_freq->setValue(8);
 
     layout->addWidget(button_stop);
     layout->addWidget(button1);
