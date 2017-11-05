@@ -22,7 +22,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     maxWeight=8;
     step=1;
     size_k=.2;
-    psc_excxpire_time=2;//4,0.1
+    psc_excxpire_time=10;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
     if(demo)
         weight_diap=.99;
@@ -71,7 +71,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
-    detectors_size=2;
+    detectors_size=10;
     rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;
