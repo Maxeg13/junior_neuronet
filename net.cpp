@@ -244,7 +244,7 @@ void CNet::setArrows()
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)
         {
-            if(fabs(neuron[i].weight[j])>minWeight)
+            if(fabs(neuron[i].weight[j])>0.0001)
             {
                 float ex=neuron[i].x-neuron[j].x;
                 float ey=neuron[i].y-neuron[j].y;
