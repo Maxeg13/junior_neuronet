@@ -136,7 +136,7 @@ void neuronIzh::locate()
     {
         if(ID<net->detectors_size)
         {
-             x=net->width/2*1.3+(((rand()%100-50)/80.))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.);
+             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
 
         }
         else
@@ -370,7 +370,7 @@ void neuronIzh::CalculateStep()
                             //pre
                             dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
 
-                            weight[i]+=dw*0.4;//                        (weight[i]-net->minWeight);
+                            weight[i]+=dw*0.2;//                        (weight[i]-net->minWeight);
 
                             if(weight[i]  <  net->minWeight)
                                 weight[i]=net->minWeight;

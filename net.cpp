@@ -148,7 +148,7 @@ void CNet::weights_with_rad(float x1)
         for(int j=0;j<detectors_size;j++)
         {
             if(i!=j)
-                if(neuron[i].isWithin2(x1*x1,j))
+                if(!neuron[i].isWithin2(x1*x1,j))
                     neuron[i].weight[j]=-3*maxWeight;
             else
                    neuron[i].weight[j]=0;
@@ -277,9 +277,9 @@ void CNet::setArrows()
                 float square=ex*ex+ey*ey+0.001;
                 ex=ex/sqrt(square);
                 ey=ey/sqrt(square);
-                float phi=0.25;
+                float phi=0.2;
                 float width=2;
-                int length=this->rad+4;
+                int length=this->rad+5;
                 neuron[i].arrow[j].x[0]=length*(ex*cos(phi)+ey*sin(phi));
                 //               qDebug()<<neuron[i].arrow[j].x[0];
                 neuron[i].arrow[j].y[0]=length*(-ex*sin(phi)+ey*cos(phi));
