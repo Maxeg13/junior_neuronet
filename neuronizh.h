@@ -83,6 +83,7 @@ public:
     float b;
     float c;
     float d;
+    bool isWithin2(float xx, int i);
     void oneStep(float);
     void CalculateStep();
     void setWeight(int i, float x);

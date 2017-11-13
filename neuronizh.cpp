@@ -203,12 +203,16 @@ void neuronIzh::push(float x1,float y1)
 
 }
 
+bool neuronIzh::isWithin2(float xx, int i)
+{return xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y));}
+
+
 void neuronIzh::weights_with_rad(float x1)
 {
     float xx=x1*x1;
     for(int i=0;i<net->size;i++)
     {
-        if(xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y)))
+        if(isWithin2(xx,i))
         {
             if(i!=ID)
             {
@@ -366,7 +370,7 @@ void neuronIzh::CalculateStep()
                             //pre
                             dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
 
-                            weight[i]+=dw;//                        (weight[i]-net->minWeight);
+                            weight[i]+=dw*0.4;//                        (weight[i]-net->minWeight);
 
                             if(weight[i]  <  net->minWeight)
                                 weight[i]=net->minWeight;

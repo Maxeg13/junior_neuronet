@@ -135,12 +135,30 @@ void CNet::spikesStop()
 
 void CNet::weights_with_rad(float x1)
 {
-    for(int i=0;i<size;i++)
+//    for(int i=0;i<size;i++)
+//    {
+//        neuron[i].weights_with_rad(x1);
+//    }
+
+//    afterReWeight();
+
+
+    for(int i=0;i<detectors_size;i++)
     {
-        neuron[i].weights_with_rad(x1);
+        for(int j=0;j<detectors_size;j++)
+        {
+            if(i!=j)
+                if(neuron[i].isWithin2(x1*x1,j))
+                    neuron[i].weight[j]=-3*maxWeight;
+            else
+                   neuron[i].weight[j]=0;
+        }
     }
 
-    afterReWeight();
+    for(int i=0;i<detectors_size;i++)
+        for(int j=0;j<detectors_size;j++)
+            setDelay(i,j);
+    setArrows();
 }
 
 void CNet::afterReWeight()
@@ -203,6 +221,14 @@ void CNet::kohonSettings()
             setDelay(i,j);
     setArrows();
 }
+
+//void CNet::setInhibitoryDep(float r)
+//{
+//    for(int i=0;i<detectors_size;i++)
+//        for(int j=0;j<detectors_size;j++)
+//            if(i!=j)
+//    neuron[i].setWeight(j,-3*maxWeight);
+//}
 
 void CNet::setDelay(int i,int j)
 {

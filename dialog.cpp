@@ -210,6 +210,8 @@ void Dialog::changeWeight()
     //    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
     w= net.maxWeight=slider_weight_test->value();
     net.kohonSettings();
+    weightRadChanged();
+
 
     slider_weight_test->setToolTip("set weight: "+
                                    QString::number(w));
@@ -501,8 +503,8 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
-        //        net.
+//        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
+//                net.
     }
     else if(event->text()=="r")
     {
