@@ -1,7 +1,17 @@
 #ifndef DIALOG_H
 #define DIALOG_H
-
+#include <qwt_plot.h>
+#include <qwt_plot_grid.h>
+#include <qwt_legend.h>
+#include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
+#include <qwt_plot_magnifier.h>
+#include <qwt_plot_panner.h>
+#include <qwt_plot_picker.h>
+#include <qwt_picker_machine.h>
+#include "drawing.h"
 #include <QDialog>
+
 
 
 
@@ -19,7 +29,7 @@ public:
     void mouseMoveEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-
+    void drawingInit(QwtPlot* ,QString);
 private:
 protected:
      void paintEvent(QPaintEvent *e);

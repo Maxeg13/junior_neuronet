@@ -16,6 +16,7 @@
 #include <QCheckBox>
 #include "pattern.h"
 
+QwtPlot* d_plot;
 QColor QCLR;
 QPolygon qp;
 QVector<QPoint> qpt;
@@ -251,6 +252,13 @@ void Dialog::chooseThePattern()
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
+    d_plot = new QwtPlot();
+    drawingInit(d_plot,QString("Rastr"));
+    d_plot->setAxisScale(QwtPlot::yLeft,0,net.size);
+    d_plot->setAxisScale(QwtPlot::xBottom,0,2000);
+    d_plot->setAxisTitle(QwtPlot::yLeft, "number of neurons");
+    d_plot->setAxisTitle(QwtPlot::xBottom, "time");
+    d_plot->show();
 
     qpt.push_front(QPoint(10,10));
     qpt.push_front(QPoint(100,10));
@@ -948,7 +956,47 @@ void drawLinkWithSpike(int i, int j, QColor& QCLR, QColor& _QCLR, QPen& pen,QPai
 
     painter->drawPolygon(qp);
 }
-//class myQHBoxLayout: public QHBoxLayout
-//{
 
-//};
+
+void Dialog::drawingInit(QwtPlot* d_plot, QString title)
+{
+    d_plot->setAutoReplot();
+    //_______232
+
+    // настройка функций
+    QwtPlotPicker *d_picker =
+            new QwtPlotPicker(
+                QwtPlot::xBottom, QwtPlot::yLeft, // ассоциация с осями
+                QwtPlotPicker::CrossRubberBand, // стиль перпендикулярных линий
+                QwtPicker::ActiveOnly, // включение/выключение
+                d_plot->canvas() ); // ассоциация с полем
+    // Цвет перпендикулярных линий
+    d_picker->setRubberBandPen( QColor( Qt::red ) );
+
+    // цвет координат положения указателя
+    d_picker->setTrackerPen( QColor( Qt::black ) );
+
+    // непосредственное включение вышеописанных функций
+    d_picker->setStateMachine( new QwtPickerDragPointMachine() );
+
+    // Включить возможность приближения/удаления графика
+    // #include <qwt_plot_magnifier.h>
+    QwtPlotMagnifier *magnifier = new QwtPlotMagnifier(d_plot->canvas());
+    // клавиша, активирующая приближение/удаление
+    magnifier->setMouseButton(Qt::MidButton);
+    // Включить возможность перемещения по графику
+    // #include <qwt_plot_panner.h>
+    QwtPlotPanner *d_panner = new QwtPlotPanner( d_plot->canvas() );
+    // клавиша, активирующая перемещение
+    d_panner->setMouseButton( Qt::RightButton );
+    // Включить отображение координат курсора и двух перпендикулярных
+    // линий в месте его отображения
+
+    QwtText* qwtt=new QwtText(title);
+    qwtt->setFont(QFont("Helvetica", 11,QFont::Normal));
+
+    //    d_plot->setAxisScale(1,-500,500,200);
+    d_plot->setTitle( *qwtt ); // заголовок
+    d_plot->setCanvasBackground( Qt::white ); // цвет фона
+//    d_plot->set
+}

@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 #QT       += core gui
+LIBS += -LC:/QWT/lib -lqwt
+CONFIG   += qwt
 CONFIG   += console
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -15,9 +17,11 @@ SOURCES += main.cpp\
         dialog.cpp \
     neuronizh.cpp \
     net.cpp \
-    pattern.cpp
+    pattern.cpp \
+    drawing.cpp
 
 HEADERS  += dialog.h \
     neuronizh.h \
     cnet.h \
-    pattern.h
+    pattern.h \
+    drawing.h
