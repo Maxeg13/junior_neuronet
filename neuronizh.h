@@ -37,6 +37,7 @@ class neuronIzh
 public:
     CNet* net;
     CArrow* arrow;
+    deque<int> rastr;
     deque<deque<int>> syn_cnt;
     QColor QCLR;
     int i;

@@ -330,6 +330,7 @@ void neuronIzh::CalculateStep()
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
+        rastr.push_back(net->rastr_time);
 //        if(ID==15)
 //            qDebug()<<"hello!";
 

@@ -16,6 +16,7 @@
 #include <QCheckBox>
 #include "pattern.h"
 
+QwtPlotCurve rastrCurve;
 QwtPlot* d_plot;
 QColor QCLR;
 QPolygon qp;
@@ -157,7 +158,7 @@ void Dialog::setPattern(int i)
     net.stim_ind=ptn[i].ind;
     for(int j=0;j<ptn[i].freq.size();j++)
     {
-//        net.neuron[ptn[i].ind[j]].freq_cnt=0;
+        //        net.neuron[ptn[i].ind[j]].freq_cnt=0;
         net.neuron[ptn[i].ind[j]].freq=ptn[i].freq[j];
         net.neuron[ptn[i].ind[j]].time_from_freq=1000/ptn[i].freq[j];
     }
@@ -171,31 +172,31 @@ void Dialog::setPattern(int i)
 void Dialog::savePattern()
 {
 
-//    int i=ptn_n;
-//    ptn[i].freq.resize(net.stim_ind.size());
-//    ptn[i].ind=net.stim_ind;
-//    for(int j=0;j<net.stim_ind.size();j++)
-//        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
+    //    int i=ptn_n;
+    //    ptn[i].freq.resize(net.stim_ind.size());
+    //    ptn[i].ind=net.stim_ind;
+    //    for(int j=0;j<net.stim_ind.size();j++)
+    //        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
 
-//    ptn_n++;
-//    ptn_n%=2;
+    //    ptn_n++;
+    //    ptn_n%=2;
 
-        int i=0;
-        ptn[i].freq.resize(net.stim_ind.size());
-        ptn[i].ind=net.stim_ind;
-        for(int j=0;j<net.stim_ind.size();j++)
-            ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
+    int i=0;
+    ptn[i].freq.resize(net.stim_ind.size());
+    ptn[i].ind=net.stim_ind;
+    for(int j=0;j<net.stim_ind.size();j++)
+        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
 
-        i=1;
-        ptn[i].freq.resize(net.stim_ind.size());
-        ptn[i].ind=net.stim_ind;
-        for(int j=0;j<net.stim_ind.size();j++)
-        {
-//            qDebug()<<"hello";
-    //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
-            ptn[i].freq[j]=ptn[0].freq[net.stim_ind.size()-1-j];
+    i=1;
+    ptn[i].freq.resize(net.stim_ind.size());
+    ptn[i].ind=net.stim_ind;
+    for(int j=0;j<net.stim_ind.size();j++)
+    {
+        //            qDebug()<<"hello";
+        //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
+        ptn[i].freq[j]=ptn[0].freq[net.stim_ind.size()-1-j];
 
-        }
+    }
 }
 
 void Dialog::setPhase()
@@ -259,6 +260,8 @@ Dialog::Dialog(QWidget *parent) :
     d_plot->setAxisTitle(QwtPlot::yLeft, "number of neurons");
     d_plot->setAxisTitle(QwtPlot::xBottom, "time");
     d_plot->show();
+
+
 
     qpt.push_front(QPoint(10,10));
     qpt.push_front(QPoint(100,10));
@@ -346,7 +349,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_weight_rad = new myQSlider(this);
     slider_weight_rad->setRange(8, 300);
-    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=50);
+    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=240);
 
     slider_current = new myQSlider(this);
     slider_current->setRange(1,50);
@@ -439,6 +442,8 @@ Dialog::Dialog(QWidget *parent) :
     L_E4->setToolTip("STDP speed");
     L_E5->setToolTip("choose the pattern");
 
+    //    net.kohonSettings();
+    weightRadChanged();
     freqChange();
     if(net.demo)
         weightRadChanged();
@@ -511,8 +516,8 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-//        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
-//                net.
+        //        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
+        //                net.
     }
     else if(event->text()=="r")
     {
@@ -678,6 +683,20 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
+//    QwtSymbol::LTriangle
+    QwtSymbol* symbol = new QwtSymbol( QwtSymbol::LTriangle,
+                            QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 4,4 ) );
+    rastrCurve.setSymbol(symbol);
+    rastrCurve.setPen(QColor(0,0,0,0));
+    QPolygonF points;
+    for(int i=0;i<net.size;i++)
+        for(int j=0;j<net.neuron[i].rastr.size();j++)
+            points<<QPointF(net.neuron[i].rastr[j],i);
+
+    rastrCurve.setSamples( points ); // ассоциировать набор точек с кривой
+    rastrCurve.attach( d_plot); // отобразить кривую на графике/
+
+
     //    emit L_E->editingFinished();
     static float blink_phase=0;
     blink_phase++;
@@ -998,5 +1017,5 @@ void Dialog::drawingInit(QwtPlot* d_plot, QString title)
     //    d_plot->setAxisScale(1,-500,500,200);
     d_plot->setTitle( *qwtt ); // заголовок
     d_plot->setCanvasBackground( Qt::white ); // цвет фона
-//    d_plot->set
+    //    d_plot->set
 }

@@ -44,10 +44,10 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     tau_m=30;
     tau_y=125;
 
-//    Am2=.007;
-//    Am3=.00023;
-//    Ap2=5*.0000000001;
-//    Ap3=.0062;
+    //    Am2=.007;
+    //    Am3=.00023;
+    //    Ap2=5*.0000000001;
+    //    Ap3=.0062;
     Am2=.0071;
     Am3=0;
     Ap2=0;
@@ -83,7 +83,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     for(int i=0;i<size;i++)
         neuron[i]= neuronIzh(i,_type,((rand()%100)>(inhibitory_perc-1)),this);
 
-//    testSettings(600);
+    //    testSettings(600);
 
     kohonSettings();
 }
@@ -91,14 +91,14 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 void CNet::demoSettings(int x)
 {
     for(int i=0;i<size;i++)
-    neuron[i].weights_with_rad(x);
+        neuron[i].weights_with_rad(x);
     afterReWeight();
 
     for(int i=0;i<size;i++)
-    for(int j=0;j<size;j++)
-    {
-        setDelay(i,j);
-    }
+        for(int j=0;j<size;j++)
+        {
+            setDelay(i,j);
+        }
 }
 
 
@@ -135,12 +135,12 @@ void CNet::spikesStop()
 
 void CNet::weights_with_rad(float x1)
 {
-//    for(int i=0;i<size;i++)
-//    {
-//        neuron[i].weights_with_rad(x1);
-//    }
+    //    for(int i=0;i<size;i++)
+    //    {
+    //        neuron[i].weights_with_rad(x1);
+    //    }
 
-//    afterReWeight();
+    //    afterReWeight();
 
 
     for(int i=0;i<detectors_size;i++)
@@ -150,8 +150,8 @@ void CNet::weights_with_rad(float x1)
             if(i!=j)
                 if(!neuron[i].isWithin2(x1*x1,j))
                     neuron[i].weight[j]=-3*maxWeight;
-            else
-                   neuron[i].weight[j]=0;
+                else
+                    neuron[i].weight[j]=0;
         }
     }
 
@@ -202,19 +202,19 @@ void CNet::kohonSettings()
         for(int i=detectors_size;i<size;i++)
             neuron[i].setWeight(j,maxWeight);
 
-//    for(int i=2;i<size;i++)
-//    {
-//        neuron[i].weight[i+8]=maxWeight*2.5;
-//        neuron[i].STDP_set[i+8]=0;
-//        neuron[i+8].setWeight(0,maxWeight);
-//        neuron[i+8].setWeight(1,maxWeight);
-//    }
+    //    for(int i=2;i<size;i++)
+    //    {
+    //        neuron[i].weight[i+8]=maxWeight*2.5;
+    //        neuron[i].STDP_set[i+8]=0;
+    //        neuron[i+8].setWeight(0,maxWeight);
+    //        neuron[i+8].setWeight(1,maxWeight);
+    //    }
 
     for(int i=0;i<detectors_size;i++)
         for(int j=0;j<detectors_size;j++)
             if(i!=j)
-    neuron[i].setWeight(j,-3*maxWeight);
-//     neuron[1].setWeight(0,-4*maxWeight);
+                neuron[i].setWeight(j,-3*maxWeight);
+    //     neuron[1].setWeight(0,-4*maxWeight);
 
     for(int i=0;i<size;i++)
         for(int j=0;j<size;j++)
@@ -252,6 +252,14 @@ void CNet::setDelay(int i,int j)
 
 void CNet::CalculateStep(float x)
 {
+    rastr_time++;
+    if(rastr_time==2000)
+    {
+        rastr_time=0;
+        for(int i=0;i<size;i++)
+            neuron[i].rastr.resize(0);
+    }
+
     for(int i=0;i<size;i++)
         neuron[i].oneStep(x);
 

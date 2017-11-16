@@ -8,6 +8,7 @@
 class CNet
 {
 public:
+    int rastr_time;
     float min_weight_norm;
     float weight_diap;
     float psc_excxpire_time;
@@ -44,6 +45,7 @@ public:
     float steph;
     float ext_show;
     bool spike_show;
+
     int STDP_cnt;
     int STDP_div;
     void CalculateStep(float x);
