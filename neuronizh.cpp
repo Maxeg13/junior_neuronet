@@ -5,6 +5,11 @@
 #include <QDebug>
 #include <iostream>
 
+int getPoisson()
+{
+    return(100*(-log((rand()%20)/22.+0.1)/log(2.718)));
+}
+
 neuronIzh::neuronIzh()
 {
 
@@ -136,7 +141,7 @@ void neuronIzh::locate()
     {
         if(ID<net->detectors_size)
         {
-//             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
+            //             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
             static int width=sqrt(net->detectors_size);
             float x1=(ID%width+(rand()%8)*.1)*40.;
             float y1=(ID/width+(rand()%8)*.1)*40.;
@@ -148,24 +153,24 @@ void neuronIzh::locate()
             y=net->height*(1-(ID-net->detectors_size-3.5)*(ID-net->detectors_size-3.5)/80.);
             x=net->width/2*1.3+((ID-net->detectors_size-3.5))*net->width*0.10;
         }
-//        switch(ID)
-//        {
-//        case 0: x=net->width/2*1.3+(rand()%100)*+((ID-.5))*net->width*0.10; y=net->height*.53; break;
-//        case 1: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53;break;
-//        case 2:
-//        case 3:
-//        case 4:
-//        case 5:
-//        case 6:
-//        case 7:
-//        case 8:
-//        case 9:
+        //        switch(ID)
+        //        {
+        //        case 0: x=net->width/2*1.3+(rand()%100)*+((ID-.5))*net->width*0.10; y=net->height*.53; break;
+        //        case 1: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53;break;
+        //        case 2:
+        //        case 3:
+        //        case 4:
+        //        case 5:
+        //        case 6:
+        //        case 7:
+        //        case 8:
+        //        case 9:
 
-//            y=net->height*(1-(ID-5.5)*(ID-5.5)/80.);
-//            x=net->width/2*1.3+((ID-5.5))*net->width*0.10;
-//            break;
+        //            y=net->height*(1-(ID-5.5)*(ID-5.5)/80.);
+        //            x=net->width/2*1.3+((ID-5.5))*net->width*0.10;
+        //            break;
 
-//        }
+        //        }
     }
 
 
@@ -256,16 +261,25 @@ void neuronIzh::oneStep(float x)
 
 void neuronIzh::CalculateStep()
 {
-
+    pois_cnt++;
+    if(pois_cnt>pois_T)
+    {
+        pois_modulator=1;
+        pois_cnt=0;
+        pois_T=getPoisson();
+    }
+    else
+        pois_modulator=0;
+    if(ID==1)qDebug()<<pois_T;
 
     freq_cnt++;
     if(freq_cnt+stim_rnd>(time_from_freq+1))
     {
         freq_cnt=0;
-//        freq_modulator=1;
+        //        freq_modulator=1;
         //        stim_rnd=rand()%4;
         stim_rnd=0;
-//        phase_noise=rand()%7;//nice
+        //        phase_noise=rand()%7;//nice
         phase_noise=rand();
     }
 
@@ -299,7 +313,7 @@ void neuronIzh::CalculateStep()
     for(i=0;i<net->size;i++)
         if(fabs(net->neuron[i].weight[ID])>net->minWeight)
             input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
-    input_sum=input_from_neurons+external_I*freq_modulator;
+    input_sum=input_from_neurons+external_I*(freq_modulator)+50*pois_modulator;
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
 
@@ -331,8 +345,8 @@ void neuronIzh::CalculateStep()
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
         rastr.push_back(net->rastr_time);
-//        if(ID==15)
-//            qDebug()<<"hello!";
+        //        if(ID==15)
+        //            qDebug()<<"hello!";
 
         for(i=0;i<net->size;i++)
             syn_cnt[i].push_front(1);

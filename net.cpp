@@ -233,7 +233,7 @@ void CNet::kohonSettings()
 void CNet::setDelay(int i,int j)
 {
     //////////////////////////////////////////////////
-//    if((neuron[i].weight[j])>0.0001)
+    //    if((neuron[i].weight[j])>0.0001)
     {
         float ex=neuron[i].x-neuron[j].x;
         float ey=neuron[i].y-neuron[j].y;
@@ -243,16 +243,17 @@ void CNet::setDelay(int i,int j)
         neuron[i].output[j].resize(1+sqrt(square)/6,0);//4
         //        qDebug()<< neuron[i].output[j].size();
     }
-//    else
-//    {
-//        neuron[i].output[j].resize(1,0);
-//    }
+    //    else
+    //    {
+    //        neuron[i].output[j].resize(1,0);
+    //    }
 
 }
 
 void CNet::CalculateStep(float x)
 {
-    rastr_time++;
+//    if()
+        rastr_time++;
     if(rastr_time==2000)
     {
         rastr_time=0;

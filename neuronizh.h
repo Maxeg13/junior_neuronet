@@ -55,6 +55,9 @@ public:
     int STDP;
     bool* STDP_set;
     int phase_noise;
+    int pois_cnt;
+    int pois_T;
+    bool pois_modulator;
     int freq_phase;
     neuronType type;
     bool is_excitatory;

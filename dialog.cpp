@@ -257,7 +257,7 @@ Dialog::Dialog(QWidget *parent) :
     drawingInit(d_plot,QString("Rastr"));
     d_plot->setAxisScale(QwtPlot::yLeft,0,net.size);
     d_plot->setAxisScale(QwtPlot::xBottom,0,2000);
-    d_plot->setAxisTitle(QwtPlot::yLeft, "number of neurons");
+    d_plot->setAxisTitle(QwtPlot::yLeft, "neuron's index");
     d_plot->setAxisTitle(QwtPlot::xBottom, "time");
     d_plot->show();
 
@@ -516,7 +516,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-        //        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
+                net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
         //                net.
     }
     else if(event->text()=="r")
