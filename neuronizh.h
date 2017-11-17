@@ -55,6 +55,7 @@ public:
     int STDP;
     bool* STDP_set;
     int phase_noise;
+    bool with_poisson;
     int pois_cnt;
     int pois_T;
     bool pois_modulator;

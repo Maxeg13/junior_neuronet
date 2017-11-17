@@ -4,10 +4,23 @@
 #include <stdlib.h>
 #include <QDebug>
 #include <iostream>
+float max(float x,float y)
+{
+    if(x>y)
+        return x;
+    return y;
+}
 
 int getPoisson()
 {
-    return(100*(-log((rand()%20)/22.+0.1)/log(2.718)));
+    static float T_eff=100.*1.9/log(2.718);
+    static float cnt=0;
+    static float ac=0;
+    int ans=T_eff*(-log((rand()%20)/22.+0.01));
+    cnt++;
+    ac+=1./ans;
+    qDebug()<<ac/cnt;
+    return(ans);
 }
 
 neuronIzh::neuronIzh()
@@ -17,6 +30,7 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
+    with_poisson=1;
     STDP=2;
 
     vx=0;
@@ -261,7 +275,8 @@ void neuronIzh::oneStep(float x)
 
 void neuronIzh::CalculateStep()
 {
-    pois_cnt++;
+    if(with_poisson)
+        pois_cnt++;
     if(pois_cnt>pois_T)
     {
         pois_modulator=1;
@@ -270,7 +285,7 @@ void neuronIzh::CalculateStep()
     }
     else
         pois_modulator=0;
-    if(ID==1)qDebug()<<pois_T;
+    //    if(ID==1)qDebug()<<pois_T;
 
     freq_cnt++;
     if(freq_cnt+stim_rnd>(time_from_freq+1))
@@ -313,7 +328,7 @@ void neuronIzh::CalculateStep()
     for(i=0;i<net->size;i++)
         if(fabs(net->neuron[i].weight[ID])>net->minWeight)
             input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
-    input_sum=input_from_neurons+external_I*(freq_modulator)+50*pois_modulator;
+    input_sum=input_from_neurons+max(external_I*(freq_modulator),50*pois_modulator);
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
 

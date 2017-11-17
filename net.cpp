@@ -202,6 +202,8 @@ void CNet::kohonSettings()
         for(int i=detectors_size;i<size;i++)
             neuron[i].setWeight(j,maxWeight);
 
+    for(int i=detectors_size;i<size;i++)
+        neuron[i].with_poisson=0;
     //    for(int i=2;i<size;i++)
     //    {
     //        neuron[i].weight[i+8]=maxWeight*2.5;
