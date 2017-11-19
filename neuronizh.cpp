@@ -14,12 +14,12 @@ float max(float x,float y)
 int getPoisson()
 {
     static float T_eff=100.*1.9/log(2.718);
-    static float cnt=0;
-    static float ac=0;
-    int ans=T_eff*(-log((rand()%20)/22.+0.01));
-    cnt++;
-    ac+=1./ans;
-    qDebug()<<ac/cnt;
+//    static float cnt=0;
+//    static float ac=0;
+    int ans=T_eff*(-log((rand()%40)/41.+0.001));
+//    cnt++;
+//    ac+=1./ans;
+//    qDebug()<<ac/cnt;
     return(ans);
 }
 
@@ -30,6 +30,8 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
+    pois_T=getPoisson();
+    pois_cnt=getPoisson();
     with_poisson=1;
     STDP=2;
 
