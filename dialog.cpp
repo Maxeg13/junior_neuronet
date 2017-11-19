@@ -46,9 +46,7 @@ bool fire=0;
 bool learning_yes;
 
 
-QGroupBox *horizontalGroupBox ,
-*horizontalGroupBox1, *horizontalGroupBox2, *horizontalGroupBox3;
-QVBoxLayout *mainLayout, *pictureLayout;
+
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
@@ -114,7 +112,7 @@ public:
 
 
 myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
-*button_save_pattern, *button_learning;
+*button_save_pattern, *button_learning, *button_poisson;
 QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale;
@@ -227,6 +225,19 @@ void Dialog::setInhPerc()
     net.weights_with_rad(slider_weight_rad->value());
 }
 
+void Dialog::changePoisson()
+{
+    net.poisson_on=!net.poisson_on;
+    switch((int)button_poisson)
+    {
+    case 0:
+        button_poisson->setText("poisson off");break;
+    case 1:
+        button_poisson->setText("poisson on");break;
+    }
+//    button_poisson->setText("");
+}
+
 void Dialog::killDelay()
 {
     for(int i=0;i<net.size;i++)
@@ -277,6 +288,7 @@ Dialog::Dialog(QWidget *parent) :
 
     timer->start(42);//24 times a sec
 
+    button_poisson=new myQPushButton(this,"poisson on");
     button_stop= new myQPushButton(this,"stop spiking!");
     button1= new myQPushButton(this,"pull");
     button_grab= new myQPushButton(this,"grab");
@@ -297,38 +309,11 @@ Dialog::Dialog(QWidget *parent) :
     L_E5->setText(QString::number(0));
 
     QGridLayout* QGL=new QGridLayout(this);
-    mainLayout = new QVBoxLayout();
-    //    pictureLayout = new QVBoxLayout();
+//    mainLayout = new QVBoxLayout();
 
-    QHBoxLayout *layout = new QHBoxLayout;
-    QHBoxLayout *layout1 = new QHBoxLayout;
-    QHBoxLayout *layout2 = new QHBoxLayout;
-    QHBoxLayout *layout3 = new QHBoxLayout;
-    horizontalGroupBox = new QGroupBox();
-    horizontalGroupBox1 = new QGroupBox();
-    horizontalGroupBox2 = new QGroupBox();
-    horizontalGroupBox3 = new QGroupBox();
-    //    QScrollArea *scroll = new QScrollArea;
 
     this->setGeometry(QRect(40,40,640,670));
 
-    this->setLayout(mainLayout);
-    //    this->
-
-
-    horizontalGroupBox->setLayout(layout);
-    horizontalGroupBox1->setLayout(layout1);
-    horizontalGroupBox2->setLayout(layout2);
-    horizontalGroupBox3->setLayout(layout3);
-
-
-    //    horizontalGroupBox->setBaseSize(400,10);
-    //    mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
-    //    mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
-    //    mainLayout->addWidget(horizontalGroupBox2,0,Qt::AlignBottom);
-    //    mainLayout->addWidget(horizontalGroupBox3,0,Qt::AlignBottom);
-    //    mainLayout->addWidget(button,90,Qt::AlignBottom);
-    //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
     slider_scale= new myQSlider(this);
     slider_scale->setRange(4, 20);
@@ -390,8 +375,11 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(L_E5,3,1,1,1);
     QGL->addWidget(slider_scale,3,2,1,1);
     QGL->addWidget(slider_phase,3,3,1,1);
+    QGL->addWidget(button_poisson,3,4,1,1);
 
     connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
+
+    connect(button_poisson,SIGNAL(clicked()),this,SLOT(changePoisson()));
 
     connect(button_save_pattern,SIGNAL(clicked()),this,SLOT(savePattern()));
 
@@ -668,6 +656,7 @@ void Dialog::mousePressEvent(QMouseEvent *e)
             mouse_ind[1]=mouse_ind[0];
             mouse_ind[0]=i;
             mouse_drop=1;
+            qDebug()<<net.neuron[i].top[0];
             //            net.neuron[i].vis=220;
         }
     }

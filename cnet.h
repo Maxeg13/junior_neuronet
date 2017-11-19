@@ -8,6 +8,7 @@
 class CNet
 {
 public:
+    bool poisson_on;
     int rastr_time;
     float min_weight_norm;
     float weight_diap;

@@ -14,12 +14,12 @@ float max(float x,float y)
 int getPoisson()
 {
     static float T_eff=100.*1.9/log(2.718);
-//    static float cnt=0;
-//    static float ac=0;
+    //    static float cnt=0;
+    //    static float ac=0;
     int ans=T_eff*(-log((rand()%40)/41.+0.001));
-//    cnt++;
-//    ac+=1./ans;
-//    qDebug()<<ac/cnt;
+    //    cnt++;
+    //    ac+=1./ans;
+    //    qDebug()<<ac/cnt;
     return(ans);
 }
 
@@ -30,6 +30,8 @@ neuronIzh::neuronIzh()
 
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
+
+
     pois_T=getPoisson();
     pois_cnt=getPoisson();
     with_poisson=1;
@@ -38,30 +40,6 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     vx=0;
     vy=0;
 
-
-    //    float k=0.15;
-
-    //    int wh=6;
-    //    int hh=6;
-    //    float h1=(rand())%width-width/2;
-    //    float h2=(rand())%height-height/2;
-    //    x=h1*h1*((h1>0)?1:(-1))/wh/wh*.6+width;
-    //    y=h2*h2*((h2>0)?1:(-1))/hh/hh*.6+height;
-
-    //    float loc_rad=width/3;
-
-    //    while((x-width/2)*(x-width/2)+(y-height/2)*(y-height/2)>loc_rad*loc_rad)
-    //    {
-    //        x=rand()%width;
-    //        y=rand()%height;
-    //    }
-
-    //    while(((x-width/4)*(x-width/2)+(y-height/3)*(y-height/3)>loc_rad*loc_rad)&&
-    //          ((x-width*3/4.)*(x-width*3/4.)+(y-height/3)*(y-height/3)>loc_rad*loc_rad))
-    //    {
-    //        x=rand()%width;
-    //        y=rand()%height;
-    //    }
     stim_rnd=0;
     freq_cnt=0;
     vis=0;
@@ -231,6 +209,40 @@ void neuronIzh::push(float x1,float y1)
 bool neuronIzh::isWithin2(float xx, int i)
 {return xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y));}
 
+void neuronIzh::topOfRemoted(int n)
+{
+    deque<int> IDS;
+    deque<int> ds;
+    top.resize(n);
+
+    for(int i=0;i<net->detectors_size;i++)
+    {
+        IDS.push_back(i);
+
+        float d=((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y));
+        ds.push_back(d);
+    }
+
+    int h;
+    for(int j=0;j<n;j++)
+        for(int i=1;i<net->detectors_size-j;i++)
+        {
+            if(ds[i-1]>ds[i])
+            {
+                h=ds[i];
+                ds[i]=ds[i-1];
+                ds[i-1]=h;
+
+                h=IDS[i];
+                IDS[i]=IDS[i-1];
+                IDS[i-1]=h;
+            }
+        }
+
+    for(int i=0;i<n;i++)
+        top[i]=IDS[net->detectors_size-i-1];
+
+}
 
 void neuronIzh::weights_with_rad(float x1)
 {
@@ -277,8 +289,9 @@ void neuronIzh::oneStep(float x)
 
 void neuronIzh::CalculateStep()
 {
-    if(with_poisson)
+    if(with_poisson && net->poisson_on)
         pois_cnt++;
+
     if(pois_cnt>pois_T)
     {
         pois_modulator=1;
@@ -406,7 +419,7 @@ void neuronIzh::CalculateStep()
                             //pre
                             dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
 
-                            weight[i]+=dw*0.2;//                        (weight[i]-net->minWeight);
+                            weight[i]+=dw*0.14;//                        (weight[i]-net->minWeight);
 
                             if(weight[i]  <  net->minWeight)
                                 weight[i]=net->minWeight;

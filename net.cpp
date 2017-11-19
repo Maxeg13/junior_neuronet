@@ -17,6 +17,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     demo=0;
     spike_show=1;
 
+    poisson_on=1;
     min_weight_norm=0.4;
     minWeight=1/20.;//for experiment
     maxWeight=8;
@@ -143,17 +144,28 @@ void CNet::weights_with_rad(float x1)
     //    afterReWeight();
 
 
+    //    for(int i=0;i<detectors_size;i++)
+    //    {
+    //        for(int j=0;j<detectors_size;j++)
+    //        {
+    //            if(i!=j)
+    //                if(!neuron[i].isWithin2(x1*x1,j))
+    //                    neuron[i].weight[j]=-3*maxWeight;
+    //                else
+    //                    neuron[i].weight[j]=0;
+    //        }
+    //    }
     for(int i=0;i<detectors_size;i++)
-    {
         for(int j=0;j<detectors_size;j++)
-        {
-            if(i!=j)
-                if(!neuron[i].isWithin2(x1*x1,j))
-                    neuron[i].weight[j]=-3*maxWeight;
-                else
-                    neuron[i].weight[j]=0;
-        }
-    }
+            neuron[i].weight[j]=0;
+
+
+    for(int i=0;i<detectors_size;i++)
+        neuron[i].topOfRemoted((int)x1/30);
+
+    for(int i=0;i<detectors_size;i++)
+        for(int j=0;j<neuron[i].top.size();j++)
+            neuron[i].weight[neuron[i].top[j]]=-3*maxWeight;
 
     for(int i=0;i<detectors_size;i++)
         for(int j=0;j<detectors_size;j++)
@@ -254,8 +266,8 @@ void CNet::setDelay(int i,int j)
 
 void CNet::CalculateStep(float x)
 {
-//    if()
-        rastr_time++;
+    //    if()
+    rastr_time++;
     if(rastr_time==2000)
     {
         rastr_time=0;

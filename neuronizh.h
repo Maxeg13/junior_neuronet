@@ -35,6 +35,7 @@ public:
 class neuronIzh
 {
 public:
+    deque<int> top;
     CNet* net;
     CArrow* arrow;
     deque<int> rastr;
@@ -88,6 +89,7 @@ public:
     float b;
     float c;
     float d;
+    void topOfRemoted(int n);
     bool isWithin2(float xx, int i);
     void oneStep(float);
     void CalculateStep();

@@ -54,6 +54,7 @@ public slots:
      void startLearning();
      void chooseThePattern();
      void setPhase();
+     void changePoisson();
 };
 
 #endif // DIALOG_H
