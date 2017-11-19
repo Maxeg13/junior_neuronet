@@ -115,7 +115,7 @@ public:
 
 myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
 *button_save_pattern, *button_learning;
-myQSlider *slider_circle, *slider_show_ext,
+QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale;
 //QMenuBar* menuBar;
@@ -296,6 +296,7 @@ Dialog::Dialog(QWidget *parent) :
     L_E4->setText(QString::number(.01));
     L_E5->setText(QString::number(0));
 
+    QGridLayout* QGL=new QGridLayout(this);
     mainLayout = new QVBoxLayout();
     //    pictureLayout = new QVBoxLayout();
 
@@ -312,6 +313,8 @@ Dialog::Dialog(QWidget *parent) :
     this->setGeometry(QRect(40,40,640,670));
 
     this->setLayout(mainLayout);
+    //    this->
+
 
     horizontalGroupBox->setLayout(layout);
     horizontalGroupBox1->setLayout(layout1);
@@ -320,68 +323,73 @@ Dialog::Dialog(QWidget *parent) :
 
 
     //    horizontalGroupBox->setBaseSize(400,10);
-    mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
-    mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
-    mainLayout->addWidget(horizontalGroupBox2,0,Qt::AlignBottom);
-    mainLayout->addWidget(horizontalGroupBox3,0,Qt::AlignBottom);
+    //    mainLayout->addWidget(horizontalGroupBox,100,Qt::AlignBottom);
+    //    mainLayout->addWidget(horizontalGroupBox1,0,Qt::AlignBottom);
+    //    mainLayout->addWidget(horizontalGroupBox2,0,Qt::AlignBottom);
+    //    mainLayout->addWidget(horizontalGroupBox3,0,Qt::AlignBottom);
     //    mainLayout->addWidget(button,90,Qt::AlignBottom);
     //    mainLayout->addWidget(button1,1,Qt::AlignBottom);
 
     slider_scale= new myQSlider(this);
     slider_scale->setRange(4, 20);
     slider_scale->setValue(8);
-
+    slider_scale->setOrientation(Qt::Horizontal);
     slider_weight_test= new myQSlider(this);
     slider_weight_test->setRange(-net.maxWeight, net.maxWeight);
     slider_weight_test->setValue(0);
-
+    slider_weight_test->setOrientation(Qt::Horizontal);
 
     slider_show_ext = new myQSlider(this);
     slider_show_ext->setRange(10, 140);
     slider_show_ext->setValue(test_val=10);
+    slider_show_ext->setOrientation(Qt::Horizontal);
     test_val/=20;
 
     //    test_val/=20;
 
-    slider_circle = new myQSlider(this);
+    slider_circle = new QSlider(this);
     slider_circle->setRange(1, 300);
     slider_circle->setValue(slider_circle_val=24);
-
+    slider_circle->setOrientation(Qt::Horizontal);
     slider_weight_rad = new myQSlider(this);
     slider_weight_rad->setRange(8, 300);
     slider_weight_rad->setValue(net.weight_rad=slider_weight_val=240);
-
+    slider_weight_rad->setOrientation(Qt::Horizontal);
     slider_current = new myQSlider(this);
     slider_current->setRange(1,50);
     slider_current-> setValue(50);
-
+    slider_current->setOrientation(Qt::Horizontal);
     slider_phase= new myQSlider(this);
     slider_phase->setRange(1,100);
     slider_phase->setValue(1);
-
+    slider_phase->setOrientation(Qt::Horizontal);
     slider_freq = new myQSlider(this);
     slider_freq->setRange(2,50);
     slider_freq->setValue(8);
+    slider_freq->setOrientation(Qt::Horizontal);
 
-    layout->addWidget(button_stop);
-    layout->addWidget(button1);
-    layout->addWidget(button_grab);
-    layout->addWidget(slider_circle);
-    layout->addWidget(slider_show_ext);
-    layout1->addWidget(slider_weight_rad);
-    layout1->addWidget(slider_current);
-    layout1->addWidget(L_E);
-    layout1->addWidget(L_E2);
-    layout1->addWidget(L_E3);
-    layout2->addWidget(slider_freq);
-    layout2->addWidget(slider_weight_test);
-    layout2->addWidget(L_E4);
-    layout2->addWidget(button_kill_delay);
-    layout2->addWidget(button_save_pattern);
-    layout3->addWidget(button_learning);
-    layout3->addWidget(L_E5);
-    layout3->addWidget(slider_scale);
-    layout3->addWidget(slider_phase);
+    QGL->addWidget(button_stop,0,0,1,1,Qt::AlignBottom);
+    QGL->addWidget(button1,0,1,1,1,Qt::AlignBottom);
+    QGL->addWidget(button_grab,0,2,1,1,Qt::AlignBottom);
+    QGL->addWidget(slider_circle,0,3,1,1,Qt::AlignBottom);
+    QGL->addWidget(slider_show_ext,0,4,1,1,Qt::AlignBottom);
+
+    QGL->addWidget(slider_weight_rad,1,0,1,1);
+    QGL->addWidget(slider_current,1,1,1,1);
+    QGL->addWidget(L_E,1,2,1,1);
+    QGL->addWidget(L_E2,1,3,1,1);
+    QGL->addWidget(L_E3,1,4,1,1);
+
+    QGL->addWidget(slider_freq,2,0,1,1);
+    QGL->addWidget(slider_weight_test,2,1,1,1);
+    QGL->addWidget(L_E4,2,2,1,1);
+    QGL->addWidget(button_kill_delay,2,3,1,1);
+    QGL->addWidget(button_save_pattern,2,4,1,1);
+
+    QGL->addWidget(button_learning,3,0,1,1);
+    QGL->addWidget(L_E5,3,1,1,1);
+    QGL->addWidget(slider_scale,3,2,1,1);
+    QGL->addWidget(slider_phase,3,3,1,1);
 
     connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
 
@@ -516,7 +524,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="l")
     {
-                net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
+        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=0;
         //                net.
     }
     else if(event->text()=="r")
@@ -683,9 +691,9 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
-//    QwtSymbol::Ellipse
+    //    QwtSymbol::Ellipse
     QwtSymbol* symbol = new QwtSymbol( QwtSymbol::Ellipse,
-                            QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
+                                       QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
     rastrCurve.setSymbol(symbol);
     rastrCurve.setPen(QColor(0,0,0,0));
     QPolygonF points;
