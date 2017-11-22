@@ -209,6 +209,8 @@ void neuronIzh::push(float x1,float y1)
 bool neuronIzh::isWithin2(float xx, int i)
 {return xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y));}
 
+
+
 void neuronIzh::rangedRemoted(int n)
 {
     deque<int> IDS;
@@ -242,8 +244,9 @@ void neuronIzh::rangedRemoted(int n)
     net->weight_ind.resize(net->size);
     for(int i=0;i<net->size;i++)
         net->weight_ind[i]=IDS[net->detectors_size-i-1];
-
 }
+
+
 
 void neuronIzh::topOfRemoted(int n)
 {

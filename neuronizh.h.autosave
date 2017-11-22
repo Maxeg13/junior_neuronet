@@ -35,7 +35,7 @@ public:
 class neuronIzh
 {
 public:
-    vector<int> weight_ind;
+    
     deque<int> top;
     CNet* net;
     CArrow* arrow;

@@ -273,6 +273,7 @@ void Dialog::chooseThePattern()
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
+    QGridLayout Q
     plot_rastr = new QwtPlot();
     drawingInit(plot_rastr,QString("Rastr"));
     plot_rastr->setAxisScale(QwtPlot::yLeft,0,net.size);
