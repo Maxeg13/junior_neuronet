@@ -17,7 +17,7 @@
 #include "pattern.h"
 
 QwtPlotCurve rastrCurve;
-QwtPlot* d_plot;
+QwtPlot* plot_rastr;
 QColor QCLR;
 QPolygon qp;
 QVector<QPoint> qpt;
@@ -50,7 +50,7 @@ bool learning_yes;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(38,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(58,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -115,7 +115,8 @@ myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
 *button_save_pattern, *button_learning, *button_poisson;
 QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
-*slider_weight_test, *slider_phase, *slider_scale;
+*slider_weight_test, *slider_phase, *slider_scale,
+*slider_pois_time;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -202,6 +203,13 @@ void Dialog::setPhase()
     net.neuron[mouse_ind[0]].freq_phase=slider_phase->value();
 }
 
+void Dialog::changePoisInterval()
+{
+    net.poisson_interval=slider_pois_time->value();
+    net.T_eff=net.poisson_interval*1.9/log(2.718);
+    slider_pois_time->setToolTip(QString("poisson interv=")+QString::number(net.poisson_interval)+QString(" ms"));
+}
+
 void Dialog::changeWeight()
 {
 
@@ -228,11 +236,12 @@ void Dialog::setInhPerc()
 void Dialog::changePoisson()
 {
     net.poisson_on=!net.poisson_on;
-    switch((int)button_poisson)
+//    qDebug()<<(int)
+    switch(net.poisson_on)
     {
-    case 0:
+    case false:
         button_poisson->setText("poisson off");break;
-    case 1:
+    case true:
         button_poisson->setText("poisson on");break;
     }
 //    button_poisson->setText("");
@@ -264,13 +273,13 @@ void Dialog::chooseThePattern()
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
-    d_plot = new QwtPlot();
-    drawingInit(d_plot,QString("Rastr"));
-    d_plot->setAxisScale(QwtPlot::yLeft,0,net.size);
-    d_plot->setAxisScale(QwtPlot::xBottom,0,2000);
-    d_plot->setAxisTitle(QwtPlot::yLeft, "neuron's index");
-    d_plot->setAxisTitle(QwtPlot::xBottom, "time");
-    d_plot->show();
+    plot_rastr = new QwtPlot();
+    drawingInit(plot_rastr,QString("Rastr"));
+    plot_rastr->setAxisScale(QwtPlot::yLeft,0,net.size);
+    plot_rastr->setAxisScale(QwtPlot::xBottom,0,2000);
+    plot_rastr->setAxisTitle(QwtPlot::yLeft, "neuron's index");
+    plot_rastr->setAxisTitle(QwtPlot::xBottom, "time");
+    plot_rastr->show();
 
 
 
@@ -314,11 +323,16 @@ Dialog::Dialog(QWidget *parent) :
 
     this->setGeometry(QRect(40,40,640,670));
 
+    slider_pois_time=new myQSlider(this);
+    slider_pois_time->setRange(100, 700);
+    slider_pois_time->setValue(100);
+    slider_pois_time->setOrientation(Qt::Horizontal);
 
     slider_scale= new myQSlider(this);
     slider_scale->setRange(4, 20);
     slider_scale->setValue(8);
     slider_scale->setOrientation(Qt::Horizontal);
+
     slider_weight_test= new myQSlider(this);
     slider_weight_test->setRange(-net.maxWeight, net.maxWeight);
     slider_weight_test->setValue(0);
@@ -338,7 +352,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_circle->setOrientation(Qt::Horizontal);
     slider_weight_rad = new myQSlider(this);
     slider_weight_rad->setRange(8, 300);
-    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=240);
+    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=140);
     slider_weight_rad->setOrientation(Qt::Horizontal);
     slider_current = new myQSlider(this);
     slider_current->setRange(1,50);
@@ -377,6 +391,10 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(slider_phase,3,3,1,1);
     QGL->addWidget(button_poisson,3,4,1,1);
 
+    QGL->addWidget(slider_pois_time,4,0,1,1);
+
+
+
     connect(button_learning,SIGNAL(clicked()),this,SLOT(startLearning()));
 
     connect(button_poisson,SIGNAL(clicked()),this,SLOT(changePoisson()));
@@ -406,6 +424,8 @@ Dialog::Dialog(QWidget *parent) :
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
     connect(slider_weight_test,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
+
+    connect(slider_pois_time,SIGNAL(sliderReleased()),this,SLOT(changePoisInterval()));
 
     connect(L_E,SIGNAL(returnPressed()),this,SLOT(setMinWeight()));
 
@@ -439,6 +459,7 @@ Dialog::Dialog(QWidget *parent) :
     L_E5->setToolTip("choose the pattern");
 
     //    net.kohonSettings();
+    changePoisInterval();
     weightRadChanged();
     freqChange();
     if(net.demo)
@@ -691,7 +712,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             points<<QPointF(net.neuron[i].rastr[j],i);
 
     rastrCurve.setSamples( points ); // ассоциировать набор точек с кривой
-    rastrCurve.attach( d_plot); // отобразить кривую на графике/
+    rastrCurve.attach( plot_rastr); // отобразить кривую на графике/
 
 
     //    emit L_E->editingFinished();

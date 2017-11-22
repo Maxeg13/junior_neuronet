@@ -7,7 +7,7 @@
 #QT       += core gui
 LIBS += -LC:/QWT/lib -lqwt
 CONFIG   += qwt
-CONFIG   += console
+#CONFIG   += console
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = junior_neuronet

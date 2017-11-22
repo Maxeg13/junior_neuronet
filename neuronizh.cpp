@@ -11,12 +11,12 @@ float max(float x,float y)
     return y;
 }
 
-int getPoisson()
+int neuronIzh::getPoisson()
 {
-    static float T_eff=100.*1.9/log(2.718);
+//    static float T_eff=net->poisson_interval*1.9/log(2.718);
     //    static float cnt=0;
     //    static float ac=0;
-    int ans=T_eff*(-log((rand()%40)/41.+0.001));
+    int ans=net->T_eff*(-log((rand()%40)/41.+0.001));
     //    cnt++;
     //    ac+=1./ans;
     //    qDebug()<<ac/cnt;
@@ -419,7 +419,7 @@ void neuronIzh::CalculateStep()
                             //pre
                             dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
 
-                            weight[i]+=dw*0.14;//                        (weight[i]-net->minWeight);
+                            weight[i]+=dw*0.3;//                        (weight[i]-net->minWeight);
 
                             if(weight[i]  <  net->minWeight)
                                 weight[i]=net->minWeight;

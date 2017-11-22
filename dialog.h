@@ -34,6 +34,7 @@ private:
 protected:
      void paintEvent(QPaintEvent *e);
 public slots:
+     void changePoisInterval();
      void drawing();
      void neuroGrab();
      void trySlider(int x);

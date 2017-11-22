@@ -89,6 +89,7 @@ public:
     float b;
     float c;
     float d;
+    int getPoisson();
     void topOfRemoted(int n);
     bool isWithin2(float xx, int i);
     void oneStep(float);

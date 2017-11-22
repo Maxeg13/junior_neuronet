@@ -13,6 +13,7 @@ float thresh(int x)
 
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
+    T_eff=100*1.9/log(2.718);
     //modes:
     demo=0;
     spike_show=1;
@@ -72,7 +73,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
-    detectors_size=36;
+    detectors_size=56;
     rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;
