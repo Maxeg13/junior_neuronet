@@ -224,8 +224,8 @@ void neuronIzh::rangedRemoted()
     }
 
     int h;
-    for(int j=0;j<net->size;j++)
-        for(int i=1;i<net->size-j;i++)
+    for(int j=0;j<net->detectors_size;j++)
+        for(int i=1;i<net->detectors_size-j;i++)
         {
             if(ds[i-1]>ds[i])
             {
