@@ -16,7 +16,7 @@
 #include <QCheckBox>
 #include "pattern.h"
 
-QwtPlotCurve rastrCurve;
+QwtPlotCurve rastrCurve, weightCurve;
 QwtPlot *plot_rastr, *plot_weights;
 QColor QCLR;
 QPolygon qp;
@@ -116,7 +116,7 @@ myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
 QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale,
-*slider_pois_time;
+*slider_pois_time, *slider_depression_alpha;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -236,7 +236,7 @@ void Dialog::setInhPerc()
 void Dialog::changePoisson()
 {
     net.poisson_on=!net.poisson_on;
-//    qDebug()<<(int)
+    //    qDebug()<<(int)
     switch(net.poisson_on)
     {
     case false:
@@ -244,7 +244,7 @@ void Dialog::changePoisson()
     case true:
         button_poisson->setText("poisson on");break;
     }
-//    button_poisson->setText("");
+    //    button_poisson->setText("");
 }
 
 void Dialog::killDelay()
@@ -273,13 +273,15 @@ void Dialog::chooseThePattern()
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
+
+
     plot_rastr = new QwtPlot();
     drawingInit(plot_rastr,QString("Rastr"));
     plot_rastr->setAxisScale(QwtPlot::yLeft,0,net.size);
     plot_rastr->setAxisScale(QwtPlot::xBottom,0,2000);
     plot_rastr->setAxisTitle(QwtPlot::yLeft, "neuron's index");
     plot_rastr->setAxisTitle(QwtPlot::xBottom, "time");
-    plot_rastr->show();
+    //    plot_rastr->show();
 
 
     plot_weights = new QwtPlot();
@@ -288,7 +290,14 @@ Dialog::Dialog(QWidget *parent) :
     plot_weights->setAxisScale(QwtPlot::xBottom,0,net.size);
     plot_weights->setAxisTitle(QwtPlot::yLeft, "weight");
     plot_weights->setAxisTitle(QwtPlot::xBottom, "neuron's index");
-    plot_weights->show();
+    //    plot_weights->show();
+
+    QWidget* MW;
+    MW=new QWidget();
+    MW->show();
+    QGridLayout* QGL2=new QGridLayout(MW);
+    QGL2->addWidget(plot_weights,0,0,1,1);
+    QGL2->addWidget(plot_rastr,1,0,1,1);
 
     qpt.push_front(QPoint(10,10));
     qpt.push_front(QPoint(100,10));
@@ -321,11 +330,11 @@ Dialog::Dialog(QWidget *parent) :
     L_E->setText(QString::number(net.minWeight));
     L_E2->setText(QString::number( net.maxWeight));
     L_E3->setText(QString::number(0));
-    L_E4->setText(QString::number(.01));
+    L_E4->setText(QString::number(25));//STDP speed
     L_E5->setText(QString::number(0));
 
     QGridLayout* QGL=new QGridLayout(this);
-//    mainLayout = new QVBoxLayout();
+    //    mainLayout = new QVBoxLayout();
 
 
     this->setGeometry(QRect(40,40,640,670));
@@ -350,6 +359,13 @@ Dialog::Dialog(QWidget *parent) :
     slider_show_ext->setValue(test_val=10);
     slider_show_ext->setOrientation(Qt::Horizontal);
     test_val/=20;
+
+
+    slider_depression_alpha = new myQSlider(this);
+    slider_depression_alpha->setRange(0, 10);
+    slider_depression_alpha->setValue(5);
+    slider_depression_alpha->setOrientation(Qt::Horizontal);
+    slider_depression_alpha->setToolTip(QString("depression eff"));
 
     //    test_val/=20;
 
@@ -399,6 +415,7 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(button_poisson,3,4,1,1);
 
     QGL->addWidget(slider_pois_time,4,0,1,1);
+    QGL->addWidget(slider_depression_alpha,4,1,1,1);
 
 
 
@@ -684,7 +701,7 @@ void Dialog::mousePressEvent(QMouseEvent *e)
             mouse_ind[1]=mouse_ind[0];
             mouse_ind[0]=i;
             mouse_drop=1;
-//            qDebug()<<net.neuron[i].top[0];
+            //            qDebug()<<net.neuron[i].top[0];
             net.neuron[i].rangedRemoted();
             //            net.neuron[i].vis=220;
         }
@@ -709,6 +726,7 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
+    net.alpha=slider_depression_alpha->value()/10.;
     //    QwtSymbol::Ellipse
     QwtSymbol* symbol = new QwtSymbol( QwtSymbol::Ellipse,
                                        QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
@@ -722,6 +740,21 @@ void Dialog::paintEvent(QPaintEvent* e)
     rastrCurve.setSamples( points ); // ассоциировать набор точек с кривой
     rastrCurve.attach( plot_rastr); // отобразить кривую на графике/
 
+
+
+    //    QwtSymbol* symbol = new QwtSymbol( QwtSymbol::Ellipse,
+    //                                       QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
+    //    weightCurve.setSymbol(symbol);
+    weightCurve.setPen(QColor(0,0,255));
+    //    QPolygonF points;
+    points.resize(0);
+    //    for(int i=0;i<net.size;i++)
+    for(int j=0;j<net.weight_ind.size();j++)
+        points<<QPointF(j,net.neuron[mouse_ind[0]].weight[net.weight_ind[j]]);
+    //            points<<QPointF(j,2);
+
+    weightCurve.setSamples( points ); // ассоциировать набор точек с кривой
+    weightCurve.attach( plot_weights); // отобразить кривую на графике/
 
     //    emit L_E->editingFinished();
     static float blink_phase=0;

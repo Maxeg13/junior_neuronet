@@ -455,7 +455,7 @@ void neuronIzh::CalculateStep()
                             //pre
                             dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
 
-                            weight[i]+=dw*0.3;//                        (weight[i]-net->minWeight);
+                            weight[i]+=dw*net->alpha;//                        (weight[i]-net->minWeight);
 
                             if(weight[i]  <  net->minWeight)
                                 weight[i]=net->minWeight;
