@@ -32,8 +32,8 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
 
 
-    pois_T=getPoisson();
-    pois_cnt=getPoisson();
+    pois_T=rand()%300;
+    pois_cnt=0;
     with_poisson=1;
     STDP=2;
 
@@ -209,11 +209,11 @@ void neuronIzh::push(float x1,float y1)
 bool neuronIzh::isWithin2(float xx, int i)
 {return xx>((x-net->neuron[i].x)*(x-net->neuron[i].x)+(y-net->neuron[i].y)*(y-net->neuron[i].y));}
 
-void neuronIzh::rangedRemoted(int n)
+void neuronIzh::rangedRemoted()
 {
     deque<int> IDS;
     deque<int> ds;
-    top.resize(n);
+
 
     for(int i=0;i<net->detectors_size;i++)
     {
@@ -224,7 +224,7 @@ void neuronIzh::rangedRemoted(int n)
     }
 
     int h;
-    for(int j=0;j<n;j++)
+    for(int j=0;j<net->size;j++)
         for(int i=1;i<net->size-j;i++)
         {
             if(ds[i-1]>ds[i])
@@ -239,9 +239,9 @@ void neuronIzh::rangedRemoted(int n)
             }
         }
 
-    net->weight_ind.resize(net->size);
-    for(int i=0;i<net->size;i++)
-        net->weight_ind[i]=IDS[net->detectors_size-i-1];
+//    net->weight_ind.resize(net->size);
+//    for(int i=0;i<net->size;i++)
+        net->weight_ind=IDS;
 
 }
 

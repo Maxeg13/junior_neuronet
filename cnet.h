@@ -8,7 +8,7 @@
 class CNet
 {
 public:
-    vector<int> weight_ind;
+    deque<int> weight_ind;
     bool poisson_on;
     int poisson_interval;
     float T_eff;

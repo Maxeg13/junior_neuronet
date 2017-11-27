@@ -35,7 +35,7 @@ public:
 class neuronIzh
 {
 public:
-    vector<int> weight_ind;
+
     deque<int> top;
     CNet* net;
     CArrow* arrow;
@@ -91,6 +91,7 @@ public:
     float c;
     float d;
     int getPoisson();
+    void rangedRemoted();
     void topOfRemoted(int n);
     bool isWithin2(float xx, int i);
     void oneStep(float);

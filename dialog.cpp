@@ -50,7 +50,7 @@ bool learning_yes;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(58,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(38,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -283,11 +283,11 @@ Dialog::Dialog(QWidget *parent) :
 
 
     plot_weights = new QwtPlot();
-    drawingInit(plot_weights,QString("Rastr"));
+    drawingInit(plot_weights,QString("weights distribution"));
     plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight);
     plot_weights->setAxisScale(QwtPlot::xBottom,0,net.size);
-    plot_weights->setAxisTitle(QwtPlot::yLeft, "neuron's index");
-    plot_weights->setAxisTitle(QwtPlot::xBottom, "time");
+    plot_weights->setAxisTitle(QwtPlot::yLeft, "weight");
+    plot_weights->setAxisTitle(QwtPlot::xBottom, "neuron's index");
     plot_weights->show();
 
     qpt.push_front(QPoint(10,10));
@@ -684,7 +684,8 @@ void Dialog::mousePressEvent(QMouseEvent *e)
             mouse_ind[1]=mouse_ind[0];
             mouse_ind[0]=i;
             mouse_drop=1;
-            qDebug()<<net.neuron[i].top[0];
+//            qDebug()<<net.neuron[i].top[0];
+            net.neuron[i].rangedRemoted();
             //            net.neuron[i].vis=220;
         }
     }
