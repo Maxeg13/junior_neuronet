@@ -56,6 +56,7 @@ public slots:
      void chooseThePattern();
      void setPhase();
      void changePoisson();
+     void changeDrawing();
 };
 
 #endif // DIALOG_H
