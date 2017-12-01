@@ -325,6 +325,8 @@ void neuronIzh::oneStep(float x)
 
 void neuronIzh::CalculateStep()
 {
+    activity*=net->exp_activity;
+
     if(with_poisson && net->poisson_on)
         pois_cnt++;
 
@@ -336,16 +338,12 @@ void neuronIzh::CalculateStep()
     }
     else
         pois_modulator=0;
-    //    if(ID==1)qDebug()<<pois_T;
 
     freq_cnt++;
     if(freq_cnt+stim_rnd>(time_from_freq+1))
     {
         freq_cnt=0;
-        //        freq_modulator=1;
-        //        stim_rnd=rand()%4;
         stim_rnd=0;
-        //        phase_noise=rand()%7;//nice
         phase_noise=rand();
     }
 
@@ -410,6 +408,7 @@ void neuronIzh::CalculateStep()
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
+        activity+=1;
         rastr.push_back(net->rastr_time);
         //        if(ID==15)
         //            qDebug()<<"hello!";

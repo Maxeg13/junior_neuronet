@@ -17,6 +17,7 @@ public:
     float min_weight_norm;
     float weight_diap;
     float psc_excxpire_time;
+    float exp_activity;
     float exp_psc_exc;
     CNet();
     CNet(int _size, int _perc, neuronType _type);

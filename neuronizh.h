@@ -35,6 +35,7 @@ public:
 class neuronIzh
 {
 public:
+    float activity;
 
     deque<int> top;
     CNet* net;

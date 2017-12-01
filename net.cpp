@@ -13,6 +13,7 @@ float thresh(int x)
 
 CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 {
+
     T_eff=100*1.9/log(2.718);
     //modes:
     demo=0;
@@ -33,7 +34,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
     steph=step/2;
 
-
+    exp_activity=exp(-step/1200);
 
     width=450;
     height=380;

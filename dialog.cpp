@@ -529,6 +529,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nfreq: "+QString::number(net.neuron[mouse_ind[0]].freq);
         str+="\nlearning is: "+QString::number(learning_yes);
         str+="\ntime(freq): "+QString::number(net.neuron[mouse_ind[0]].time_from_freq);
+        str+="\nactiv: "+QString::number(net.neuron[mouse_ind[0]].activity);
         str+="\n\n";
 
         this->setToolTip(str);
@@ -730,8 +731,17 @@ void Dialog::mainCircle()
 
 void Dialog::paintEvent(QPaintEvent* e)
 {
+    int max1=0, ind1=0;
+    for(int i=0;i<net.detectors_size;i++)
+    {
+        if(max1<net.neuron[i].activity)
+        {
+            max1=net.neuron[i].activity;
+            ind1=i;
+        }
+    }
+
     net.alpha=slider_depression_alpha->value()/10.;
-    //    QwtSymbol::Ellipse
     QwtSymbol* symbol = new QwtSymbol( QwtSymbol::Ellipse,
                                        QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
     rastrCurve.setSymbol(symbol);
@@ -779,8 +789,12 @@ void Dialog::paintEvent(QPaintEvent* e)
     for (int i=0;i<slider_circle_val;i++)
         mainCircle();
 
+
+    //DRAAAAAAWIIIING!!!!
     if(drawing_on)
     {
+
+
         if(cnt1==6)
         {
             cnt1=0;
@@ -791,15 +805,14 @@ void Dialog::paintEvent(QPaintEvent* e)
         QPainter* painter=new QPainter(this);
         painter->setRenderHint(QPainter::Antialiasing, 1);
         //    QPen pen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        QPen pen(Qt::black);
-        pen.setWidth(2);
-        painter->setPen(pen);
+        QPen pen(Qt::red);
+
         //    painter->scale(my_scale,my_scale);
         painter->scale(my_scale=(slider_scale->value()/10.), slider_scale->value()/10.);
 
 
-
-
+        pen.setColor(Qt::black);
+        pen.setWidth(2);
         for(int i=0;i<net.size;i++)
             if((i!=mouse_ind[0]))
             {
@@ -974,16 +987,11 @@ void Dialog::paintEvent(QPaintEvent* e)
 
                 }
             }
-
-
-
-
-
         }
-
-
-
-
+        pen.setColor(Qt::red);
+        pen.setWidth(4);
+        painter->setPen(pen);
+        painter->drawEllipse(net.neuron[ind1].x-10,net.neuron[ind1].y-10,20,20);
 
         delete painter;
     }
