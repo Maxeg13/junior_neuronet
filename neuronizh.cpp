@@ -31,7 +31,7 @@ neuronIzh::neuronIzh()
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
 
-
+    activity=0;
     pois_T=rand()%300;
     pois_cnt=0;
     with_poisson=1;
@@ -137,9 +137,11 @@ void neuronIzh::locate()
         {
             //             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
             static int width=sqrt(net->detectors_size);
-            float x1=(ID%width+(rand()%8)*.1)*40.;
-            float y1=(ID/width+(rand()%8)*.1)*40.;
+            float x1=(ID%width+(rand()%8)*.07)*40.;
+            float y1=(ID/width+(rand()%8)*.07)*40.;
 
+            i0=ID%width;
+            j0=ID/width;
             x=net->width/2*1.3+x1; y=net->height*.53+y1;
         }
         else
@@ -344,7 +346,7 @@ void neuronIzh::CalculateStep()
     {
         freq_cnt=0;
         stim_rnd=0;
-        phase_noise=rand();
+//        phase_noise=rand();
     }
 
     if(((freq_cnt))==(freq_phase+phase_noise)%(time_from_freq+1))freq_modulator=1;
@@ -408,7 +410,7 @@ void neuronIzh::CalculateStep()
     to_output=0;
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
-        activity+=1;
+        activity+=.1;
         rastr.push_back(net->rastr_time);
         //        if(ID==15)
         //            qDebug()<<"hello!";

@@ -353,7 +353,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_weight_test= new myQSlider(this);
     slider_weight_test->setRange(-8, 8);
-    slider_weight_test->setValue(0);
+    slider_weight_test->setValue(net.maxWeight);
     slider_weight_test->setOrientation(Qt::Horizontal);
 
     slider_show_ext = new myQSlider(this);

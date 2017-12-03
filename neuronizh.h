@@ -44,6 +44,7 @@ public:
     deque<deque<int>> syn_cnt;
     QColor QCLR;
     int i;
+    int i0, j0;
     float x;
     float y;
     float vx;

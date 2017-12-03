@@ -22,7 +22,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     poisson_on=1;
     min_weight_norm=0.4;
     minWeight=1/20.;//for experiment
-    maxWeight=8;
+    maxWeight=5;
     step=1;
     size_k=.2;
     psc_excxpire_time=10;//4,0.1
@@ -34,7 +34,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
 
     steph=step/2;
 
-    exp_activity=exp(-step/1200);
+    exp_activity=exp(-step/3300);
 
     width=450;
     height=380;
@@ -154,7 +154,7 @@ for(int i=detectors_size;i<size;i++)
         for(int j=0;j<detectors_size;j++)
         {
             if(i!=j)
-                if(!neuron[i].isWithin2(x1*x1,j))
+                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*1.5,j))
                     neuron[i].weight[j]=-3*maxWeight;
                 else
                     neuron[i].weight[j]=0;
@@ -256,19 +256,19 @@ void CNet::kohonSettings()
 void CNet::setDelay(int i,int j)
 {
     //////////////////////////////////////////////////
+    float ex=neuron[i].x-neuron[j].x;
+    float ey=neuron[i].y-neuron[j].y;
+    float square=ex*ex+ey*ey+0.001;
         if((neuron[i].weight[j])>0.0001)
     {
-        float ex=neuron[i].x-neuron[j].x;
-        float ey=neuron[i].y-neuron[j].y;
-        float square=ex*ex+ey*ey+0.001;
-
         //const
         neuron[i].output[j].resize(1+sqrt(square)/6,0);//4
         //        qDebug()<< neuron[i].output[j].size();
     }
         else
         {
-            neuron[i].output[j].resize(1,0);
+//            neuron[i].output[j].resize(1,0);
+            neuron[i].output[j].resize(1+sqrt(square)/40,0);
         }
 
 }
