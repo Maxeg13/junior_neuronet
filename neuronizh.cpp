@@ -346,7 +346,7 @@ void neuronIzh::CalculateStep()
     {
         freq_cnt=0;
         stim_rnd=0;
-//        phase_noise=rand();
+        phase_noise=rand();
     }
 
     if(((freq_cnt))==(freq_phase+phase_noise)%(time_from_freq+1))freq_modulator=1;

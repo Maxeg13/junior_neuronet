@@ -7,6 +7,7 @@
 #QT       += core gui
 LIBS += -LC:/QWT/lib -lqwt
 CONFIG   += qwt
+INCLUDEPATH+=C:/QWT/include
 #CONFIG   += console
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

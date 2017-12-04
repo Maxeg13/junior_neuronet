@@ -20,7 +20,7 @@ public:
     float exp_activity;
     float exp_psc_exc;
     CNet();
-    CNet(int _size, int _perc, neuronType _type);
+    CNet(int _size,int, int _perc, neuronType _type);
     void kohonSettings();
     neuronType type;
     bool demo;

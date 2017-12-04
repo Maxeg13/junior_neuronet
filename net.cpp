@@ -11,7 +11,7 @@ float thresh(int x)
         return(x);
 }
 
-CNet::CNet(int _size,int _perc, neuronType _type):a(100)
+CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
 {
 
     T_eff=100*1.9/log(2.718);
@@ -74,7 +74,7 @@ CNet::CNet(int _size,int _perc, neuronType _type):a(100)
     //    minWeight=.1;
 
     //    maxWeight=7;
-    detectors_size=36;
+    detectors_size=_detectors_size;
     rad=6;
     inhibitory_perc=_perc;
     //    circle_val=50;
@@ -154,7 +154,7 @@ for(int i=detectors_size;i<size;i++)
         for(int j=0;j<detectors_size;j++)
         {
             if(i!=j)
-                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*1.5,j))
+                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*2,j))
                     neuron[i].weight[j]=-3*maxWeight;
                 else
                     neuron[i].weight[j]=0;
@@ -262,13 +262,14 @@ void CNet::setDelay(int i,int j)
         if((neuron[i].weight[j])>0.0001)
     {
         //const
-        neuron[i].output[j].resize(1+sqrt(square)/6,0);//4
-        //        qDebug()<< neuron[i].output[j].size();
+//        neuron[i].output[j].resize(1+sqrt(square)/40,0);//6
+        neuron[i].output[j].resize(1+rand()%40,0);//6
     }
         else
         {
-//            neuron[i].output[j].resize(1,0);
+
             neuron[i].output[j].resize(1+sqrt(square)/40,0);
+
         }
 
 }

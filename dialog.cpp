@@ -51,7 +51,7 @@ bool learning_yes;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(38,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(51,49,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -579,9 +579,13 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="k")
     {
-       for(int i=0;i<net.size;i++)
+//       for(int i=0;i<net.size;i++)
            for (int j=0;j<net.size;j++)
-               net.neuron[i].weight[j]=0;
+           {
+               net.neuron[mouse_ind[0]].weight[j]=0;
+               net.neuron[j].weight[mouse_ind[0]]=0;
+               net.neuron[mouse_ind[0]].with_poisson=0;
+           }
     }
 
 }
