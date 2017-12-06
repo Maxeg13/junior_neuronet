@@ -51,7 +51,7 @@ bool learning_yes;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(51,49,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(30,28,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -113,7 +113,8 @@ public:
 
 
 myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
-*button_save_pattern, *button_learning, *button_poisson, *button_drawing;
+*button_save_pattern, *button_learning, *button_poisson, *button_drawing,
+*button_stdp;
 QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale,
@@ -538,15 +539,63 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         /*qDebug()<<net.STDP_speed;*/
         //                qDebug()<<str;
     }
+    else if(event->text()=="y")
+    {
+
+        static int cnt1;
+        net.interLayerCompet(cnt1%2,slider_weight_rad->value());
+        cnt1++;
+    }
+    else if(event->text()=="u")
+    {
+        static int cnt;
+        qDebug()<<cnt%3;
+        switch(cnt%3)
+        {
+        case 0:
+            for(int i=0;i<net.detectors_size/2;i++)
+            {
+                net.neuron[net.detectors_size+1].STDP_set[i]=0;
+                net.neuron[net.detectors_size].STDP_set[i]=0;
+
+                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=1;
+                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=1;
+            }break;
+            //        net.interLayerCompet(0);
+        case 1:
+
+            for(int i=0;i<net.detectors_size/2;i++)
+            {
+                net.neuron[net.detectors_size+1].STDP_set[i]=true;
+                net.neuron[net.detectors_size].STDP_set[i]=true;
+
+                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=0;
+                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=0;
+            }break;
+            //        net.interLayerCompet(1);
+        case 2:
+            qDebug()<<"hello";
+            for(int i=0;i<net.detectors_size/2;i++)
+            {
+                net.neuron[net.detectors_size+1].STDP_set[i]=true;
+                net.neuron[net.detectors_size].STDP_set[i]=true;
+
+                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=true;
+                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=true;
+            }
+        }
+        cnt++;
+
+    }
     else if(event->text()=="i")
     {
-        float w1;
-        w1=fabs(net.neuron[mouse_ind[0]].weight[mouse_ind[1]]);
-        net.neuron[mouse_ind[0]].weight[mouse_ind[1]] =fabs(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]);
-        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w1;
-        if(!net.neuron[mouse_ind[0]].is_excitatory)net.neuron[mouse_ind[0]].weight[mouse_ind[1]]*=-1;
-        if(!net.neuron[mouse_ind[1]].is_excitatory)net.neuron[mouse_ind[1]].weight[mouse_ind[0]]*=-1;
-        net.setArrows();
+        //        float w1;
+        //        w1=fabs(net.neuron[mouse_ind[0]].weight[mouse_ind[1]]);
+        //        net.neuron[mouse_ind[0]].weight[mouse_ind[1]] =fabs(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]);
+        //        net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w1;
+        //        if(!net.neuron[mouse_ind[0]].is_excitatory)net.neuron[mouse_ind[0]].weight[mouse_ind[1]]*=-1;
+        //        if(!net.neuron[mouse_ind[1]].is_excitatory)net.neuron[mouse_ind[1]].weight[mouse_ind[0]]*=-1;
+        //        net.setArrows();
     }
     else if(event->text()=="s")
     {
@@ -579,14 +628,15 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="k")
     {
-//       for(int i=0;i<net.size;i++)
-           for (int j=0;j<net.size;j++)
-           {
-               net.neuron[mouse_ind[0]].weight[j]=0;
-               net.neuron[j].weight[mouse_ind[0]]=0;
-               net.neuron[mouse_ind[0]].with_poisson=0;
-           }
+        //       for(int i=0;i<net.size;i++)
+        for (int j=0;j<net.size;j++)
+        {
+            net.neuron[mouse_ind[0]].weight[j]=0;
+            net.neuron[j].weight[mouse_ind[0]]=0;
+            net.neuron[mouse_ind[0]].with_poisson=0;
+        }
     }
+
 
 }
 
@@ -840,13 +890,35 @@ void Dialog::paintEvent(QPaintEvent* e)
             QPainterPath path;
             int width1=15;
             QRect rect=QRect(net.neuron[i].i0*width1,net.neuron[i].j0*width1,width1,width1);
-    //        painter->setPen(pen);
+            //        painter->setPen(pen);
             path.addRect(rect);
             painter->drawPath(path);
             int h=net.neuron[i].activity/(0.000001+maxAct)*255.;
-            if(h>255)qDebug()<<h;
             painter->fillPath(path,QColor(h,h,h));
         }
+        int sum1,sum2;
+        for(int i=0;i<net.detectors_size/2;i++)
+            sum1+=net.neuron[i].activity;
+
+        for(int i=net.detectors_size/2;i<net.detectors_size;i++)
+            sum2+=net.neuron[i].activity;
+
+        QPainterPath path;
+        int width1=15;
+        QRect rect;
+        if(sum1>sum2)
+             rect=QRect((net.neuron[net.detectors_size-1].i0+1)*
+                    width1,(net.neuron[net.detectors_size-1].j0-1)*width1,width1,width1);
+        else
+             rect=QRect((net.neuron[net.detectors_size-1].i0+1)*
+                    width1,(net.neuron[net.detectors_size-1].j0)*width1,width1,width1);
+        path.addRect(rect);
+        painter->drawPath(path);
+        painter->fillPath(path,QColor(255,0,0));
+
+
+
+
 
         pen.setColor(Qt::black);
         pen.setWidth(2);

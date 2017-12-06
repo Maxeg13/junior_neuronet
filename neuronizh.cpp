@@ -136,13 +136,24 @@ void neuronIzh::locate()
         if(ID<net->detectors_size)
         {
             //             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
-            static int width=sqrt(net->detectors_size);
-            float x1=(ID%width+(rand()%8)*.07)*40.;
-            float y1=(ID/width+(rand()%8)*.07)*40.;
+//            static int width=(net->detectors_size)/2;
+//            float x1=(ID%width+(rand()%8)*.07)*20.;
+//            float y1=(ID/width+(rand()%8)*.07)*15.;
+
+//            i0=ID%width;
+//            j0=ID/width;
+//            x=net->width/2*1.3+x1; y=net->height*.53+y1;
+
+            static int width=(net->detectors_size/2);
+            float x1=(ID%width+(rand()%8)*.07)*20.;
+            float y1=(ID/width+(rand()%8)*.07)*15.;
 
             i0=ID%width;
             j0=ID/width;
-            x=net->width/2*1.3+x1; y=net->height*.53+y1;
+            x=net->width/2*0.4+x1;
+
+            if(ID<width)y=net->height*.53+y1;
+            else y=net->height*.73+y1;
         }
         else
         {

@@ -54,6 +54,7 @@ public:
 
     int STDP_cnt;
     int STDP_div;
+    void interLayerCompet(int, int x1);
     void CalculateStep(float x);
     void setArrows();
     void setDelay(int i, int j);
