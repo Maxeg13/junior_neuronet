@@ -186,24 +186,24 @@ void CNet::weights_with_rad(float x1)
             neuron[i].weight[j]=maxWeight;
 
 
-    for(int i=0;i<detectors_size/2;i++)
-    {
-        for(int j=0;j<detectors_size/2;j++)
-        {
-            if(i!=j)
-                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*2.5,j))
-                    neuron[i].weight[j]=-3*maxWeight;
-                else
-                    neuron[i].weight[j]=0;
-        }
-    }
+//    for(int i=0;i<detectors_size/2;i++)
+//    {
+//        for(int j=0;j<detectors_size/2;j++)
+//        {
+//            if(i!=j)
+//                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*9,j))
+//                    neuron[i].weight[j]=-3*maxWeight;
+//                else
+//                    neuron[i].weight[j]=0;
+//        }
+//    }
 
     for(int i=0;i<detectors_size;i++)
     {
         for(int j=0;j<detectors_size;j++)
         {
             if(i!=j)
-                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*2,j))
+                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*3,j))
                     neuron[i].weight[j]=-3*maxWeight;
                 else
                     neuron[i].weight[j]=0;

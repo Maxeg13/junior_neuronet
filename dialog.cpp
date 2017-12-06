@@ -896,7 +896,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             int h=net.neuron[i].activity/(0.000001+maxAct)*255.;
             painter->fillPath(path,QColor(h,h,h));
         }
-        int sum1,sum2;
+        int sum1=0,sum2=0;
         for(int i=0;i<net.detectors_size/2;i++)
             sum1+=net.neuron[i].activity;
 
@@ -915,7 +915,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         path.addRect(rect);
         painter->drawPath(path);
         painter->fillPath(path,QColor(255,0,0));
-
+qDebug()<<sum1;
 
 
 
