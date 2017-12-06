@@ -262,8 +262,8 @@ void CNet::setDelay(int i,int j)
         if((neuron[i].weight[j])>0.0001)
     {
         //const
-//        neuron[i].output[j].resize(1+sqrt(square)/40,0);//6
-        neuron[i].output[j].resize(1+rand()%40,0);//6
+        neuron[i].output[j].resize(1+sqrt(square)/5,0);//6
+//        neuron[i].output[j].resize(1+rand()%40,0);//6
     }
         else
         {
