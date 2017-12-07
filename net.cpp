@@ -138,8 +138,8 @@ void CNet::spikesStop()
 
 void CNet::interLayerCompet(int x, int x1 )
 {
-//    qDebug()<<x1;
-    x1=71;
+    qDebug()<<x1;
+    x1=78;
     if(x)
         for(int i=0;i<detectors_size;i++)
         {

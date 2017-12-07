@@ -153,7 +153,7 @@ void neuronIzh::locate()
             x=net->width/2*0.4+x1;
 
             if(ID<width)y=net->height*.53+y1;
-            else y=net->height*.73+y1;
+            else y=net->height*.76+y1;
         }
         else
         {

@@ -145,7 +145,7 @@ void Dialog::setMaxWeight()
         net.kohonSettings();
 
     net.normWeights();
-    //    qDebug()<<net.maxWeight;
+
 }
 
 void Dialog::setPattern(int i)
@@ -193,7 +193,7 @@ void Dialog::savePattern()
     ptn[i].ind=net.stim_ind;
     for(int j=0;j<net.stim_ind.size();j++)
     {
-        //            qDebug()<<"hello";
+
         //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
         ptn[i].freq[j]=ptn[0].freq[net.stim_ind.size()-1-j];
 
@@ -555,22 +555,23 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         case 0:
             for(int i=0;i<net.detectors_size/2;i++)
             {
-                net.neuron[net.detectors_size+1].STDP_set[i]=0;
-                net.neuron[net.detectors_size].STDP_set[i]=0;
+                net.neuron[net.detectors_size+1].STDP_set[i]=1;
+                net.neuron[net.detectors_size].STDP_set[i]=1;
 
-                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=1;
-                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=1;
+                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=0;
+                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=0;
+
             }break;
             //        net.interLayerCompet(0);
         case 1:
 
             for(int i=0;i<net.detectors_size/2;i++)
             {
-                net.neuron[net.detectors_size+1].STDP_set[i]=true;
-                net.neuron[net.detectors_size].STDP_set[i]=true;
+                net.neuron[net.detectors_size+1].STDP_set[i]=0;
+                net.neuron[net.detectors_size].STDP_set[i]=0;
 
-                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=0;
-                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=0;
+                net.neuron[net.detectors_size+1].STDP_set[i+net.detectors_size/2]=1;
+                net.neuron[net.detectors_size].STDP_set[i+net.detectors_size/2]=1;
             }break;
             //        net.interLayerCompet(1);
         case 2:
@@ -915,7 +916,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         path.addRect(rect);
         painter->drawPath(path);
         painter->fillPath(path,QColor(255,0,0));
-qDebug()<<sum1;
+
 
 
 
