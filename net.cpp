@@ -25,7 +25,7 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
     maxWeight=5;
     step=1;
     size_k=.2;
-    psc_excxpire_time=10;//4,0.1
+    psc_excxpire_time=5;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
     if(demo)
         weight_diap=.99;
@@ -136,7 +136,7 @@ void CNet::spikesStop()
     }
 }
 
-void CNet::weights_with_rad(float x1)
+void CNet::weights_with_rad(float x1,int r)
 {
     for(int i=0;i<size;i++)
     {
@@ -153,8 +153,9 @@ for(int i=detectors_size;i<size;i++)
     {
         for(int j=0;j<detectors_size;j++)
         {
+            r=rand()%r;
             if(i!=j)
-                if((!neuron[i].isWithin2(x1*x1,j))&neuron[i].isWithin2(x1*x1*2,j))
+                if((!neuron[i].isWithin2(x1*x1,j))&!r)
                     neuron[i].weight[j]=-3*maxWeight;
                 else
                     neuron[i].weight[j]=0;

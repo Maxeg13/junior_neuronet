@@ -117,7 +117,8 @@ myQPushButton *button1, *button_stop, *button_grab, *button_kill_delay,
 QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale,
-*slider_pois_time, *slider_depression_alpha;
+*slider_pois_time, *slider_depression_alpha,
+*slider_w_probab;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -231,7 +232,7 @@ void Dialog::setInhPerc()
     //    net=CNet(90,L_E3->text().toInt(),RS);
     for(int i=0;i<net.size;i++)
         net.neuron[i].is_excitatory=((rand()%100)>(L_E3->text().toInt()-1));
-    net.weights_with_rad(slider_weight_rad->value());
+    net.weights_with_rad(slider_weight_rad->value(),slider_w_probab->value());
 }
 
 void Dialog::changePoisson()
@@ -391,6 +392,10 @@ Dialog::Dialog(QWidget *parent) :
     slider_freq->setRange(2,50);
     slider_freq->setValue(8);
     slider_freq->setOrientation(Qt::Horizontal);
+    slider_w_probab = new myQSlider(this);
+    slider_w_probab->setRange(1,14);
+    slider_w_probab->setValue(5);
+    slider_w_probab->setOrientation(Qt::Horizontal);
 
     QGL->addWidget(button_stop,0,0,1,1,Qt::AlignBottom);
     QGL->addWidget(button1,0,1,1,1,Qt::AlignBottom);
@@ -419,6 +424,7 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(slider_pois_time,4,0,1,1);
     QGL->addWidget(slider_depression_alpha,4,1,1,1);
     QGL->addWidget(button_drawing,4,2,1,1);
+    QGL->addWidget(slider_w_probab,4,3,1,1);
 
 
     connect(button_drawing,SIGNAL(clicked()),this,SLOT(changeDrawing()));
@@ -479,6 +485,7 @@ Dialog::Dialog(QWidget *parent) :
                             QString::number(slider_freq->value()));
     slider_weight_test->setToolTip("set weight");
     slider_phase->setToolTip("set phase");
+    slider_w_probab->setToolTip("linking probab");
 
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");
@@ -1051,7 +1058,7 @@ void Dialog::changeDrawing()
 void Dialog::weightRadChanged()
 {
 
-    net.weights_with_rad(slider_weight_rad->value());
+    net.weights_with_rad(slider_weight_rad->value(), slider_w_probab->value());
 
 }
 
