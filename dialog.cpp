@@ -404,7 +404,7 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(slider_show_ext,0,4,1,1,Qt::AlignBottom);
 
     QGL->addWidget(slider_weight_rad,1,0,1,1);
-    QGL->addWidget(slider_current,1,1,1,1);
+    QGL->addWidget(slider_w_probab,1,1,1,1);
     QGL->addWidget(L_E,1,2,1,1);
     QGL->addWidget(L_E2,1,3,1,1);
     QGL->addWidget(L_E3,1,4,1,1);
@@ -424,7 +424,7 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(slider_pois_time,4,0,1,1);
     QGL->addWidget(slider_depression_alpha,4,1,1,1);
     QGL->addWidget(button_drawing,4,2,1,1);
-    QGL->addWidget(slider_w_probab,4,3,1,1);
+    QGL->addWidget(slider_current,4,3,1,1);
 
 
     connect(button_drawing,SIGNAL(clicked()),this,SLOT(changeDrawing()));
@@ -456,7 +456,7 @@ Dialog::Dialog(QWidget *parent) :
             SLOT(freqChange()));
 
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
-        connect(slider_w_probab,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
+    connect(slider_w_probab,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
     connect(slider_weight_test,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
 
@@ -587,13 +587,13 @@ void Dialog::keyPressEvent(QKeyEvent *event)
     }
     else if(event->text()=="k")
     {
-//       for(int i=0;i<net.size;i++)
-           for (int j=0;j<net.size;j++)
-           {
-               net.neuron[mouse_ind[0]].weight[j]=0;
-               net.neuron[j].weight[mouse_ind[0]]=0;
-               net.neuron[mouse_ind[0]].with_poisson=0;
-           }
+        //       for(int i=0;i<net.size;i++)
+        for (int j=0;j<net.size;j++)
+        {
+            net.neuron[mouse_ind[0]].weight[j]=0;
+            net.neuron[j].weight[mouse_ind[0]]=0;
+            net.neuron[mouse_ind[0]].with_poisson=0;
+        }
     }
 
 }
@@ -848,7 +848,7 @@ void Dialog::paintEvent(QPaintEvent* e)
             QPainterPath path;
             int width1=15;
             QRect rect=QRect(net.neuron[i].i0*width1,net.neuron[i].j0*width1,width1,width1);
-    //        painter->setPen(pen);
+            //        painter->setPen(pen);
             path.addRect(rect);
             painter->drawPath(path);
             int h=net.neuron[i].activity/(0.000001+maxAct)*255.;
