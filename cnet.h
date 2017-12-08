@@ -8,6 +8,7 @@
 class CNet
 {
 public:
+    float inh_k;
     float alpha;
     deque<int> weight_ind;
     bool poisson_on;

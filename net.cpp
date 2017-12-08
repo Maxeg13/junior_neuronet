@@ -156,7 +156,7 @@ for(int i=detectors_size;i<size;i++)
             int r1=rand()%r;
             if(i!=j)
                 if((!neuron[i].isWithin2(x1*x1,j))&&(r1==0))
-                    neuron[i].weight[j]=-3*maxWeight;
+                    neuron[i].weight[j]=-inh_k*maxWeight;
                 else
                     neuron[i].weight[j]=0;
         }
@@ -237,7 +237,7 @@ void CNet::kohonSettings()
     for(int i=0;i<detectors_size;i++)
         for(int j=0;j<detectors_size;j++)
             if(i!=j)
-                neuron[i].setWeight(j,-3*maxWeight);
+                neuron[i].setWeight(j,-inh_k*maxWeight);
     //     neuron[1].setWeight(0,-4*maxWeight);
 
     for(int i=0;i<size;i++)

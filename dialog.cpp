@@ -118,7 +118,7 @@ QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale,
 *slider_pois_time, *slider_depression_alpha,
-*slider_w_probab;
+*slider_w_probab, *slider_inh_k;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -396,6 +396,10 @@ Dialog::Dialog(QWidget *parent) :
     slider_w_probab->setRange(1,14);
     slider_w_probab->setValue(5);
     slider_w_probab->setOrientation(Qt::Horizontal);
+    slider_inh_k = new myQSlider(this);
+    slider_inh_k->setRange(1,10);
+    slider_inh_k->setValue(5);
+    slider_inh_k->setOrientation(Qt::Horizontal);
 
     QGL->addWidget(button_stop,0,0,1,1,Qt::AlignBottom);
     QGL->addWidget(button1,0,1,1,1,Qt::AlignBottom);
@@ -425,6 +429,8 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(slider_depression_alpha,4,1,1,1);
     QGL->addWidget(button_drawing,4,2,1,1);
     QGL->addWidget(slider_current,4,3,1,1);
+    QGL->addWidget(slider_inh_k,4,4,1,1);
+
 
 
     connect(button_drawing,SIGNAL(clicked()),this,SLOT(changeDrawing()));
@@ -1058,7 +1064,7 @@ void Dialog::changeDrawing()
 
 void Dialog::weightRadChanged()
 {
-
+    net.inh_k=slider_inh_k->value()/5.*3.;
     net.weights_with_rad(slider_weight_rad->value(),slider_w_probab->value());
 
 }
