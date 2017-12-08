@@ -136,7 +136,7 @@ void CNet::spikesStop()
     }
 }
 
-void CNet::weights_with_rad(float x1,int r)
+void CNet::weights_with_rad(float x1, int r)
 {
     for(int i=0;i<size;i++)
     {
@@ -153,9 +153,9 @@ for(int i=detectors_size;i<size;i++)
     {
         for(int j=0;j<detectors_size;j++)
         {
-            r=rand()%r;
+            int r1=rand()%r;
             if(i!=j)
-                if((!neuron[i].isWithin2(x1*x1,j))&!r)
+                if((!neuron[i].isWithin2(x1*x1,j))&&(r1==0))
                     neuron[i].weight[j]=-3*maxWeight;
                 else
                     neuron[i].weight[j]=0;

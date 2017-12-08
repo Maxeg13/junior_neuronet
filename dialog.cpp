@@ -456,6 +456,7 @@ Dialog::Dialog(QWidget *parent) :
             SLOT(freqChange()));
 
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
+        connect(slider_w_probab,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
     connect(slider_weight_test,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
 
@@ -1058,7 +1059,7 @@ void Dialog::changeDrawing()
 void Dialog::weightRadChanged()
 {
 
-    net.weights_with_rad(slider_weight_rad->value(), slider_w_probab->value());
+    net.weights_with_rad(slider_weight_rad->value(),slider_w_probab->value());
 
 }
 
