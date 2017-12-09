@@ -461,6 +461,7 @@ Dialog::Dialog(QWidget *parent) :
     connect(slider_freq, SIGNAL(sliderReleased()), this,
             SLOT(freqChange()));
 
+    connect(slider_inh_k,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
     connect(slider_weight_rad,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
     connect(slider_w_probab,SIGNAL(sliderReleased()),this,SLOT(weightRadChanged()));
 
@@ -827,7 +828,33 @@ void Dialog::paintEvent(QPaintEvent* e)
         }
     }
 
-    //DRAAAAAAWIIIING!!!!
+
+
+
+
+    QPainter* painter=new QPainter(this);
+    painter->setRenderHint(QPainter::Antialiasing, 1);
+    //    QPen pen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen pen(Qt::red);
+
+    //    painter->scale(my_scale,my_scale);
+    painter->scale(my_scale=(slider_scale->value()/10.), slider_scale->value()/10.);
+
+
+    //PICTURE OF ACTIVITY
+    for(int i=0;i<net.detectors_size;i++)
+    {
+        QPainterPath path;
+        int width1=15;
+        QRect rect=QRect(net.neuron[i].i0*width1,net.neuron[i].j0*width1,width1,width1);
+        //        painter->setPen(pen);
+        path.addRect(rect);
+        painter->drawPath(path);
+        int h=net.neuron[i].activity/(0.000001+maxAct)*255.;
+        if(h>255)qDebug()<<h;
+        painter->fillPath(path,QColor(h,h,h));
+    }
+    // DRAWING THE NET!!!!
     if(drawing_on)
     {
 
@@ -839,28 +866,7 @@ void Dialog::paintEvent(QPaintEvent* e)
         }
         cnt1++;
 
-        QPainter* painter=new QPainter(this);
-        painter->setRenderHint(QPainter::Antialiasing, 1);
-        //    QPen pen(Qt::black, 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-        QPen pen(Qt::red);
 
-        //    painter->scale(my_scale,my_scale);
-        painter->scale(my_scale=(slider_scale->value()/10.), slider_scale->value()/10.);
-
-
-        //PICTURE OF ACTIVITY
-        for(int i=0;i<net.detectors_size;i++)
-        {
-            QPainterPath path;
-            int width1=15;
-            QRect rect=QRect(net.neuron[i].i0*width1,net.neuron[i].j0*width1,width1,width1);
-            //        painter->setPen(pen);
-            path.addRect(rect);
-            painter->drawPath(path);
-            int h=net.neuron[i].activity/(0.000001+maxAct)*255.;
-            if(h>255)qDebug()<<h;
-            painter->fillPath(path,QColor(h,h,h));
-        }
 
         pen.setColor(Qt::black);
         pen.setWidth(2);
@@ -1044,8 +1050,9 @@ void Dialog::paintEvent(QPaintEvent* e)
         painter->setPen(pen);
         painter->drawEllipse(net.neuron[ind1].x-10,net.neuron[ind1].y-10,20,20);
 
-        delete painter;
+
     }
+    delete painter;
 }
 
 Dialog::~Dialog()
