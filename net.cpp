@@ -136,17 +136,31 @@ void CNet::spikesStop()
     }
 }
 
+void CNet::killLink(int i,int j)
+{
+    neuron[i].weight[j]=0;
+    neuron[j].weight[i]=0;
+}
+
+void CNet::setLink(int i,int j)
+{
+    if(rand()%2==0)
+        neuron[i].weight[j]=maxWeight;
+    else
+        neuron[j].weight[i]=maxWeight;
+}
+
 void CNet::weights_with_rad(float x1, int r)
 {
     for(int i=0;i<size;i++)
     {
         for(int j=0;j<size;j++)
-        neuron[i].weight[j]=0;
+            neuron[i].weight[j]=0;
     }
 
-for(int i=detectors_size;i<size;i++)
-    for(int j=0;j<detectors_size;j++)
-        neuron[i].weight[j]=maxWeight;
+    for(int i=detectors_size;i<size;i++)
+        for(int j=0;j<detectors_size;j++)
+            neuron[i].weight[j]=maxWeight;
 
 
     for(int i=0;i<detectors_size;i++)
@@ -154,9 +168,15 @@ for(int i=detectors_size;i<size;i++)
         for(int j=0;j<detectors_size;j++)
         {
             int r1=rand()%r;
+            int r2=rand()%r;
             if(i!=j)
                 if((!neuron[i].isWithin2(x1*x1,j))&&(r1==0))
                     neuron[i].weight[j]=-inh_k*maxWeight;
+                else if((neuron[i].isWithin2(x1*x1,j))&&(r2==0))
+                {
+                    killLink(i,j);
+                    setLink(i,j);
+                }
                 else
                     neuron[i].weight[j]=0;
         }
@@ -165,17 +185,17 @@ for(int i=detectors_size;i<size;i++)
 
 
 
-//    for(int i=0;i<detectors_size;i++)
-//        for(int j=0;j<detectors_size;j++)
-//            neuron[i].weight[j]=0;
+    //    for(int i=0;i<detectors_size;i++)
+    //        for(int j=0;j<detectors_size;j++)
+    //            neuron[i].weight[j]=0;
 
 
-//    for(int i=0;i<detectors_size;i++)
-//        neuron[i].topOfRemoted((int)x1/30);
+    //    for(int i=0;i<detectors_size;i++)
+    //        neuron[i].topOfRemoted((int)x1/30);
 
-//    for(int i=0;i<detectors_size;i++)
-//        for(int j=0;j<neuron[i].top.size();j++)
-//            neuron[i].weight[neuron[i].top[j]]=-3*maxWeight;
+    //    for(int i=0;i<detectors_size;i++)
+    //        for(int j=0;j<neuron[i].top.size();j++)
+    //            neuron[i].weight[neuron[i].top[j]]=-3*maxWeight;
 
     for(int i=0;i<detectors_size;i++)
         for(int j=0;j<detectors_size;j++)
@@ -216,6 +236,10 @@ void CNet::afterReWeight()
 
 void CNet::kohonSettings()
 {
+    for(int i=0;i<detectors_size;i++)
+        for(int j=0;j<detectors_size;j++)
+            neuron[i].STDP_set[j]=0;
+
     for(int j=0;j<size;j++)
         for(int i=0;i<size;i++)
             neuron[i].setWeight(j,0);
@@ -260,18 +284,21 @@ void CNet::setDelay(int i,int j)
     float ex=neuron[i].x-neuron[j].x;
     float ey=neuron[i].y-neuron[j].y;
     float square=ex*ex+ey*ey+0.001;
-        if((neuron[i].weight[j])>0.0001)
+    if((neuron[i].weight[j])>0.0001)
     {
         //const
-        neuron[i].output[j].resize(1+sqrt(square)/5,0);//6
-//        neuron[i].output[j].resize(1+rand()%40,0);//6
-    }
+        //        neuron[i].output[j].resize(1+sqrt(square)/5,0);//6
+        if(i>(detectors_size-1))
+            neuron[i].output[j].resize(1+rand()%40,0);//6
         else
-        {
-
             neuron[i].output[j].resize(1+sqrt(square)/40,0);
+    }
+    else
+    {
 
-        }
+        neuron[i].output[j].resize(1+sqrt(square)/40,0);
+
+    }
 
 }
 
