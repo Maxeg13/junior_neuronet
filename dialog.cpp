@@ -17,7 +17,7 @@
 #include "pattern.h"
 
 bool drawing_on=1;
-QwtPlotCurve rastrCurve, weightCurve;
+QwtPlotCurve rastrCurve, weightCurve1, weightCurve2;
 QwtPlot *plot_rastr, *plot_weights;
 QColor QCLR;
 QPolygon qp;
@@ -818,16 +818,28 @@ void Dialog::paintEvent(QPaintEvent* e)
     //    QwtSymbol* symbol = new QwtSymbol( QwtSymbol::Ellipse,
     //                                       QBrush(QColor(0,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
     //    weightCurve.setSymbol(symbol);
-    weightCurve.setPen(QColor(0,0,255));
-    //    QPolygonF points;
-    points.resize(0);
+    weightCurve1.setPen(QColor(0,0,255,0));
+    weightCurve2.setPen(QColor(0,0,255,0));
+    QPolygonF points1, points2;
+
+    QwtSymbol* symbol1 = new QwtSymbol( QwtSymbol::Rect,
+                                        QBrush(QColor(255,0,0)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
+    QwtSymbol* symbol2 = new QwtSymbol( QwtSymbol::Rect,
+                                        QBrush(QColor(0,0,255)), QPen(QColor(0,0,0,0)  ), QSize( 5, 5) );
+    weightCurve1.setSymbol(symbol1);
+    weightCurve2.setSymbol(symbol2);
     //    for(int i=0;i<net.size;i++)
     for(int j=0;j<net.weight_ind.size();j++)
-        points<<QPointF(j,net.neuron[mouse_ind[0]].weight[net.weight_ind[j]]);
+        if(net.weight_ind[j]>net.detectors_size/2)
+            points1<<QPointF(j,net.neuron[mouse_ind[0]].weight[net.weight_ind[j]]);
+        else
+            points2<<QPointF(j,net.neuron[mouse_ind[0]].weight[net.weight_ind[j]]);
     //            points<<QPointF(j,2);
 
-    weightCurve.setSamples( points ); // ассоциировать набор точек с кривой
-    weightCurve.attach( plot_weights); // отобразить кривую на графике/
+    weightCurve1.setSamples( points1 ); // ассоциировать набор точек с кривой
+    weightCurve1.attach( plot_weights); // отобразить кривую на графике/
+    weightCurve2.setSamples( points2 ); // ассоциировать набор точек с кривой
+    weightCurve2.attach( plot_weights); // отобразить кривую на графике/
     plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight);
 
 
@@ -908,10 +920,10 @@ void Dialog::paintEvent(QPaintEvent* e)
         int width1=15;
         QRect rect;
         if(sum1>sum2)
-             rect=QRect((net.neuron[net.detectors_size-1].i0+1)*
+            rect=QRect((net.neuron[net.detectors_size-1].i0+1)*
                     width1,(net.neuron[net.detectors_size-1].j0-1)*width1,width1,width1);
         else
-             rect=QRect((net.neuron[net.detectors_size-1].i0+1)*
+            rect=QRect((net.neuron[net.detectors_size-1].i0+1)*
                     width1,(net.neuron[net.detectors_size-1].j0)*width1,width1,width1);
         path.addRect(rect);
         painter->drawPath(path);
