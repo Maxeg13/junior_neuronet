@@ -182,22 +182,24 @@ void Dialog::savePattern()
     //    ptn_n++;
     //    ptn_n%=2;
 
-    int i=0;
+    int i=1;
+    ptn[i].freq.resize(net.stim_ind.size());
+    ptn[i].ind=net.stim_ind;
+    for(int j=0;j<ptn[0].ind.size();j++)
+    {
+        //            qDebug()<<"hello";
+        //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
+        ptn[i].freq[j]=ptn[0].freq[j];
+
+    }
+
+     i=0;
     ptn[i].freq.resize(net.stim_ind.size());
     ptn[i].ind=net.stim_ind;
     for(int j=0;j<net.stim_ind.size();j++)
         ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
 
-    i=1;
-    ptn[i].freq.resize(net.stim_ind.size());
-    ptn[i].ind=net.stim_ind;
-    for(int j=0;j<net.stim_ind.size();j++)
-    {
-        //            qDebug()<<"hello";
-        //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
-        ptn[i].freq[j]=ptn[0].freq[net.stim_ind.size()-1-j];
 
-    }
 }
 
 void Dialog::setPhase()
@@ -494,6 +496,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_weight_test->setToolTip("set weight");
     slider_phase->setToolTip("set phase");
     slider_w_probab->setToolTip("linking probab");
+    slider_inh_k->setToolTip("inhibitory efficiency");
 
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");

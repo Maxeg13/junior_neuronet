@@ -289,7 +289,7 @@ void CNet::setDelay(int i,int j)
         //const
         //        neuron[i].output[j].resize(1+sqrt(square)/5,0);//6
         if(i>(detectors_size-1))
-            neuron[i].output[j].resize(1+rand()%40,0);//6
+            neuron[i].output[j].resize(10+rand()%20,0);//6
         else
             neuron[i].output[j].resize(1+sqrt(square)/40,0);
     }
