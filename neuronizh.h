@@ -96,8 +96,7 @@ public:
     void rangedRemoted();
     void topOfRemoted(int n);
     bool isWithin2(float xx, int i);
-    void oneStep(float);
-    void CalculateStep();
+    void oneStep();
     void setWeight(int i, float x);
     void weights_with_rad(float);
     void pull(float x1, float y1);

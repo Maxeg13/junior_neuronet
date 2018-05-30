@@ -314,7 +314,10 @@ void CNet::CalculateStep(float x)
     }
 
     for(int i=0;i<size;i++)
-        neuron[i].oneStep(x);
+        neuron[i].vis*=exp(-ext_show*x*40);//
+
+    for(int i=0;i<size;i++)
+        neuron[i].oneStep();
 
     for(int j=0;j<size;j++)
         for(int i=0;i<neuron[j].output.size();i++)

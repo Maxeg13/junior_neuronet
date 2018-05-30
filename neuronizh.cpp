@@ -319,13 +319,10 @@ void neuronIzh::setWeight(int i, float x)
     weight[i]=x;
 }
 
-void neuronIzh::oneStep(float x)
-{
-    vis*=exp(-net->ext_show*x*40);//
-    CalculateStep();
-}
 
-void neuronIzh::CalculateStep()
+
+
+void neuronIzh::oneStep()
 {
     activity*=net->exp_activity;
 
