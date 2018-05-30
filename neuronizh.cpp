@@ -31,11 +31,12 @@ neuronIzh::neuronIzh()
 neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 {
 
+
     activity=0;
     pois_T=rand()%300;
     pois_cnt=0;
     with_poisson=1;
-    STDP=2;
+    STDP=0;//2
 
     vx=0;
     vy=0;
@@ -48,8 +49,12 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     step=net->step;
     is_excitatory=_is_excitatory;
 
+
+
     ID=_ID;
     type=_type;
+
+
     switch(_type)
     {
     case RS:
@@ -83,25 +88,27 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     time_from_freq=1000/freq;
     freq_cnt=0;
     external_I=0;
-    output.resize(net->size);
-    STDP_set=new bool[net->size];
-    weight=new float[net->size];
-    weight_norm=new float[net->size];
-    r1=new float[net->size];
-    r2=new float[net->size];
-    o1=new float[net->size];
-    o2=new float[net->size];
+    to_input=new int[_net->size];
+    output.resize(_net->size);
+    STDP_set=new bool[_net->size];
+    weight=new float[_net->size];
+    weight_norm=new float[_net->size];
+
+    r1=new float[_net->size];
+    r2=new float[_net->size];
+    o1=new float[_net->size];
+    o2=new float[_net->size];
 
     //syn_cnt.resize(
-    //    syn_cnt=new int[net->size];
-    syn_cnt.resize(net->size);
-    //    for(int i=0;i<net->size;i++)
+    //    syn_cnt=new int[_net->size];
+    syn_cnt.resize(_net->size);
+    //    for(int i=0;i<_net->size;i++)
     //    syn_cnt[i].;
-    for(int i=0;i<net->size;i++)
+    for(int i=0;i<_net->size;i++)
         STDP_set[i]=1;
 
     if(is_excitatory)
-        for(int i=0;i<net->size;i++)
+        for(int i=0;i<_net->size;i++)
             if(net->neuron[i].is_excitatory)
             {
                 r1[i]=0;
@@ -113,7 +120,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     //    qDebug()<<net->width;
     locate();
 
-    //    for(int i=0;i<net->size;i++)
+    //    for(int i=0;i<_net->size;i++)
     //    {
     //        if(i!=ID)weight[i]=(weight_norm[i]=(rand() % ((int)(net->maxWeight - net->minWeight)*10))/10.0f) + net->minWeight;
     //        weight_norm[i]/=(net->maxWeight - net->minWeight);
@@ -121,7 +128,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     //    weight[ID]=0;
     //    weight_norm[ID]=0;
 
-    arrow= new CArrow[net->size]();
+    arrow= new CArrow[_net->size]();
 }
 
 void neuronIzh::locate()
@@ -375,10 +382,11 @@ void neuronIzh::oneStep()
 
     for(i=0;i<net->size;i++)
         if(fabs(net->neuron[i].weight[ID])>net->minWeight)
-            input_from_neurons+=net->neuron[i].output[ID].back()*net->neuron[i].weight[ID];
+            input_from_neurons+=net->neuron[i].to_input[ID]*net->neuron[i].weight[ID];
     input_sum=input_from_neurons+max(external_I*(freq_modulator),50*pois_modulator);
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
+
 
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
     E_m +=  dE_m*net->steph;
@@ -392,19 +400,25 @@ void neuronIzh::oneStep()
 
     input_from_neurons*=net->exp_psc_exc;
 
+    //////
     for(i=0;i<net->size;i++)
     {
+        to_input[i]=0;
         for(int j=0;j<syn_cnt[i].size();j++)
         {
+
             if(syn_cnt[i][j])
                 syn_cnt[i][j]++;
-            if(syn_cnt[i][j]>(output[i].size()))
+            if(syn_cnt[i][j]>(output[i]))
+            {
+                to_input[i]=1;
                 syn_cnt[i].pop_back();
+            }
         }
     }
 
 
-    to_output=0;
+
     if(E_m >= 30) // spike here! value 30 mV - by Izhikevich
     {
         activity+=.1;
@@ -416,7 +430,6 @@ void neuronIzh::oneStep()
             syn_cnt[i].push_front(1);
 
         float dw;
-        to_output=1;
         vis=220;
         //        is_spike = true;
         E_m = c;

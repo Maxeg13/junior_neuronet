@@ -55,7 +55,7 @@ public:
     neuronIzh* neighbour_neuron;
 //    net* netIzh;
     int ID;
-    float to_output;
+    int* to_input;
     int STDP;
     bool* STDP_set;
     int phase_noise;
@@ -66,7 +66,7 @@ public:
     int freq_phase;
     neuronType type;
     bool is_excitatory;
-    deque<deque<float>> output;
+    vector<int> output;
     float input_from_neurons;
     float input_sum;
     float external_I;

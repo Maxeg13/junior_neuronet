@@ -256,7 +256,7 @@ void Dialog::killDelay()
     for(int i=0;i<net.size;i++)
         for(int j=0;j<net.size;j++)
             if(fabs(net.neuron[i].weight[j])>0.00001)
-                net.neuron[i].output[j].resize(3,0);
+                net.neuron[i].output[j]=3;
 }
 
 void Dialog::change_STDP_speed()
@@ -542,7 +542,7 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+="\nID: "+QString::number(net.neuron[mouse_ind[0]].ID);
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
-        str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]].size() );
+        str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]] );
         str+="\ntest value: "+QString::number(net.STDP_speed);
         str+="\nfreq: "+QString::number(net.neuron[mouse_ind[0]].freq);
         str+="\nlearning is: "+QString::number(learning_yes);
@@ -1099,7 +1099,7 @@ void drawLinkWithSpike(int i, int j, QColor& QCLR, QColor& _QCLR, QPen& pen,QPai
         for(int k=0;k<net.neuron[i].syn_cnt[j].size();k++)
         {
 
-            l=net.neuron[i].syn_cnt[j][k]/(float)net.neuron[i].output[j].size();
+            l=net.neuron[i].syn_cnt[j][k]/(float)net.neuron[i].output[j];
             gradient1.setColorAt((0.+l)/1.2, QCLR);
             gradient1.setColorAt((0.1+l)/1.2, _QCLR);
             gradient1.setColorAt((0.2+l)/1.2, QCLR);
