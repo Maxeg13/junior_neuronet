@@ -28,7 +28,7 @@ float CNet::dist2(int i,int j)
 
 CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
 {
-    geometr_size=76.;
+    geometr_size=60.;
     T_eff=100*1.9/log(2.718);
     //modes:
     demo=0;
@@ -37,10 +37,10 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
     poisson_on=1;
     min_weight_norm=0.4;
     minWeight=1/20.;//for experiment
-    maxWeight=5;
+    maxWeight=3;
     step=1;
     size_k=.2;
-    psc_excxpire_time=11;//4,0.1
+    psc_excxpire_time=15;//4,0.1
     exp_psc_exc=exp(-step/psc_excxpire_time);
     if(demo)
         weight_diap=.99;
@@ -105,9 +105,9 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
 
     kohonSettings();
 
-//    for(int i=0;i<size;i++)
-//        for(int j=0;j<size;j++)
-//        qDebug()<<neuron[i].syn_cnt[j].size();
+    //    for(int i=0;i<size;i++)
+    //        for(int j=0;j<size;j++)
+    //        qDebug()<<neuron[i].syn_cnt[j].size();
 }
 
 void CNet::demoSettings(int x)
@@ -154,6 +154,7 @@ void CNet::spikesStop()
             neuron[i].syn_cnt[j].resize(0);
         neuron[i].E_m=-75;//neuron[i].c;
         neuron[i].U_e=13;
+
     }
 }
 
@@ -179,24 +180,33 @@ void CNet::weightsWithRad(float x1, int q_inh)
             neuron[i].weight[j]=0;
     }
 
-
-
     for(int i=0;i<detectors_size;i++)
     {
         for(int j=0;j<detectors_size;j++)
         {
             int q1=rand()%q_inh;
-            float pd=exp(-dist2(i,j)/(2*x1*x1));
+            float pd=exp(-dist2(i,j)/(2*x1*x1))*0.8;
 
             if(i!=j)
+            {
+                killLink(i,j);
                 if(probab(pd))
                 {
-                    killLink(i,j);
-                    setLink(i,j,pd*maxWeight);
-                }
 
-                else
-                    neuron[i].weight[j]=0;
+
+                    setLink(i,j,pd*maxWeight*.3);
+                }
+                else if(probab((1-pd)*0.13))
+                {
+                    killLink(i,j);
+                    if(q1==0)
+                        setLink(i,j,-inh_k*(1-pd)*maxWeight*.3);
+
+                }
+            }
+
+            else
+                neuron[i].weight[j]=0;
         }
     }
 
@@ -277,10 +287,10 @@ void CNet::kohonSettings()
     //    }
 
     ////
-//    for(int i=0;i<detectors_size;i++)
-//        for(int j=0;j<detectors_size;j++)
-//            if(i!=j)
-//                neuron[i].setWeight(j,inh_k*maxWeight);
+    //    for(int i=0;i<detectors_size;i++)
+    //        for(int j=0;j<detectors_size;j++)
+    //            if(i!=j)
+    //                neuron[i].setWeight(j,inh_k*maxWeight);
     //     neuron[1].setWeight(0,-4*maxWeight);
 
     for(int i=0;i<size;i++)
@@ -308,10 +318,11 @@ void CNet::setDelay(int i,int j)
         //const
         //        neuron[i].eff_dist[j].resize(1+sqrt(square)/5,0);//6
         if(i>(detectors_size-1))
-            //            neuron[i].eff_dist[j]=(1+rand()%2,0);//6
-            neuron[i].eff_dist[j]=(1+sqrt(square)/6);
+            neuron[i].eff_dist[j]=(1+sqrt(square)/14);
+//            neuron[i].eff_dist[j]=(2);
         else
-            neuron[i].eff_dist[j]=(1+sqrt(square)/6);
+            neuron[i].eff_dist[j]=(1+sqrt(square)/14);
+//            neuron[i].eff_dist[j]=(2);
     }
     else
     {

@@ -51,7 +51,7 @@ bool learning_yes;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(102,100,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(196,196,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -361,7 +361,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_show_ext = new myQSlider(this);
     slider_show_ext->setRange(10, 140);
-    slider_show_ext->setValue(test_val=10);
+    slider_show_ext->setValue(test_val=99);
     slider_show_ext->setOrientation(Qt::Horizontal);
     test_val/=20;
 
@@ -380,7 +380,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_circle->setOrientation(Qt::Horizontal);
     slider_weight_rad = new myQSlider(this);
     slider_weight_rad->setRange(8, 300);
-    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=140);
+    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=90);
     slider_weight_rad->setOrientation(Qt::Horizontal);
     slider_current = new myQSlider(this);
     slider_current->setRange(1,50);
@@ -395,8 +395,8 @@ Dialog::Dialog(QWidget *parent) :
     slider_freq->setValue(8);
     slider_freq->setOrientation(Qt::Horizontal);
     slider_w_probab = new myQSlider(this);
-    slider_w_probab->setRange(1,14);
-    slider_w_probab->setValue(11);
+    slider_w_probab->setRange(1,5);
+    slider_w_probab->setValue(3);
     slider_w_probab->setOrientation(Qt::Horizontal);
     slider_inh_k = new myQSlider(this);
     slider_inh_k->setRange(1,10);
