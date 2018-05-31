@@ -13,7 +13,7 @@ float max(float x,float y)
 
 int neuronIzh::getPoisson()
 {
-//    static float T_eff=net->poisson_interval*1.9/log(2.718);
+    //    static float T_eff=net->poisson_interval*1.9/log(2.718);
     //    static float cnt=0;
     //    static float ac=0;
     int ans=net->T_eff*(-log((rand()%40)/41.+0.001));
@@ -35,7 +35,9 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     activity=0;
     pois_T=rand()%300;
     pois_cnt=0;
-    with_poisson=1;
+    ////
+    with_poisson=0;
+    pois_modulator=0;
     STDP=0;//2
 
     vx=0;
@@ -81,18 +83,24 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     //    net->minWeight=20;
     //    net->maxWeight=70;
 
-    E_m=c;
-    U_e=d;
+    E_m=-75;
+    U_e=13;
     input_from_neurons=0;
     freq=2;
     time_from_freq=1000/freq;
     freq_cnt=0;
     external_I=0;
     to_input=new int[_net->size];
-    output.resize(_net->size);
+    eff_dist=new int[_net->size];
     STDP_set=new bool[_net->size];
     weight=new float[_net->size];
     weight_norm=new float[_net->size];
+
+    for(int i=0;i<_net->size;i++)
+    {
+        to_input[i]=0;
+        eff_dist[i]=0;
+    }
 
     r1=new float[_net->size];
     r2=new float[_net->size];
@@ -135,8 +143,8 @@ void neuronIzh::locate()
 {
     if(net->demo)
     {
-        x=(net->width)*(net->size_k)+(rand()%(net->width))*(1-2*(net->size_k));
-        y=(net->height)*(net->size_k)+(rand()%(net->height))*(1-2*(net->size_k));
+        x=(net->x0)*(net->size_k)+(rand()%(net->x0))*(1-2*(net->size_k));
+        y=(net->y0)*(net->size_k)+(rand()%(net->y0))*(1-2*(net->size_k));
     }
     else
     {
@@ -144,17 +152,17 @@ void neuronIzh::locate()
         {
             //             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
             static int width=sqrt(net->detectors_size);
-            float x1=(ID%width+(rand()%8)*.07)*40.;
-            float y1=(ID/width+(rand()%8)*.07)*40.;
+            float x1=(ID%width+(rand()%8)*.1)*net->geometr_size;//real width
+            float y1=(ID/width+(rand()%8)*.1)*net->geometr_size;//real height
 
             i0=ID%width;
             j0=ID/width;
-            x=net->width/2*1.3+x1; y=net->height*.53+y1;
+            x=net->x0+x1; y=net->y0+y1;
         }
         else
         {
-            y=net->height*(1-(ID-net->detectors_size-3.5)*(ID-net->detectors_size-3.5)/80.);
-            x=net->width/2*1.3+((ID-net->detectors_size-3.5))*net->width*0.10;
+            y=net->y0*(1-(ID-net->detectors_size-3.5)*(ID-net->detectors_size-3.5)/80.);
+            x=net->x0/2*1.3+((ID-net->detectors_size-3.5))*net->x0*0.10;
         }
         //        switch(ID)
         //        {
@@ -194,9 +202,9 @@ void neuronIzh::pull(float x1,float y1)
         float rad2=sqrt((x1-x)*(x1-x)+(y1-y)*(y1-y));
         vx=(x1-x)/rad2;
         vy=(y1-y)/rad2;
-        if(x+vx>net->width*net->size_k)
+        if(x+vx>net->x0*net->size_k)
             x+=vx;
-        if(y+vy>net->height*net->size_k)
+        if(y+vy>net->y0*net->size_k)
             y+=vy;
     }
 }
@@ -208,9 +216,9 @@ void neuronIzh::push(float x1,float y1)
     float rad2=((x1-x)*(x1-x)+(y1-y)*(y1-y));
     vx=100*(x1-x)/rad2;
     vy=100*(y1-y)/rad2;
-    if(x-vx>net->width*net->size_k)
+    if(x-vx>net->x0*net->size_k)
         x-=vx;
-    if(y-vy>net->height*net->size_k)
+    if(y-vy>net->y0*net->size_k)
         y-=vy;
 
 }
@@ -248,9 +256,9 @@ void neuronIzh::rangedRemoted()
             }
         }
 
-//    net->weight_ind.resize(net->size);
-//    for(int i=0;i<net->size;i++)
-        net->weight_ind=IDS;
+    //    net->weight_ind.resize(net->size);
+    //    for(int i=0;i<net->size;i++)
+    net->weight_ind=IDS;
 
 }
 
@@ -289,7 +297,7 @@ void neuronIzh::topOfRemoted(int n)
 
 }
 
-void neuronIzh::weights_with_rad(float x1)
+void neuronIzh::weightsWithRad(float x1)
 {
     float xx=x1*x1;
     for(int i=0;i<net->size;i++)
@@ -333,17 +341,20 @@ void neuronIzh::oneStep()
 {
     activity*=net->exp_activity;
 
-    if(with_poisson && net->poisson_on)
-        pois_cnt++;
-
-    if(pois_cnt>pois_T)
+    if(with_poisson)
     {
-        pois_modulator=1;
-        pois_cnt=0;
-        pois_T=getPoisson();
+        if( net->poisson_on)
+            pois_cnt++;
+
+        if(pois_cnt>pois_T)
+        {
+            pois_modulator=1;
+            pois_cnt=0;
+            pois_T=getPoisson();
+        }
+        else
+            pois_modulator=0;
     }
-    else
-        pois_modulator=0;
 
     freq_cnt++;
     if(freq_cnt+stim_rnd>(time_from_freq+1))
@@ -381,9 +392,10 @@ void neuronIzh::oneStep()
 
 
     for(i=0;i<net->size;i++)
-        if(fabs(net->neuron[i].weight[ID])>net->minWeight)
+        if(fabs(net->neuron[i].weight[ID])>0.0001)
             input_from_neurons+=net->neuron[i].to_input[ID]*net->neuron[i].weight[ID];
     input_sum=input_from_neurons+max(external_I*(freq_modulator),50*pois_modulator);
+//        input_sum=0;
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
 
@@ -409,8 +421,9 @@ void neuronIzh::oneStep()
 
             if(syn_cnt[i][j])
                 syn_cnt[i][j]++;
-            if(syn_cnt[i][j]>(output[i]))
+            if(syn_cnt[i][j]>(eff_dist[i]))
             {
+//                qDebug()<<
                 to_input[i]=1;
                 syn_cnt[i].pop_back();
             }
@@ -427,7 +440,8 @@ void neuronIzh::oneStep()
         //            qDebug()<<"hello!";
 
         for(i=0;i<net->size;i++)
-            syn_cnt[i].push_front(1);
+            if(weight[i]>0.0001)
+                syn_cnt[i].push_front(1);
 
         float dw;
         vis=220;
@@ -460,7 +474,7 @@ void neuronIzh::oneStep()
                         //                        }
 
                     }
-                    else if((weight[i]>0.0001)&&is_excitatory)//outputs
+                    else if((weight[i]>0.0001)&&is_excitatory)//eff_dists
                         if(STDP_set[i])
                         {
                             //pre

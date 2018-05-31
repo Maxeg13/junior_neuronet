@@ -66,7 +66,7 @@ public:
     int freq_phase;
     neuronType type;
     bool is_excitatory;
-    vector<int> output;
+    int* eff_dist;
     float input_from_neurons;
     float input_sum;
     float external_I;
@@ -98,7 +98,7 @@ public:
     bool isWithin2(float xx, int i);
     void oneStep();
     void setWeight(int i, float x);
-    void weights_with_rad(float);
+    void weightsWithRad(float);
     void pull(float x1, float y1);
     void push(float x1, float y1);
     void locate();

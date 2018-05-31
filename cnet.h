@@ -8,6 +8,7 @@
 class CNet
 {
 public:
+    int geometr_size;
     float inh_k;
     float alpha;
     deque<int> weight_ind;
@@ -29,8 +30,8 @@ public:
     int size;
     int detectors_size;
     float size_k;
-    int width;
-    int height;
+    int x0;
+    int y0;
     int rad;
     float STDP_speed;
     int weight_rad;
@@ -56,7 +57,7 @@ public:
     int STDP_cnt;
     int STDP_div;
     void killLink(int,int);
-    void setLink(int,int);
+    void setLink(int,int, float);
     void CalculateStep(float x);
     void setArrows();
     void setDelay(int i, int j);
@@ -64,7 +65,8 @@ public:
     std::vector<int> stim_ind;
     float minWeight; // веса, размерность пкА
     float maxWeight;
-    void weights_with_rad(float x1, int r);
+    float dist2(int, int);
+    void weightsWithRad(float x1, int r);
     void afterReWeight();
     void normWeights();
     void demoSettings(int x);

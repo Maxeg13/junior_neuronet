@@ -51,7 +51,7 @@ bool learning_yes;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(51,49,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+CNet net(102,100,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
@@ -234,7 +234,7 @@ void Dialog::setInhPerc()
     //    net=CNet(90,L_E3->text().toInt(),RS);
     for(int i=0;i<net.size;i++)
         net.neuron[i].is_excitatory=((rand()%100)>(L_E3->text().toInt()-1));
-    net.weights_with_rad(slider_weight_rad->value(),slider_w_probab->value());
+    net.weightsWithRad(slider_weight_rad->value(),slider_w_probab->value());
 }
 
 void Dialog::changePoisson()
@@ -256,7 +256,7 @@ void Dialog::killDelay()
     for(int i=0;i<net.size;i++)
         for(int j=0;j<net.size;j++)
             if(fabs(net.neuron[i].weight[j])>0.00001)
-                net.neuron[i].output[j]=3;
+                net.neuron[i].eff_dist[j]=3;
 }
 
 void Dialog::change_STDP_speed()
@@ -342,7 +342,7 @@ Dialog::Dialog(QWidget *parent) :
     //    mainLayout = new QVBoxLayout();
 
 
-    this->setGeometry(QRect(40,40,640,670));
+    this->setGeometry(QRect(40,40,1000,1000));
 
     slider_pois_time=new myQSlider(this);
     slider_pois_time->setRange(100, 700);
@@ -368,7 +368,7 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_depression_alpha = new myQSlider(this);
     slider_depression_alpha->setRange(0, 10);
-    slider_depression_alpha->setValue(5);
+    slider_depression_alpha->setValue(5);//5
     slider_depression_alpha->setOrientation(Qt::Horizontal);
     slider_depression_alpha->setToolTip(QString("depression eff"));
 
@@ -396,7 +396,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_freq->setOrientation(Qt::Horizontal);
     slider_w_probab = new myQSlider(this);
     slider_w_probab->setRange(1,14);
-    slider_w_probab->setValue(5);
+    slider_w_probab->setValue(11);
     slider_w_probab->setOrientation(Qt::Horizontal);
     slider_inh_k = new myQSlider(this);
     slider_inh_k->setRange(1,10);
@@ -540,9 +540,10 @@ void Dialog::keyPressEvent(QKeyEvent *event)
         str+=(net.type==RS)?"RS":(net.type==TC)?"TC":"IB";
         str+="\nis excitatory: "+QString::number(net.neuron[mouse_ind[0]].is_excitatory);
         str+="\nID: "+QString::number(net.neuron[mouse_ind[0]].ID);
+        str+="\nE_m: "+QString::number(net.neuron[mouse_ind[0]].E_m );
         str+="\nU_e: "+QString::number(net.neuron[mouse_ind[0]].U_e );
         str+="\nWeight: "+QString::number(net.neuron[mouse_ind[1]].weight[mouse_ind[0]] );
-        str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].output[mouse_ind[0]] );
+        str+="\nsynapse delay: "+QString::number(net.neuron[mouse_ind[1]].eff_dist[mouse_ind[0]] );
         str+="\ntest value: "+QString::number(net.STDP_speed);
         str+="\nfreq: "+QString::number(net.neuron[mouse_ind[0]].freq);
         str+="\nlearning is: "+QString::number(learning_yes);
@@ -679,7 +680,7 @@ void Dialog::neuroGrab()
         net.demoSettings(slider_weight_rad->value());
     else
         net.kohonSettings();
-    //    net.weights_with_rad(slider_weight_rad->value());
+    //    net.weightsWithRad(slider_weight_rad->value());
 }
 
 void Dialog::mouseReleaseEvent(QMouseEvent *e)
@@ -1075,7 +1076,7 @@ void Dialog::changeDrawing()
 void Dialog::weightRadChanged()
 {
     net.inh_k=slider_inh_k->value()/5.*3.;
-    net.weights_with_rad(slider_weight_rad->value(),slider_w_probab->value());
+    net.weightsWithRad(slider_weight_rad->value(),slider_w_probab->value());
 
 }
 
@@ -1099,7 +1100,7 @@ void drawLinkWithSpike(int i, int j, QColor& QCLR, QColor& _QCLR, QPen& pen,QPai
         for(int k=0;k<net.neuron[i].syn_cnt[j].size();k++)
         {
 
-            l=net.neuron[i].syn_cnt[j][k]/(float)net.neuron[i].output[j];
+            l=net.neuron[i].syn_cnt[j][k]/(float)net.neuron[i].eff_dist[j];
             gradient1.setColorAt((0.+l)/1.2, QCLR);
             gradient1.setColorAt((0.1+l)/1.2, _QCLR);
             gradient1.setColorAt((0.2+l)/1.2, QCLR);
