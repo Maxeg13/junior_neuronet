@@ -28,11 +28,15 @@ float CNet::dist2(int i,int j)
 
 CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
 {
-    geometr_size=60.;
+
+    geometr_size=50.;
+    x0=230;
+    y0=210;
+
     T_eff=100*1.9/log(2.718);
     //modes:
     demo=0;
-    spike_show=1;
+    spike_show=0;
 
     poisson_on=1;
     min_weight_norm=0.4;
@@ -51,8 +55,7 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
 
     exp_activity=exp(-step/3300);
 
-    x0=200;
-    y0=200;
+
     STDP_cnt=0;
     STDP_div=1;
 

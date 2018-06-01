@@ -152,7 +152,7 @@ void neuronIzh::locate()
         {
             //             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
             static int width=sqrt(net->detectors_size);
-            float x1=(ID%width+(rand()%8)*.1)*net->geometr_size;//real width
+            float x1=(ID%width+(rand()%8)*.1)*net->geometr_size*1.2;//real width
             float y1=(ID/width+(rand()%8)*.1)*net->geometr_size;//real height
 
             i0=ID%width;
