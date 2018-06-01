@@ -1,5 +1,6 @@
 #ifndef DIALOG_H
 #define DIALOG_H
+#include <vector>
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
@@ -11,7 +12,7 @@
 #include <qwt_picker_machine.h>
 #include "drawing.h"
 #include <QDialog>
-
+using namespace std;
 
 
 
@@ -57,6 +58,7 @@ public slots:
      void setPhase();
      void changePoisson();
      void changeDrawing();
+     void getEMG( vector<float>);
 };
 
 #endif // DIALOG_H

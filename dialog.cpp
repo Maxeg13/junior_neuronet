@@ -15,6 +15,8 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include "pattern.h"
+#include "datacollector.h"
+DataCollector* collector;
 
 bool drawing_on=1;
 QwtPlotCurve rastrCurve, weightCurve;
@@ -53,6 +55,11 @@ QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
 CNet net(225,225,0,RS);//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
+
+void Dialog::getEMG(vector<float> x )
+{
+
+}
 
 void drawLinkWithSpike(int, int , QColor& ,QColor&, QPen& ,QPainter* );
 
