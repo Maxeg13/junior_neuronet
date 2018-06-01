@@ -451,7 +451,6 @@ void neuronIzh::oneStep()
         U_e = U_e + d;
 
         if(STDP==2)//triplet STDP
-
             for(i=0;i<net->size;i++)
             {
                 if(net->neuron[i].STDP_set[ID])
