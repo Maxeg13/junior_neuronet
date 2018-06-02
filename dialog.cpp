@@ -53,7 +53,9 @@ bool draw_links=1;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(225,225,0,RS);//18 IB Kohonen CNet net(18,0,IB);
+//CNet net(625,625,0,RS);
+CNet net(225,225,0,RS);
+//18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
 
 void Dialog::getEMG(vector<float> x )
@@ -284,13 +286,13 @@ void Dialog::chooseThePattern()
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent)
 {
-    pmap=QPixmap(1400,1000);
+    pmap=QPixmap(2000,1800);
     QPainter pr(&pmap);
     QBrush br(QColor(240,240,240));
     QPen pn(QColor(240,240,240));
     pr.setBrush(br);
     pr.setPen(pn);
-    pr.drawRect(QRect(0,0,1400,1200));
+    pr.drawRect(QRect(0,0,2000,1800));
     //        pmap
 
     plot_rastr = new QwtPlot();
