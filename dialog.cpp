@@ -953,61 +953,35 @@ void Dialog::paintEvent(QPaintEvent* e)
                 }
 
         painter->setPen(pen);
-        for(int j=0;j<net.size;j++)
-        {
-            float h=colorThresh(net.neuron[mouse_ind[0]].weight_norm[j]*syn_color_max);
+//        for(int j=0;j<net.size;j++)
+//        {
+//            float h=colorThresh(net.neuron[mouse_ind[0]].weight_norm[j]*syn_color_max);
 
             if(mouse_drop||redraw)
             {
-
-                if( (net.neuron[mouse_ind[0]].weight[j])<-0.0001)
+                for(int j=0;j<net.neuron[mouse_ind[0]].link_plus_ind.size();j++)
                 {
-                    pen.setWidth(3);
-                    pen.setColor(*dropColor1);
-                    painter->setPen(pen);
-                    painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[j].x,net.neuron[j].y);
-                    pen.setWidth(2);
-                }
-                else if( (net.neuron[mouse_ind[0]].weight[j])>0.0001)
-                {
+//                    float h=colorThresh(net.neuron[mouse_ind[0]].weight_norm[link_plus_ind[j]]*syn_color_max);
                     pen.setWidth(3);
                     pen.setColor(*dropColor2);
                     painter->setPen(pen);
-                    painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[j].x,net.neuron[j].y);
+                    painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[net.neuron[mouse_ind[0]].link_plus_ind[j]].x,net.neuron[net.neuron[mouse_ind[0]].link_plus_ind[j]].y);
                     pen.setWidth(2);
                 }
-            }
-            else if(draw_links)//////
-            {
-                //                if( (net.neuron[mouse_ind[0]].weight[j])>0.0001)
-                //                {
-                //                    QCLR=QColor(h,h,h,transp_val);
-                //                    //                    painter->setPen(pen);
-                //                    if(net.spike_show)
-                //                        drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_blue_spike,pen,painter);
-                //                    else
-                //                    {
-                //                        pen.setColor(QCLR);
-                //                        painter->setPen(pen);
-                //                        painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[j].x,net.neuron[j].y);
-                //                    }
-                //                }
-                //                else if((net.neuron[mouse_ind[0]].weight[j])<-0.0001)
-                //                {
-                //                    QCLR=QColor(140,100,100,transp_val);
-                //                    if(net.spike_show)
-                //                        drawLinkWithSpike(mouse_ind[0],j,QCLR, QCLR_red_spike,pen,painter);
-                //                    else
-                //                    {
-                //                        pen.setColor(QCLR);
-                //                        painter->setPen(pen);
-                //                        painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[j].x,net.neuron[j].y);
-                //                    }
+                for(int j=0;j<net.neuron[mouse_ind[0]].link_min_ind.size();j++)
+                {
+//                    float h=colorThresh(net.neuron[mouse_ind[0]].weight_norm[link_min_ind[j]]*syn_color_max);
+                    pen.setWidth(3);
+                    pen.setColor(*dropColor1);
+                    painter->setPen(pen);
+                    painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[net.neuron[mouse_ind[0]].link_min_ind[j]].x,net.neuron[net.neuron[mouse_ind[0]].link_min_ind[j]].y);
+                    pen.setWidth(2);
+                }
 
-                //                }
             }
 
-        }
+
+//        }
 
 
 

@@ -200,10 +200,10 @@ void CNet::weightsWithRad(float x1, int q_inh)
 
                     setLink(i,j,pd1*maxWeight*.3);
                 }
-                else if(probab((1-pd2)*0.09))
+                else if(probab((1-pd2)*0.05))
                 {
                     if(q1==0)
-                        setLink(i,j,-inh_k*(1-pd2)*maxWeight*.3);
+                        setLink(i,j,-inh_k*maxWeight*0.5);
                     //qDebug()<<inh_k;
                 }
             }
@@ -222,9 +222,11 @@ void CNet::weightsWithRad(float x1, int q_inh)
         {
             if(neuron[i].weight[j]>0.0001)
                 neuron[i].link_plus_ind.push_back(j);
-
-            if(neuron[i].weight[j]<-0.0001)
-                neuron[i].link_min_ind.push_back(j);
+            else
+                if(neuron[i].weight[j]<-0.0001)
+                    neuron[i].link_min_ind.push_back(j);
+                else
+                    neuron[i].weight[j]=0;
         }
     }
     //    for(int i=0;i<detectors_size;i++)
@@ -340,7 +342,7 @@ void CNet::setDelay(int i,int j)
     }
     else if((neuron[i].weight[j])<-0.0001)
     {
-        neuron[i].eff_dist[j]=(1+sqrt(square)/15);
+        neuron[i].eff_dist[j]=(1+sqrt(square)/4);
     }
 }
 
