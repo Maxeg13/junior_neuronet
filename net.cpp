@@ -190,7 +190,7 @@ void CNet::weightsWithRad(float x1, int q_inh)
         {
             int q1=rand()%q_inh;
             float pd1=exp(-dist2(i,j)/(2*x1*x1*1.1*1.1))*0.8;
-            float pd2=exp(-dist2(i,j)/(2*x1*x1))*0.8;
+            float pd2=(1-exp(-dist2(i,j)/(2*x1*x1*0.7*0.7)))*0.8;
             if(i!=j)
             {
                 killLink(i,j);
@@ -200,7 +200,7 @@ void CNet::weightsWithRad(float x1, int q_inh)
 
                     setLink(i,j,pd1*maxWeight*.3);
                 }
-                else if(probab((1-pd2)*0.05))
+                else if(probab(pd2*0.05))
                 {
                     if(q1==0)
                         setLink(i,j,-inh_k*maxWeight*0.5);
