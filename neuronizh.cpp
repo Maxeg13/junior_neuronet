@@ -401,14 +401,14 @@ void neuronIzh::oneStep()
 
 
     dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
-    E_m +=  dE_m*net->steph;
+    E_m +=  dE_m*net->step;
     dU_e = a*(b*E_m - U_e);
-    U_e +=   dU_e*net->steph;
+    U_e +=   dU_e*net->step;
 
-    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
-    E_m +=  dE_m*net->steph;
-    dU_e = a*(b*E_m - U_e);
-    U_e +=   dU_e*net->steph;
+//    dE_m = 0.04*E_m*E_m + 5*E_m + 140 - U_e + (input_sum);
+//    E_m +=  dE_m*net->step;
+//    dU_e = a*(b*E_m - U_e);
+//    U_e +=   dU_e*net->step;
 
     input_from_neurons*=net->exp_psc_exc;
 
@@ -439,9 +439,11 @@ void neuronIzh::oneStep()
         //        if(ID==15)
         //            qDebug()<<"hello!";
 
-        for(i=0;i<net->size;i++)
-            if(weight[i]>0.0001)
-                syn_cnt[i].push_front(1);
+        for(i=0;i<link_plus_ind.size();i++)
+//            if(link_plus_ind[i]>0.0001)
+                syn_cnt[link_plus_ind[i]].push_front(1);
+        else if(weight[i]<-0.0001)
+                syn_cnt[i].push_front(-1);
 
         float dw;
         vis=220;

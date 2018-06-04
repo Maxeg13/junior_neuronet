@@ -36,7 +36,8 @@ class neuronIzh
 {
 public:
     float activity;
-
+    vector<int> link_plus_ind;
+    vector<int> link_min_ind;
     deque<int> top;
     CNet* net;
     CArrow* arrow;
