@@ -57,7 +57,7 @@ public:
     int STDP_cnt;
     int STDP_div;
     void killLink(int,int);
-    void setLink(int,int, float);
+    void setLink(int,int, float, bool);
     void CalculateStep(float x);
     void setArrows();
     void setDelay(int i, int j);

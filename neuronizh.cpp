@@ -38,7 +38,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     ////
     with_poisson=0;
     pois_modulator=0;
-    STDP=0;//2
+    STDP=2;//2
 
     vx=0;
     vy=0;
@@ -141,6 +141,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
 void neuronIzh::locate()
 {
+    static int width=sqrt(net->detectors_size);
     if(net->demo)
     {
         x=(net->x0)*(net->size_k)+(rand()%(net->x0))*(1-2*(net->size_k));
@@ -150,8 +151,6 @@ void neuronIzh::locate()
     {
         if(ID<net->detectors_size)
         {
-            //             x=net->width/2*1.3+(((rand()%100-50)/80.*1.5))*net->width*0.10; y=net->height*(.53+(rand()%100-50)/600.*1.5);
-            static int width=sqrt(net->detectors_size);
             float x1=(ID%width+(rand()%8)*.1)*net->geometr_size*1.2;//real width
             float y1=(ID/width+(rand()%8)*.1)*net->geometr_size;//real height
 
@@ -161,31 +160,12 @@ void neuronIzh::locate()
         }
         else
         {
-            y=net->y0*(1-(ID-net->detectors_size-3.5)*(ID-net->detectors_size-3.5)/80.);
-            x=net->x0/2*1.3+((ID-net->detectors_size-3.5))*net->x0*0.10;
+            y=net->y0+width/2*net->geometr_size+(ID-net->detectors_size)*80;
+            x=net->x0-70;
         }
-        //        switch(ID)
-        //        {
-        //        case 0: x=net->width/2*1.3+(rand()%100)*+((ID-.5))*net->width*0.10; y=net->height*.53; break;
-        //        case 1: x=net->width/2*1.3+((ID-.5))*net->width*0.10; y=net->height*.53;break;
-        //        case 2:
-        //        case 3:
-        //        case 4:
-        //        case 5:
-        //        case 6:
-        //        case 7:
-        //        case 8:
-        //        case 9:
-
-        //            y=net->height*(1-(ID-5.5)*(ID-5.5)/80.);
-        //            x=net->width/2*1.3+((ID-5.5))*net->width*0.10;
-        //            break;
-
-        //        }
     }
-
-
 }
+
 
 void neuronIzh::locate(int _x, int _y)
 {
@@ -356,15 +336,20 @@ void neuronIzh::oneStep()
             pois_modulator=0;
     }
 
-    freq_cnt++;
-    if(freq_cnt+stim_rnd>(time_from_freq+1))
+
+    //corrrection for coherence
+    if(ID==0)
     {
-        freq_cnt=0;
-        stim_rnd=0;
-        phase_noise=rand();
+        freq_cnt++;
+        if(freq_cnt+stim_rnd>(time_from_freq+1))
+        {
+            freq_cnt=0;
+            stim_rnd=0;
+            phase_noise=rand();
+        }
     }
 
-    if(((freq_cnt))==(freq_phase+phase_noise)%(time_from_freq+1))freq_modulator=1;
+    if(((net->neuron[0].freq_cnt))==(net->neuron[0].freq_phase+net->neuron[0].phase_noise)%(time_from_freq+1))freq_modulator=1;
     else freq_modulator=0;
 
 
@@ -395,7 +380,7 @@ void neuronIzh::oneStep()
         if(fabs(net->neuron[i].weight[ID])>0.0001)
             input_from_neurons+=net->neuron[i].to_input[ID]*net->neuron[i].weight[ID];
     input_sum=input_from_neurons+max(external_I*(freq_modulator),50*pois_modulator);
-//        input_sum=0;
+    //        input_sum=0;
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
 
@@ -423,7 +408,7 @@ void neuronIzh::oneStep()
                 syn_cnt[i][j]++;
             if(syn_cnt[i][j]>(eff_dist[i]))
             {
-//                qDebug()<<
+                //                qDebug()<<
                 to_input[i]=1;
                 syn_cnt[i].pop_back();
             }

@@ -29,7 +29,7 @@ QColor inhibColor=QColor(100,25,25);
 QColor QCLR_red_spike=QColor(250,100,0,255);
 QColor QCLR_blue_spike=QColor(0,100,220);
 int transp_val=120;
-int ptn_n;
+int ptn_n=0;
 pattern ptn[2];
 int cnt1;
 QCheckBox *pull_check;
@@ -183,31 +183,31 @@ void Dialog::setPattern(int i)
 void Dialog::savePattern()
 {
 
-    //    int i=ptn_n;
-    //    ptn[i].freq.resize(net.stim_ind.size());
-    //    ptn[i].ind=net.stim_ind;
-    //    for(int j=0;j<net.stim_ind.size();j++)
-    //        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
+        int i=ptn_n;
+        ptn[i].freq.resize(net.stim_ind.size());
+        ptn[i].ind=net.stim_ind;
+        for(int j=0;j<net.stim_ind.size();j++)
+            ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
 
-    //    ptn_n++;
-    //    ptn_n%=2;
+        ptn_n++;
+        ptn_n%=2;
 
-    int i=1;
-    ptn[i].freq.resize(net.stim_ind.size());
-    ptn[i].ind=net.stim_ind;
-    for(int j=0;j<ptn[0].ind.size();j++)
-    {
-        //            qDebug()<<"hello";
-        //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
-        ptn[i].freq[j]=ptn[0].freq[j];
+//    int i=1;
+//    ptn[i].freq.resize(net.stim_ind.size());
+//    ptn[i].ind=net.stim_ind;
+//    for(int j=0;j<ptn[0].ind.size();j++)
+//    {
+//        //            qDebug()<<"hello";
+//        //        ptn[1].ind[j]=ptn[0].ind[net.stim_ind.size()-1-j];
+//        ptn[i].freq[j]=ptn[0].freq[j];
 
-    }
+//    }
 
-    i=0;
-    ptn[i].freq.resize(net.stim_ind.size());
-    ptn[i].ind=net.stim_ind;
-    for(int j=0;j<net.stim_ind.size();j++)
-        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
+//    i=0;
+//    ptn[i].freq.resize(net.stim_ind.size());
+//    ptn[i].ind=net.stim_ind;
+//    for(int j=0;j<net.stim_ind.size();j++)
+//        ptn[i].freq[j]=net.neuron[net.stim_ind[j]].freq;
 
 
 }
@@ -308,7 +308,7 @@ Dialog::Dialog(QWidget *parent) :
 
     plot_weights = new QwtPlot();
     drawingInit(plot_weights,QString("weights distribution"));
-    plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight);
+    plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight*1.6);
     plot_weights->setAxisScale(QwtPlot::xBottom,0,net.size);
     plot_weights->setAxisTitle(QwtPlot::yLeft, "weight");
     plot_weights->setAxisTitle(QwtPlot::xBottom, "neuron's index");
@@ -825,8 +825,8 @@ void Dialog::paintEvent(QPaintEvent* e)
 
     weightCurve.setSamples( points ); // ассоциировать набор точек с кривой
     weightCurve.attach( plot_weights); // отобразить кривую на графике/
-    plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight);
-
+//    plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight);
+ plot_weights->setAxisScale(QwtPlot::yLeft,0,net.maxWeight*1.6);
 
     //    emit L_E->editingFinished();
     static float blink_phase=0;
@@ -1013,10 +1013,6 @@ void Dialog::paintEvent(QPaintEvent* e)
                         }
             }
 
-        //mouse ,arrows
-        //    pen.setWidth(4);
-
-
 
 
         if(redraw) {
@@ -1054,12 +1050,6 @@ void Dialog::paintEvent(QPaintEvent* e)
 
 
 
-
-
-        //        pmap.load("C:\\Users\\chibi\\Documents\\junior_neuronet\\Screenshot_4.png");
-
-        //painter_basic->
-        //        if(redraw||mouse_drop)
         painter_basic->drawPixmap(0,0,pmap);
 
 
