@@ -230,7 +230,7 @@ void Dialog::changeWeight()
     int w;
     //    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.00001)
     //    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
-    w= net.maxWeight=slider_weight_test->value();
+    w= net.maxWeight=slider_weight_test->value()/2.;
     net.kohonSettings();
     weightRadChanged();
 
@@ -374,7 +374,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_scale->setOrientation(Qt::Horizontal);
 
     slider_weight_test= new myQSlider(this);
-    slider_weight_test->setRange(-8, 8);
+    slider_weight_test->setRange(-16, 16);
     slider_weight_test->setValue(0);
     slider_weight_test->setOrientation(Qt::Horizontal);
 
@@ -399,7 +399,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_circle->setOrientation(Qt::Horizontal);
     slider_weight_rad = new myQSlider(this);
     slider_weight_rad->setRange(8, 300);
-    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=90);
+    slider_weight_rad->setValue(net.weight_rad=slider_weight_val=121);
     slider_weight_rad->setOrientation(Qt::Horizontal);
     slider_current = new myQSlider(this);
     slider_current->setRange(1,50);
