@@ -337,8 +337,8 @@ void neuronIzh::oneStep()
     }
 
 
-    //corrrection for coherence
-    if(ID==0)
+    //correction for coherence
+//    if(ID==0)
     {
         freq_cnt++;
         if(freq_cnt+stim_rnd>(time_from_freq+1))
@@ -349,7 +349,7 @@ void neuronIzh::oneStep()
         }
     }
 
-    if(((net->neuron[0].freq_cnt))==(net->neuron[0].freq_phase+net->neuron[0].phase_noise)%(time_from_freq+1))freq_modulator=1;
+    if(((freq_cnt))==(freq_phase+phase_noise)%(time_from_freq+1))freq_modulator=1;
     else freq_modulator=0;
 
 

@@ -54,7 +54,7 @@ int g_size=2600;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(484,484,0,RS);
+CNet net(486,484,0,RS);
 //CNet net(225,225,0,RS);
 //18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
@@ -227,10 +227,10 @@ void Dialog::changePoisInterval()
 void Dialog::changeWeight()
 {
 
-    int w;
+    float w;
     //    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.00001)
     //    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
-    w= net.maxWeight=slider_weight_test->value()/2.;
+    w= net.maxWeight=slider_weight_test->value();
     net.kohonSettings();
     weightRadChanged();
 
@@ -263,7 +263,7 @@ void Dialog::changePoisson()
 
 void Dialog::killDelay()
 {
-    for(int i=0;i<net.size;i++)
+    for(int i=net.detectors_size;i<net.size;i++)
         for(int j=0;j<net.size;j++)
             if(fabs(net.neuron[i].weight[j])>0.00001)
                 net.neuron[i].eff_dist[j]=0;
@@ -1197,6 +1197,7 @@ void Dialog::weightRadChanged()
 {
     net.inh_k=slider_inh_k->value()/5.*3.;
     net.weightsWithRad(slider_weight_rad->value(),slider_w_probab->value());
+    killDelay();
     redraw=1;
 }
 

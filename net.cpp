@@ -14,6 +14,12 @@ float thresh(int x)
         return(x);
 }
 
+float _rand(float x)
+{
+
+    return((rand()%100)/100.*x);
+}
+
 bool probab(float p)
 {
     return((rand()%1000)<p*1000);
@@ -171,16 +177,17 @@ void CNet::killLink(int i,int j)
 void CNet::setLink(int i,int j,float k, bool is_dir)
 {
     if(is_dir)
-        neuron[i].weight[j]=maxWeight*k;
+        neuron[i].weight[j]=k;
     else
         if(rand()%2==0)
-            neuron[i].weight[j]=maxWeight*k;
+            neuron[i].weight[j]=k;
         else
-            neuron[j].weight[i]=maxWeight*k;
+            neuron[j].weight[i]=k;
 }
 
 void CNet::weightsWithRad(float x1, int q_inh)
 {
+    float redu_k=.8;
     for(int i=0;i<size;i++)
     {
         for(int j=0;j<size;j++)
@@ -193,6 +200,7 @@ void CNet::weightsWithRad(float x1, int q_inh)
         {
             int q1=rand()%q_inh;
             float pd1=exp(-dist2(i,j)/(2*x1*x1*1.1*1.1))*0.8;
+//            qDebug()<<pd1;
             float pd2=(1-exp(-dist2(i,j)/(2*x1*x1*0.7*0.7)))*0.8;
             if(i!=j)
             {
@@ -200,13 +208,12 @@ void CNet::weightsWithRad(float x1, int q_inh)
                 if(probab(pd1))
                 {
 
-
-                    setLink(i,j,pd1*maxWeight*.35,0);
+                    setLink(i,j,pd1*maxWeight*.35*redu_k,0);
                 }
                 else if(probab(pd2*0.05))
                 {
 //                    if(q1==0)
-                        setLink(i,j,-inh_k*maxWeight*0.5,0);
+                        setLink(i,j,-inh_k*maxWeight*0.5*redu_k,0);
                 }
             }
 
@@ -220,7 +227,10 @@ void CNet::weightsWithRad(float x1, int q_inh)
         for(int j=0;j<detectors_size;j++)
         {
             if(probab(.08))
-                setLink(i,j,1.2*maxWeight,1);
+            {
+                setLink(i,j,maxWeight*_rand(1),1);
+//                qDebug()<<maxWeight;
+            }
         }
     }
 
@@ -239,6 +249,7 @@ void CNet::weightsWithRad(float x1, int q_inh)
                     neuron[i].weight[j]=0;
         }
     }
+//    kill
 
     for(int i=0;i<detectors_size;i++)
         for(int j=0;j<detectors_size;j++)
