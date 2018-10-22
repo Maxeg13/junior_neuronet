@@ -59,10 +59,6 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
         weight_diap=.12;
 
 
-
-
-
-
     STDP_cnt=0;
     STDP_div=1;
 
@@ -72,14 +68,14 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
     tau_m=30;
     tau_y=125;
 
-    //    Am2=.007;
-    //    Am3=.00023;
-    //    Ap2=5*.0000000001;
-    //    Ap3=.0062;
-    Am2=.0071;
-    Am3=0;
-    Ap2=0;
-    Ap3=.0065;
+    Am2=.007;
+    Am3=.00023;
+    Ap2=5*.0000000001;
+    Ap3=0.0062;
+//    Am2=.0071;
+//    Am3=0;
+//    Ap2=0;
+//    Ap3=.0065;
 
 
 
@@ -365,15 +361,15 @@ void CNet::setDelay(int i,int j)
         //const
         //        neuron[i].eff_dist[j].resize(1+sqrt(square)/5,0);//6
         if(i>(detectors_size-1))
-            neuron[i].eff_dist[j]=(1+sqrt(square)/8);
+            neuron[i].eff_dist[j]=(1+sqrt(square));
         //            neuron[i].eff_dist[j]=(1);
         else
-            neuron[i].eff_dist[j]=(1+sqrt(square)/8);
+            neuron[i].eff_dist[j]=(1+sqrt(square));
         //            neuron[i].eff_dist[j]=(1);
     }
     else if((neuron[i].weight[j])<-0.0001)
     {
-        neuron[i].eff_dist[j]=(1+sqrt(square)/4);
+        neuron[i].eff_dist[j]=(1+sqrt(square));
     }
 }
 

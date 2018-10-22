@@ -347,9 +347,8 @@ void neuronIzh::oneStep()
         }
     }
 
-    if(((freq_cnt))==(freq_phase+phase_noise)%(time_from_freq+1))freq_modulator=1;
+    if(((freq_cnt))==(freq_phase)%(time_from_freq+1))freq_modulator=1;
     else freq_modulator=0;
-
 
     if(ID==0) net->STDP_cnt++;//from old mistake
     if(net->STDP_cnt==net->STDP_div)
@@ -462,7 +461,7 @@ void neuronIzh::oneStep()
                             //pre
                             dw=-o1[i]*(net->Am2+net->Am3*r2[i])*net->STDP_speed;
 
-                            weight[i]+=dw*net->alpha;//                        (weight[i]-net->minWeight);
+                            weight[i]+=dw;//                        (weight[i]-net->minWeight);
 
                             if(weight[i]  <  net->minWeight)
                                 weight[i]=net->minWeight;

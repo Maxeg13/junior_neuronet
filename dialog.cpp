@@ -230,7 +230,7 @@ void Dialog::changeWeight()
     float w;
     //    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.00001)
     //    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
-    w= net.maxWeight=slider_weight_test->value();
+    w=net.maxWeight=slider_weight_test->value();
     net.LobovSettings();
 //    weightRadChanged();
 
@@ -399,7 +399,7 @@ Dialog::Dialog(QWidget *parent) :
     //    test_val/=20;
 
     slider_circle = new QSlider(this);
-    slider_circle->setRange(1, 400);
+    slider_circle->setRange(1, 60);
     slider_circle->setValue(slider_circle_val=24);
     slider_circle->setOrientation(Qt::Horizontal);
     slider_weight_rad = new myQSlider(this);
