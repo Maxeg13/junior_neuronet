@@ -23,7 +23,7 @@ public:
     float exp_psc_exc;
     CNet();
     CNet(int _size,int, int _perc, neuronType _type);
-    void kohonSettings();
+    void LobovSettings();
     neuronType type;
     bool demo;
     int a;
@@ -66,7 +66,7 @@ public:
     float minWeight; // веса, размерность пкА
     float maxWeight;
     float dist2(int, int);
-    void weightsWithRad(float x1, int r);
+    void weightsWithRad(float x1,float, int r);
     void afterReWeight();
     void normWeights();
     void demoSettings(int x);

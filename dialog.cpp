@@ -54,7 +54,7 @@ int g_size=2600;
 
 QLineEdit *L_E, *L_E2, *L_E3, *L_E4, *L_E5;
 QTimer *timer;
-CNet net(486,484,0,RS);
+CNet net(4,4,0,RS);
 //CNet net(225,225,0,RS);
 //18 IB Kohonen CNet net(18,0,IB);
 //CNet net(50,0,RS);//for demo
@@ -128,7 +128,7 @@ QSlider *slider_circle, *slider_show_ext,
 *slider_weight_rad, *slider_current, *slider_freq,
 *slider_weight_test, *slider_phase, *slider_scale,
 *slider_pois_time, *slider_depression_alpha,
-*slider_w_probab, *slider_inh_k;
+*slider_w_probab, *slider_inh_k, *slider_stim_weight;
 //QMenuBar* menuBar;
 //work* WK;
 
@@ -152,7 +152,7 @@ void Dialog::setMaxWeight()
     if(net.demo)
         net.demoSettings(slider_weight_rad->value());
     else
-        net.kohonSettings();
+        net.LobovSettings();
 
     net.normWeights();
     //    qDebug()<<net.maxWeight;
@@ -231,8 +231,8 @@ void Dialog::changeWeight()
     //    if(net.neuron[mouse_ind[1]].weight[mouse_ind[0]]>0.00001)
     //    net.neuron[mouse_ind[1]].weight[mouse_ind[0]]=w=slider_weight_test->value();
     w= net.maxWeight=slider_weight_test->value();
-    net.kohonSettings();
-    weightRadChanged();
+    net.LobovSettings();
+//    weightRadChanged();
 
 
     slider_weight_test->setToolTip("set weight: "+
@@ -244,7 +244,7 @@ void Dialog::setInhPerc()
     //    net=CNet(90,L_E3->text().toInt(),RS);
     for(int i=0;i<net.size;i++)
         net.neuron[i].is_excitatory=((rand()%100)>(L_E3->text().toInt()-1));
-    net.weightsWithRad(slider_weight_rad->value(),slider_w_probab->value());
+   net.weightsWithRad(slider_weight_rad->value(),slider_stim_weight->value()/10.,slider_w_probab->value());
 }
 
 void Dialog::changePoisson()
@@ -363,6 +363,11 @@ Dialog::Dialog(QWidget *parent) :
 
     this->setGeometry(QRect(40,40,1200,1000));
 
+    slider_stim_weight=new myQSlider(this);
+    slider_stim_weight->setRange(0,10);
+    slider_stim_weight->setValue(5);
+    slider_stim_weight->setOrientation(Qt::Horizontal);
+
     slider_pois_time=new myQSlider(this);
     slider_pois_time->setRange(100, 700);
     slider_pois_time->setValue(100);
@@ -370,12 +375,12 @@ Dialog::Dialog(QWidget *parent) :
 
     slider_scale= new myQSlider(this);
     slider_scale->setRange(4, 20);
-    slider_scale->setValue(7);
+    slider_scale->setValue(15);
     slider_scale->setOrientation(Qt::Horizontal);
 
     slider_weight_test= new myQSlider(this);
-    slider_weight_test->setRange(-16, 16);
-    slider_weight_test->setValue(0);
+    slider_weight_test->setRange(0, 20);
+    slider_weight_test->setValue(12);
     slider_weight_test->setOrientation(Qt::Horizontal);
 
     slider_show_ext = new myQSlider(this);
@@ -386,8 +391,8 @@ Dialog::Dialog(QWidget *parent) :
 
 
     slider_depression_alpha = new myQSlider(this);
-    slider_depression_alpha->setRange(0, 10);
-    slider_depression_alpha->setValue(5);//5
+    slider_depression_alpha->setRange(0, 15);
+    slider_depression_alpha->setValue(14);//5
     slider_depression_alpha->setOrientation(Qt::Horizontal);
     slider_depression_alpha->setToolTip(QString("depression eff"));
 
@@ -451,6 +456,7 @@ Dialog::Dialog(QWidget *parent) :
     QGL->addWidget(button_drawing,4,2,1,1);
     QGL->addWidget(slider_current,4,3,1,1);
     QGL->addWidget(slider_inh_k,4,4,1,1);
+    QGL->addWidget(slider_stim_weight,5,0,1,1);
 
 
 
@@ -488,6 +494,8 @@ Dialog::Dialog(QWidget *parent) :
 
     connect(slider_weight_test,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
 
+    connect(slider_stim_weight,SIGNAL(sliderReleased()),this,SLOT(changeWeight()));
+
     connect(slider_pois_time,SIGNAL(sliderReleased()),this,SLOT(changePoisInterval()));
 
     connect(L_E,SIGNAL(returnPressed()),this,SLOT(setMinWeight()));
@@ -517,6 +525,7 @@ Dialog::Dialog(QWidget *parent) :
     slider_phase->setToolTip("set phase");
     slider_w_probab->setToolTip("linking probab");
     slider_inh_k->setToolTip("inhibitory efficiency");
+    slider_stim_weight->setToolTip("koefficient of stim weights");
 
     L_E->setToolTip("set min weight");
     L_E2->setToolTip("set max weight");
@@ -526,10 +535,8 @@ Dialog::Dialog(QWidget *parent) :
 
     //    net.kohonSettings();
     changePoisInterval();
-    weightRadChanged();
+//    weightRadChanged();
     freqChange();
-    if(net.demo)
-        weightRadChanged();
     change_STDP_speed();
     this->currentChange(1);
     //    mouse_drop=1;
@@ -706,7 +713,7 @@ void Dialog::neuroGrab()
     if(net.demo)
         net.demoSettings(slider_weight_rad->value());
     else
-        net.kohonSettings();
+        net.LobovSettings();
     //    net.weightsWithRad(slider_weight_rad->value());
 }
 
@@ -1196,7 +1203,7 @@ void Dialog::changeDrawing()
 void Dialog::weightRadChanged()
 {
     net.inh_k=slider_inh_k->value()/5.*3.;
-    net.weightsWithRad(slider_weight_rad->value(),slider_w_probab->value());
+    net.weightsWithRad(slider_weight_rad->value(),slider_stim_weight->value()/10.,slider_w_probab->value());
     killDelay();
     redraw=1;
 }

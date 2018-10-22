@@ -36,7 +36,7 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
     pois_T=rand()%300;
     pois_cnt=0;
     ////
-    with_poisson=0;
+    with_poisson=1;
     pois_modulator=0;
     STDP=2;//2
 
@@ -141,28 +141,26 @@ neuronIzh::neuronIzh(int _ID, neuronType _type, bool _is_excitatory,CNet* _net)
 
 void neuronIzh::locate()
 {
-    static int width=sqrt(net->detectors_size);
-    if(net->demo)
+    float width=30;
+    net->size_k=2;
+    switch(ID)
     {
-        x=(net->x0)*(net->size_k)+(rand()%(net->x0))*(1-2*(net->size_k));
-        y=(net->y0)*(net->size_k)+(rand()%(net->y0))*(1-2*(net->size_k));
-    }
-    else
-    {
-        if(ID<net->detectors_size)
-        {
-            float x1=(ID%width+(rand()%8)*.1)*net->geometr_size*1.2;//real width
-            float y1=(ID/width+(rand()%8)*.1)*net->geometr_size;//real height
-
-            i0=ID%width;
-            j0=ID/width;
-            x=net->x0+x1; y=net->y0+y1;
-        }
-        else
-        {
-            y=net->y0+width/2*net->geometr_size+(ID-net->detectors_size)*80;
-            x=net->x0-70;
-        }
+    case 0:
+        x=(net->x0)*(net->size_k)+0*(net->size_k);
+        y=(net->y0)*(net->size_k)+0*(net->size_k);
+        break;
+    case 1:
+        x=(net->x0)*(net->size_k)+0*(net->size_k);
+        y=(net->y0)*(net->size_k)+width*(net->size_k);
+        break;
+    case 2:
+        x=(net->x0)*(net->size_k)+width*(net->size_k);
+        y=(net->y0)*(net->size_k)+0*(net->size_k);
+        break;
+    case 3:
+        x=(net->x0)*(net->size_k)+width*(net->size_k);
+        y=(net->y0)*(net->size_k)+width*(net->size_k);
+        break;
     }
 }
 
@@ -379,7 +377,7 @@ void neuronIzh::oneStep()
     for(i=0;i<net->size;i++)
         if(fabs(net->neuron[i].weight[ID])>0.0001)
             input_from_neurons+=net->neuron[i].to_input[ID]*net->neuron[i].weight[ID];
-    input_sum=input_from_neurons+max(external_I*(freq_modulator),50*pois_modulator);
+    input_sum=input_from_neurons+external_I*(freq_modulator)+10*pois_modulator;
     //        input_sum=0;
     //    if(external_I*freq_modulator>0.1)std::cout<<ID<<"\n";
     
