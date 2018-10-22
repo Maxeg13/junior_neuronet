@@ -114,10 +114,37 @@ CNet::CNet(int _size, int _detectors_size,int _perc, neuronType _type):a(100)
 
 
     LobovSettings();
+    compulsorySettings();
 
     //    for(int i=0;i<size;i++)
     //        for(int j=0;j<size;j++)
     //        qDebug()<<neuron[i].syn_cnt[j].size();
+}
+
+void CNet::compulsorySettings()
+{
+    for(int i=0;i<size;i++)
+    {
+        neuron[i].link_min_ind.resize(0);
+        neuron[i].link_plus_ind.resize(0);
+        for(int j=0;j<size;j++)
+        {
+            if(neuron[i].weight[j]>0.0001)
+                neuron[i].link_plus_ind.push_back(j);
+            else
+                if(neuron[i].weight[j]<-0.0001)
+                    neuron[i].link_min_ind.push_back(j);
+                else
+                    neuron[i].weight[j]=0;
+        }
+    }
+    afterReWeight();
+
+    for(int i=0;i<size;i++)
+        for(int j=0;j<size;j++)
+        {
+            setDelay(i,j);
+        }
 }
 
 void CNet::demoSettings(int x)
@@ -307,6 +334,9 @@ void CNet::LobovSettings()
     for(int j=2;j<4;j++)
         for(int i=0;i<2;i++)
             neuron[i].setWeight(j,maxWeight);
+
+    neuron[0].setWeight(1,maxWeight);
+    neuron[1].setWeight(0,maxWeight);
 
     for(int i=detectors_size;i<size;i++)
         neuron[i].with_poisson=0;

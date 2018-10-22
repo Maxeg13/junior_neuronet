@@ -56,6 +56,7 @@ public:
 
     int STDP_cnt;
     int STDP_div;
+    void compulsorySettings();
     void killLink(int,int);
     void setLink(int,int, float, bool);
     void CalculateStep(float x);

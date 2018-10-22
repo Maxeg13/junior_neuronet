@@ -973,7 +973,7 @@ void Dialog::paintEvent(QPaintEvent* e)
                     pen.setColor(*dropColor2);
                     painter->setPen(pen);
                     painter->drawLine(net.neuron[mouse_ind[0]].x,net.neuron[mouse_ind[0]].y,net.neuron[net.neuron[mouse_ind[0]].link_plus_ind[j]].x,net.neuron[net.neuron[mouse_ind[0]].link_plus_ind[j]].y);
-                    pen.setWidth(2);
+                    pen.setWidth(2);//2
                 }
                 for(int j=0;j<net.neuron[mouse_ind[0]].link_min_ind.size();j++)
                 {
@@ -1022,7 +1022,7 @@ void Dialog::paintEvent(QPaintEvent* e)
 
 
 
-        if(redraw) {
+        if(redraw||mouse_drop) {
             for(int j=0;j<net.size;j++)
             {
                 if( (net.neuron[mouse_ind[0]].weight[j])<-0.0001)
