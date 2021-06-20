@@ -12,6 +12,7 @@
 #include <QGroupBox>
 #include <QSlider>
 #include <vector>
+#include <math.h>
 #include <QLineEdit>
 #include <QCheckBox>
 #include "pattern.h"
@@ -754,6 +755,10 @@ void Dialog::paintEvent(QPaintEvent* e)
                                       net.neuron[j].x+net.neuron[i].arrow[j].x[0],
                             net.neuron[j].y+net.neuron[i].arrow[j].y[0]);
                     painter->drawLine(net.neuron[j].x,net.neuron[j].y,
+                                      net.neuron[j].x+net.neuron[i].arrow[j].x[1],
+                            net.neuron[j].y+net.neuron[i].arrow[j].y[1]);
+                    painter->drawLine(net.neuron[j].x+net.neuron[i].arrow[j].x[0],
+                            net.neuron[j].y+net.neuron[i].arrow[j].y[0],
                                       net.neuron[j].x+net.neuron[i].arrow[j].x[1],
                             net.neuron[j].y+net.neuron[i].arrow[j].y[1]);
 
